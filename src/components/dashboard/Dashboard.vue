@@ -1,0 +1,27 @@
+<template>
+  <v-container grid-list-md fill-height>
+    <v-layout row wrap >
+      <v-flex xs12 md4 lg4 >
+        <animais-cadastrados></animais-cadastrados>
+      </v-flex>
+
+      <v-flex xs12 md4 lg4>
+        <lotes-cadastrados></lotes-cadastrados>
+      </v-flex>
+    </v-layout>
+  </v-container>
+
+</template>
+
+<script>
+  import AnimaisCadastrados from './AnimaisCadastrados'
+  import LotesCadastrados from './LotesCadastrados'
+  export default {
+    name: 'dashboard',
+    components: {AnimaisCadastrados, LotesCadastrados}
+  }
+</script>
+
+<style scoped>
+
+</style>
