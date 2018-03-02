@@ -1,13 +1,15 @@
 <template>
   <v-app >
-    <v-layout column>
+    <v-layout row wrap>
 
-      <v-flex color="secondary">
+
+
+      <v-flex lg12>
         <v-container class="text-xs-center">
-        <img src="/static/logo-calf.jpg" alt="logo" style="width: 200px">
+          <img src="/static/logo-calf.jpg" alt="logo" style="width: 200px">
         </v-container>
-        <v-list>
-          <v-subheader key="Menu">Menu de módulos</v-subheader>
+        <v-list >
+        <v-subheader key="Menu">Menu de módulos</v-subheader>
           <template v-for="item in items" >
 
             <v-list-tile :key="item.titulo" @click=""  color="primary">

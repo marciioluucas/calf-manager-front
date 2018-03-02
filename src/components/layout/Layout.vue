@@ -8,18 +8,21 @@
       enable-resize-watcher
       fixed
       app
+      class="green"
+
     >
       <modulos></modulos>
     </v-navigation-drawer>
     <v-toolbar
+      class="green"
       app
       :clipped-left="clipped"
     >
-      <v-toolbar-side-icon @click.stop="drawer = !drawer" class="hidden-lg-and-up"/>
+      <v-toolbar-side-icon @click.stop="drawer = !drawer" class="hidden-lg-and-up white--text"/>
       <v-btn icon @click.stop="enviarMiniVariant" class="hidden-md-and-down">
-        <v-icon v-html="miniVariant ? 'chevron_right' : 'chevron_left'" />
+        <v-icon v-html="miniVariant ? 'chevron_right' : 'chevron_left'" class="white--text"/>
       </v-btn>
-      <v-toolbar-title v-text="title" class="green--text"/>
+      <v-toolbar-title v-text="title" class="white--text"/>
 
 
       <v-spacer/>

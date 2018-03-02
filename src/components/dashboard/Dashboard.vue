@@ -1,5 +1,5 @@
 <template>
-  <v-container grid-list-md fill-height>
+  <v-container grid-list-md>
     <v-layout row wrap >
       <v-flex xs12 md4 lg4 >
         <animais-cadastrados></animais-cadastrados>
