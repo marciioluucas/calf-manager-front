@@ -8,6 +8,6 @@ export const LotesService = {
     return Service.get(`/lote/${parseInt(id)}`)
   },
   _getByCodigo: (codigo) => {
-    return Service.get(`/lote/${codigo}`)
+    return Service.get(`/lote?codigo=${codigo}`)
   }
 }

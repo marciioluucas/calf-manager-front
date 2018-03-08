@@ -1,16 +1,19 @@
 import Service from './Service'
 
 export const AnimaisService = {
-  _getAll: () => {
-    return Service.get('/animal')
+  _getAll: (busca) => {
+    return Service.get(`/animal?vivo=${busca.vivo}&pagina=${busca.page}`)
   },
-  _getById: (id) => {
-    return Service.get(`/animal/${parseInt(id)}`)
+  _getById: (busca) => {
+    return Service.get(`/animal/${parseInt(busca.id)}?vivo=${busca.vivo}`)
   },
-  _getByNome: (nome) => {
-    return Service.get(`/animal/${nome}`)
+  _getByNome: (busca) => {
+    return Service.get(`/animal/${busca.nome}?vivo=${busca.vivo}&pagina=${busca.page}`)
   },
-  _getByIdLote: (idLote) => {
-    return Service.get(`/animal?lote=${idLote}`)
+  _getByIdLote: (busca) => {
+    return Service.get(`/animal?id-lote=${busca.lote.id}&vivo=${busca.vivo}&pagina=${busca.page}`)
+  },
+  _getByIdLoteAndName: (busca) => {
+    return Service.get(`/animal/${busca.nome}?id-lote=${busca.lote.id}&vivo=${busca.vivo}&pagina=${busca.page}`)
   }
 }

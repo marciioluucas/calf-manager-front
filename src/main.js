@@ -5,6 +5,7 @@ import components from './components/index'
 import router from './router'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
+import VueProgressBar from 'vue-progressbar'
 
 Vue.use(Vuetify, { theme: {
   primary: '#4f994d',
@@ -15,6 +16,12 @@ Vue.use(Vuetify, { theme: {
   success: '#4CAF50',
   warning: '#FFC107'
 }})
+
+Vue.use(VueProgressBar, {
+  color: '#2196F3',
+  failedColor: 'red',
+  height: '2px'
+})
 
 Vue.config.productionTip = false
 

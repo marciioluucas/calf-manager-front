@@ -27,14 +27,16 @@
 
       <v-spacer/>
     </v-toolbar>
-    <v-content>
-      <v-container>
+    <v-content class="grey lighten-2">
+      <v-container fluid>
         <router-view/>
       </v-container>
     </v-content>
 
-    <v-footer :fixed="fixed" app>
-      <span>Marcin MIL GRAU &copy; 2018</span>
+    <v-footer :fixed="fixed" app class="elevation-2">
+      <v-container fluid grid-list-md>
+        <span>Marcin MIL GRAU &copy; 2018</span>
+      </v-container>
     </v-footer>
   </v-app>
 </template>
@@ -42,12 +44,11 @@
 <script>
   import Modulos from './Modulos'
   import Bus from '../../util/bus'
-  // import Vue from 'vue'
-  // const bus = new Vue()
+
   export default {
     name: 'Layout',
     components: {Modulos},
-    data () {
+    data() {
       return {
         clipped: false,
         drawer: true,
