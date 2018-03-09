@@ -6,6 +6,9 @@ import router from './router'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import VueProgressBar from 'vue-progressbar'
+import ECharts from 'vue-echarts/components/ECharts'
+import 'echarts/lib/chart/line'
+import 'echarts/lib/component/tooltip'
 
 Vue.use(Vuetify, { theme: {
   primary: '#4f994d',
@@ -22,6 +25,8 @@ Vue.use(VueProgressBar, {
   failedColor: 'red',
   height: '2px'
 })
+
+Vue.component('chart', ECharts)
 
 Vue.config.productionTip = false
 

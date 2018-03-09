@@ -61,12 +61,15 @@
               :headers="headers"
               :items="items.data"
               hide-actions
+              @input="selecionaAnimal(props.item.id)"
             >
-              <template slot="items" slot-scope="props">
-                <td class="text-xs-center">{{ props.item.id }}</td>
-                <td class="text-xs-center">{{ props.item.nome }}</td>
-                <td class="text-xs-center">{{ props.item.lote.codigo }}</td>
-                <td class="text-xs-center">{{ props.item.codigo_brinco }}</td>
+              <template slot="items" slot-scope="props" >
+                <tr @click.stop="selecionaAnimal(props.item.id)">
+                  <td class="text-xs-center" >{{ props.item.id }}</td>
+                  <td class="text-xs-center">{{ props.item.nome }}</td>
+                  <td class="text-xs-center">{{ props.item.lote.codigo }}</td>
+                  <td class="text-xs-center">{{ props.item.codigo_brinco }}</td>
+                </tr>
               </template>
             </v-data-table>
           </v-card-text>
@@ -157,6 +160,13 @@
             this.lotes = res.data.lotes
           })
         this.loading = false
+      },
+      selecionaAnimal(id) {
+        this.$router.push(
+          {
+            name: 'ProntuarioAnimal',
+            params: {id: id}
+          })
       }
     }
   }
