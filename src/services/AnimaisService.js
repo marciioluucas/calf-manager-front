@@ -18,5 +18,8 @@ export const AnimaisService = {
   },
   _getGraficoGanhoDePeso: (id) => {
     return Service.get(`/graph?module=pesagem&chart=ganho-de-peso&animal=${id}`)
+  },
+  _getGraficoHereditariedade: (id) => {
+    return Service.get(`graph?module=familia&chart=arvore-genealogica&id-filho=${id}`)
   }
 }

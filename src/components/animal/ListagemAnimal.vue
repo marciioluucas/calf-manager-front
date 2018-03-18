@@ -63,9 +63,9 @@
               hide-actions
               @input="selecionaAnimal(props.item.id)"
             >
-              <template slot="items" slot-scope="props" >
+              <template slot="items" slot-scope="props">
                 <tr @click.stop="selecionaAnimal(props.item.id)">
-                  <td class="text-xs-center" >{{ props.item.id }}</td>
+                  <td class="text-xs-center">{{ props.item.id }}</td>
                   <td class="text-xs-center">{{ props.item.nome }}</td>
                   <td class="text-xs-center">{{ props.item.lote.codigo }}</td>
                   <td class="text-xs-center">{{ props.item.codigo_brinco }}</td>
@@ -162,11 +162,10 @@
         this.loading = false
       },
       selecionaAnimal(id) {
-        this.$router.push(
-          {
-            name: 'ProntuarioAnimal',
-            params: {id: id}
-          })
+        this.$router.push({
+          name: 'ProntuarioAnimal',
+          params: {id: id}
+        })
       }
     }
   }

@@ -1,49 +1,42 @@
 <template>
-  <v-app >
-    <v-layout row wrap>
-
-
-
-      <v-flex lg12>
-        <v-container class="text-xs-center">
-          <img src="/static/logo-calf.jpg" alt="logo" style="width: 200px">
-        </v-container>
-        <v-list >
-        <v-subheader key="Menu">Menu de módulos</v-subheader>
-          <template v-for="item in items" >
-
-            <v-list-tile :key="item.titulo" @click=""  color="primary">
-              <v-list-tile-action>
-                <v-icon v-html="item.icone"  color="primary"/>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title v-html="item.nome"/>
-                <v-list-tile-sub-title v-html="item.breve_descricao"/>
-              </v-list-tile-content>
-            </v-list-tile>
-          </template>
-        </v-list>
-      </v-flex>
-    </v-layout>
-
-  </v-app>
+  <v-list>
+    <v-list-group
+      v-model="item.active"
+      v-for="item in items"
+      :key="item.title"
+      :prepend-icon="item.action"
+      no-action
+    >
+      <v-list-tile slot="activator" >
+        <v-list-tile-action>
+          <v-icon>{{ item.icone }}</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title>{{ item.nome }}</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+      <v-list-tile v-for="subItem in item.filhos" :key="subItem.nome" @click="" :to="subItem.link">
+        <v-list-tile-content>
+          <v-list-tile-title>{{ subItem.nome }}</v-list-tile-title>
+        </v-list-tile-content>
+        <v-list-tile-action>
+          <v-icon>{{ subItem.icone }}</v-icon>
+        </v-list-tile-action>
+      </v-list-tile>
+    </v-list-group>
+  </v-list>
 </template>
 
 <script>
-  import Bus from '../../util/bus'
   import ModulosService from '../../services/ModulosService'
+
   export default {
     name: 'modulos',
-    data () {
+    data() {
       return {
         miniVariant: true,
         items: ModulosService.getModulos()
       }
-    },
-    mounted () {
-      Bus.$on('shareMiniVariant', function (mini) {
-        this.miniVariant = mini === true
-      })
     }
   }
 </script>

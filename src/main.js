@@ -7,8 +7,7 @@ import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import VueProgressBar from 'vue-progressbar'
 import ECharts from 'vue-echarts/components/ECharts'
-import 'echarts/lib/chart/line'
-import 'echarts/lib/component/tooltip'
+import 'echarts'
 
 Vue.use(Vuetify, { theme: {
   primary: '#4f994d',

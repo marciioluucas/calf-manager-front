@@ -10,7 +10,16 @@ const ModulosService = {
           {
             nome: 'Cadastro',
             icone: '',
-            link: ''
+            link: {
+              name: 'CadastroAnimal'
+            }
+          },
+          {
+            nome: 'Listagem',
+            icone: '',
+            link: {
+              name: 'ListagemAnimal'
+            }
           }
         ]
       },
@@ -23,7 +32,9 @@ const ModulosService = {
           {
             nome: 'Cadastro',
             icone: '',
-            link: ''
+            link: {
+              name: ''
+            }
           }
         ]
       },
@@ -31,12 +42,16 @@ const ModulosService = {
         icone: 'bubble_chart',
         nome: 'Usuários',
         breve_descricao: 'Controle dos usuários',
-        link: '',
+        link: {
+          name: ''
+        },
         filhos: [
           {
             nome: 'Cadastro',
             icone: '',
-            link: ''
+            link: {
+              name: ''
+            }
           }
         ]
       }

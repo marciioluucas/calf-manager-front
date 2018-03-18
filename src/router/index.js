@@ -4,6 +4,7 @@ import Layout from '@/components/layout/Layout'
 import Dashboard from '@/components/dashboard/Dashboard'
 import ListagemAnimal from '@/components/animal/ListagemAnimal'
 import ProntuarioAnimal from '@/components/animal/ProntuarioAnimal'
+import CadastroAnimal from '@/components/animal/CadastroAnimal'
 
 Vue.use(Router)
 
@@ -23,6 +24,11 @@ export default new Router({
           name: 'ListagemAnimal',
           path: 'animal/listar',
           component: ListagemAnimal
+        },
+        {
+          name: 'CadastroAnimal',
+          path: 'animal/novo',
+          component: CadastroAnimal
         },
         {
           name: 'ProntuarioAnimal',
