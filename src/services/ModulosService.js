@@ -15,6 +15,13 @@ const ModulosService = {
             }
           },
           {
+            nome: 'Cadastro de Pais',
+            icone: '',
+            link: {
+              name: 'CadastroPais'
+            }
+          },
+          {
             nome: 'Listagem',
             icone: '',
             link: {
@@ -50,7 +57,66 @@ const ModulosService = {
             nome: 'Cadastro',
             icone: '',
             link: {
-              name: ''
+              name: 'Fazenda'
+            }
+          },
+          {
+            nome: 'Lista',
+            icone: '',
+            link: {
+              name: 'ListaFazenda'
+            }
+          }
+        ]
+      },
+      {
+        icone: 'bubble_chart',
+        nome: 'Ciclos',
+        breve_descricao: 'Ciclo de vida do animais',
+        link: '',
+        filhos: [
+          {
+            nome: 'Cadastro',
+            icone: '',
+            link: {
+              name: 'CicloVida'
+            }
+          },
+          {
+            nome: 'Lote',
+            icone: '',
+            link: {
+              name: 'Lote'
+            }
+          }
+        ]
+      },
+      {
+        icone: 'bubble_chart',
+        nome: 'Pesagem',
+        breve_descricao: 'Pesagem dos animais',
+        link: '',
+        filhos: [
+          {
+            nome: 'Cadastro',
+            icone: '',
+            link: {
+              name: 'Pesagem'
+            }
+          }
+        ]
+      },
+      {
+        icone: 'bubble_chart',
+        nome: 'Laboratorio',
+        breve_descricao: 'Laboratório clínico',
+        link: '',
+        filhos: [
+          {
+            nome: 'Laboratório',
+            icone: '',
+            link: {
+              name: 'Laboratorio'
             }
           }
         ]

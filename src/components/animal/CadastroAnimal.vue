@@ -15,12 +15,6 @@
               <span class='title'>Informações gerais</span>
             </v-flex>
 
-            <v-flex xs12 sm6 md6 lg6>
-              <v-text-field
-                v-model="animal.nome"
-                label='Nome'
-              />
-            </v-flex>
             <v-flex xs12 sm6 md4 lg4>
               <v-text-field
                 v-model="animal.codigo_brinco"
@@ -32,9 +26,22 @@
                 v-model="animal.data_nascimento"
                 mask="##/##/####"
                 label='Nascimento'
+
               />
             </v-flex>
-            <v-flex xs12 sm3 md4 lg4>
+            <v-flex xs12 sm6 md2 lg3>
+              <v-text-field
+                label='Hora do Nascimento'
+
+              />
+            </v-flex>
+            <v-flex xs12 sm6 md2 lg3>
+              <v-text-field
+                label='Hora da colostragem'
+
+              />
+            </v-flex>
+            <v-flex xs8>
               <v-text-field
                 v-model="animal.codigo_raca"
                 label='Código da raça'
@@ -61,6 +68,13 @@
                 required
               />
             </v-flex>
+
+            <v-flex xs6>
+              <v-text-field
+                label='Vivo?'
+              />
+            </v-flex>
+
             <v-flex xs12>
               <br/>
               <v-divider/>

@@ -4,7 +4,9 @@
       <v-flex xs12 md4 lg4 >
         <animais-cadastrados></animais-cadastrados>
       </v-flex>
-
+      <v-flex xs12 md4 lg4 >
+        <animais-cadastrados></animais-cadastrados>
+      </v-flex>
       <v-flex xs12 md4 lg4>
         <lotes-cadastrados></lotes-cadastrados>
       </v-flex>
