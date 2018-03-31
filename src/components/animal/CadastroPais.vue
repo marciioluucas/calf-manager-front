@@ -13,11 +13,15 @@
             <v-form>
               <v-layout row wrap>
 
-                <v-flex xs12 md2 lg6>
+                <v-flex xs12 md2 lg4>
                   <v-text-field
-                    label="Buscar pelo codigo"
+                    label="Buscar pelo código do brinco"
+                    v-model="buscaAnimal.codigoBrinco"
 
                   />
+                </v-flex>
+                <v-flex xs12 md2 lg4>>
+                  {{buscaAnimal.codigoBrinco}}
                 </v-flex>
 
                   <v-dialog v-model="dialog" persistent max-width="50%">
@@ -25,29 +29,43 @@
                     <v-card>
                       <v-card-title class="headline"> Selecione os filhos deste animal</v-card-title>
 
-                      <v-flex xs12 md2 lg2>
+                      <v-flex>
                         <v-text-field
-                          label="Buscar pelo codigo"/>
-
-                          <v-text-field
-                          />
-
+                          label="Buscar pelo codigo"
+                          v-model="buscaFilho.codigoBrinco"
+                        />
+                        <v-text-field/>
                       </v-flex>
-                      <v-btn color="success"  @click.native="dialog = false" >Selecionar</v-btn>
 
+                      <v-btn color="success"  @click.native="dialog = false" >Selecionar</v-btn>
+                      <v-flex xs12 v-if="buscaFilho.status != undefined">
+                        <v-card>
+                          <v-card-text>
+                            <v-data-table>
+                              <template  slot-scope="props">
+                                <tr >
+                                  <td class="text-xs-center"></td>
+                                  <td class="text-xs-center"></td>
+                                  <td class="text-xs-center"></td>
+                                  <td class="text-xs-center"></td>
+                                </tr>
+                              </template>
+                            </v-data-table>
+                          </v-card-text>
+                        </v-card>
+                      </v-flex>
                     </v-card>
                   </v-dialog>
-
-
               </v-layout>
-              <v-btn color="success" >Cadastrar!</v-btn>
+              <v-btn color="success" v-on:click="">Cadastrar!</v-btn>
+              <v-btn color="secondary" v-on:click="">Redefinir busca</v-btn>
 
             </v-form>
           </v-card-text>
         </v-card>
       </v-flex>
 
-      <v-flex xs12>
+      <v-flex xs12 v-if="buscaAnimal.status != undefined">
         <v-card>
           <v-card-text>
             <v-data-table>
@@ -76,7 +94,28 @@
   </v-container>
 </template>
 <script>
+  export default {
+    name: 'cadastro-pais',
+    data() {
+      return {
+        items: [],
+        buscaFilho: {
+          status: undefined,
+          codigoBrinco: undefined,
+          codigoRaca: undefined
+        },
+        buscaAnimal: {
+          status: undefined,
+          codigoBrinco: undefined,
+          codigoRaca: undefined
+        },
+        headers: {
+          text: 'Código do brinco', value: 'codigo-brinco'
 
+        }
+      }
+    }
+  }
 </script>
 
 <style scoped>

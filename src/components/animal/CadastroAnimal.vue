@@ -124,6 +124,9 @@
               />
             </v-flex>
           </v-layout>
+
+          <v-btn color="success" v-on:click="">Cadastrar!</v-btn>
+          <v-btn color="secondary" v-on:click="btnLimpar">Limpar</v-btn>
         </v-form>
       </v-card-text>
     </v-card>
@@ -163,6 +166,7 @@
         ],
         switchJaTeveDoenca: false,
         switchJaFoiPesado: false
+
       }
     },
     watch: {

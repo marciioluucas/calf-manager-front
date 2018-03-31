@@ -1,47 +1,74 @@
 <template>
-  <v-container grid-list-md>
-    <v-card>
-      <v-card-title primary-title>
-        <div>
-          <h2 class='title mb-0'>Cadastro de fazenda</h2>
-          <span class='caption'>Aqui você poderá fazer o cadastro das fazendas.</span>
-        </div>
-      </v-card-title>
+  <v-container grid-list-md text-center>
+    <v-layout row wrap>
+      <v-flex xs12>
+        <v-card>
+          <v-card-title primary-title>
+            <div>
+              <h2 class="title mb-0">Cadastro de Fazenda</h2>
+              <span class="caption">Busque pelo codigo para cadastrar novas fazendas</span>
+            </div>
+          </v-card-title>
+          <v-card-text>
+            <v-form>
+              <form>
+                <v-layout row wrap>
+                  <v-flex xs12 md2 lg6>
+                    <v-text-field
+                      v-model="name"
+                      label="Name"
+                      :counter="10"
 
-      <v-card-text>
-        <v-form>
-          <v-layout row wrap>
-            <v-flex xs12>
-              <span class='title'>Informações gerais</span>
-            </v-flex>
+                      v-validate="'required|max:10'"
+                      data-vv-name="name"
+                      required
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex xs12 md2 lg6>
+                    <v-text-field
+                      v-model="regiao"
+                      label="Região"
+                      :counter="25"
 
-            <v-flex xs12 sm6 md4 lg4>
-              <v-text-field
+                      v-validate="'required|max:25'"
+                      data-vv-name="regiao"
+                      required
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex xs12 md2 lg6>
+                    <v-text-field
+                      v-model="cidade"
+                      label="Cidade"
+                      :counter="10"
 
-                label='Nome'
-              />
-            </v-flex>
-            <v-flex xs12 sm6 md4 lg4>
-              <v-text-field
-                label='Região'
-              />
-            </v-flex>
-            <v-flex xs12 sm6 md4 lg4>
-              <v-text-field
-                label='Cidade'
-              />
-            </v-flex>
-            <v-flex xs12 sm6 md4 lg4>
-              <v-text-field
-                label='Estado'
-              />
-            </v-flex>
-            <v-btn color="success" >Cadastrar!</v-btn>
+                      v-validate="'required|max:10'"
+                      data-vv-name="cidade"
+                      required
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex xs12 md2 lg6>
+                    <v-text-field
+                      v-model="estado"
+                      label="Estado"
+                      :counter="10"
 
-          </v-layout>
-        </v-form>
-      </v-card-text>
-    </v-card>
+                      v-validate="'required|max:10'"
+                      data-vv-name="estado"
+                      required
+                    ></v-text-field>
+                  </v-flex>
+
+
+                  </v-layout>
+                <v-btn @click="submit">Cadastrar</v-btn>
+                <v-btn @click="clear">Limpar formulário</v-btn>
+
+              </form>
+            </v-form>
+          </v-card-text>
+        </v-card>
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 

@@ -16,13 +16,24 @@
                 <v-flex xs12 md2 lg6>
                   <v-text-field
                     label="Buscar pelo codigo do animal"
+                    v-model="codigo"
+                    :counter="10"
+
+                    v-validate="'required|max:10'"
+                    data-vv-name="codigo"
+                    required
 
                   />
                 </v-flex>
                 <v-flex xs12 md2 lg6>
                   <v-text-field
                     label="Peso"
+                    v-model="peso"
+                    :counter="10"
 
+                    v-validate="'required|max:10'"
+                    data-vv-name="peso"
+                    required
                   />
                 </v-flex>
 

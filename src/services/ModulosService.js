@@ -57,7 +57,7 @@ const ModulosService = {
             nome: 'Cadastro',
             icone: '',
             link: {
-              name: 'Fazenda'
+              name: 'CadastroFazenda'
             }
           },
           {

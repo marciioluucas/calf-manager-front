@@ -18,12 +18,24 @@
 
             <v-flex xs12 sm6 md4 lg4>
               <v-text-field
-                label= 'Lote'
+                label='Lote'
+                v-model="lote"
+                :counter="10"
+
+                v-validate="'required|max:10'"
+                data-vv-name="lote"
+                required
               />
             </v-flex>
             <v-flex xs12 sm6 md4 lg4>
               <v-text-field
-                label='Descrição'
+                v-model="descrisao"
+                label="Descrisão"
+                :counter="25"
+
+                v-validate="'required|max:25'"
+                data-vv-name="descrisao"
+                required
               />
             </v-flex>
             <v-btn color="success" >Cadastrar!</v-btn>
