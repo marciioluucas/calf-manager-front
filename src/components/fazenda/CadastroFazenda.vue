@@ -15,11 +15,8 @@
                 <v-layout row wrap>
                   <v-flex xs12 md2 lg6>
                     <v-text-field
-                      v-model="name"
-                      label="Name"
-                      :counter="10"
-
-                      v-validate="'required|max:10'"
+                      v-model="nome"
+                      label="Nome"
                       data-vv-name="name"
                       required
                     ></v-text-field>
@@ -28,9 +25,6 @@
                     <v-text-field
                       v-model="regiao"
                       label="Região"
-                      :counter="25"
-
-                      v-validate="'required|max:25'"
                       data-vv-name="regiao"
                       required
                     ></v-text-field>
@@ -39,9 +33,6 @@
                     <v-text-field
                       v-model="cidade"
                       label="Cidade"
-                      :counter="10"
-
-                      v-validate="'required|max:10'"
                       data-vv-name="cidade"
                       required
                     ></v-text-field>
@@ -50,9 +41,7 @@
                     <v-text-field
                       v-model="estado"
                       label="Estado"
-                      :counter="10"
-
-                      v-validate="'required|max:10'"
+                      v-validate="'required'"
                       data-vv-name="estado"
                       required
                     ></v-text-field>
@@ -73,8 +62,33 @@
 </template>
 
 <script>
+  export default {
+    $_veeValidate: {
+      validator: 'new'
+    },
 
+    data: () => ({
+      nome: '',
+      regiao: '',
+      cidade: '',
+      estado: ''}),
+
+    methods: {
+      submit () {
+        this.$validator.validateAll()
+      },
+      clear () {
+        this.nome = ''
+        this.regiao = ''
+        this.cidade = ''
+        this.estado = ''
+        this.$validator.reset()
+      }
+    }
+  }
 </script>
+
+
 
 <style scoped>
 

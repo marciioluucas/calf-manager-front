@@ -15,7 +15,7 @@
 
                 <v-flex xs12 md2 lg6>
                   <v-text-field
-                    label="Buscar pelo codigo do animal"
+                    label="codigo do animal"
                     v-model="codigo"
                     :counter="10"
 

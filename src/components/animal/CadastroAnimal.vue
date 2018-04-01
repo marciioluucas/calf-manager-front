@@ -19,6 +19,8 @@
               <v-text-field
                 v-model="animal.codigo_brinco"
                 label='Código do Brinco'
+                v-validate="'required'"
+                required
               />
             </v-flex>
             <v-flex xs12 sm3 md4 lg4>
@@ -26,19 +28,26 @@
                 v-model="animal.data_nascimento"
                 mask="##/##/####"
                 label='Nascimento'
-
+                v-validate="'required'"
+                required
               />
             </v-flex>
             <v-flex xs12 sm6 md2 lg3>
               <v-text-field
                 label='Hora do Nascimento'
-
+                mask="##:##"
+                counter="4"
+                v-validate="'required|'"
+                required
               />
             </v-flex>
             <v-flex xs12 sm6 md2 lg3>
               <v-text-field
                 label='Hora da colostragem'
+                mask="##:##"
 
+                v-validate="'required'"
+                required
               />
             </v-flex>
             <v-flex xs8>
@@ -67,6 +76,37 @@
                 label="Fase da vida"
                 required
               />
+            </v-flex>
+            <v-flex xs12 sm4 md4 lg4>
+              <v-layout row justify-center>
+                <v-dialog v-model="dialog" persistent max-width="500px">
+                  <v-btn color="primary" dark slot="activator">Selecionar Pais</v-btn>
+                  <v-card>
+                    <v-card-title>
+                      <span class="headline">Selecione Pai e Mãe</span>
+                    </v-card-title>
+                    <v-card-text>
+                      <v-container grid-list-md>
+                        <v-layout wrap>
+                          <v-flex xs12 sm6 md4>
+                            <v-text-field label="Codigo do Pai" v-model="codigo_pai" required></v-text-field>
+                          </v-flex>
+                          <v-flex xs12 sm6 md4>
+                            <v-text-field label="codigo da Mãe" v-model="codigo_mae" required></v-text-field>
+                          </v-flex>
+
+                        </v-layout>
+                      </v-container>
+                      <small>*Preencha os campos necessários!</small>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="blue darken-1" flat @click.native="dialog = false">Close</v-btn>
+                      <v-btn color="blue darken-1" flat @click.native="dialog = false">Save</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </v-layout>
             </v-flex>
 
             <v-flex xs6>
@@ -140,13 +180,17 @@
     name: 'cadastro-animal',
     data() {
       return {
+        dialog: false,
         animal: {
           is_vivo: true,
           sexo: 'f',
           fazenda: {
             nome: 'Não selecionado',
             limite: 'Limite indisponível',
-            quantidade_animais: 0
+            quantidade_animais: 0,
+            codigo_pai: '',
+            codigo_mae: ''
+
           }
         },
         selectSexo: [

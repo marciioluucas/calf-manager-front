@@ -37,6 +37,11 @@ export default new Router({
           component: CadastroAnimal
         },
         {
+          name: 'CadastroPais',
+          path: 'animais/pais/novo',
+          component: CadastroPais
+        },
+        {
           name: 'ProntuarioAnimal',
           path: 'animal/:id',
           component: ProntuarioAnimal
@@ -45,11 +50,6 @@ export default new Router({
           name: 'CicloVida',
           path: 'ciclo/novo',
           component: CicloVida
-        },
-        {
-          name: 'CadastroPais',
-          path: 'animal/pais',
-          component: CadastroPais
         },
         {
           name: 'Lote',
