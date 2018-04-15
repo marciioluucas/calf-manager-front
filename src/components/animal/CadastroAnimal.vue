@@ -15,49 +15,40 @@
               <span class='title'>Informações gerais</span>
             </v-flex>
 
-            <v-flex xs12 sm6 md4 lg4>
+            <v-flex xs12 sm6 md6 lg6>
               <v-text-field
                 v-model="animal.codigo_brinco"
                 label='Código do Brinco'
-                v-validate="'required'"
-                required
               />
             </v-flex>
-            <v-flex xs12 sm3 md4 lg4>
-              <v-text-field
-                v-model="animal.data_nascimento"
-                mask="##/##/####"
-                label='Nascimento'
-                v-validate="'required'"
-                required
-              />
-            </v-flex>
-            <v-flex xs12 sm6 md2 lg3>
-              <v-text-field
-                label='Hora do Nascimento'
-                mask="##:##"
-                counter="4"
-                v-validate="'required|'"
-                required
-              />
-            </v-flex>
-            <v-flex xs12 sm6 md2 lg3>
-              <v-text-field
-                label='Hora da colostragem'
-                mask="##:##"
-
-                v-validate="'required'"
-                required
-              />
-            </v-flex>
-            <v-flex xs8>
+            <v-flex xs12 sm6 md6 lg6>
               <v-text-field
                 v-model="animal.codigo_raca"
                 label='Código da raça'
 
               />
             </v-flex>
-            <v-flex xs12 sm2 md4 lg4>
+            <!--<v-flex xs12 sm6 md2 lg3>-->
+            <!--<v-text-field-->
+            <!--label='Hora do Nascimento'-->
+
+            <!--/>-->
+            <!--</v-flex>-->
+            <!--<v-flex xs12 sm6 md2 lg3>-->
+            <!--<v-text-field-->
+            <!--label='Hora da colostragem'-->
+
+            <!--/>-->
+            <!--</v-flex>-->
+            <v-flex xs12 sm6 md4 lg4>
+              <v-text-field
+                v-model="animal.data_nascimento"
+                mask="##/##/####"
+                label='Nascimento'
+
+              />
+            </v-flex>
+            <v-flex xs12 sm6 md4 lg4>
               <v-select
                 :items="selectSexo"
                 v-model="animal.sexo"
@@ -78,43 +69,45 @@
               />
             </v-flex>
             <v-flex xs12 sm4 md4 lg4>
-              <v-layout row justify-center>
-                <v-dialog v-model="dialog" persistent max-width="500px">
-                  <v-btn color="primary" dark slot="activator">Selecionar Pais</v-btn>
-                  <v-card>
-                    <v-card-title>
-                      <span class="headline">Selecione Pai e Mãe</span>
-                    </v-card-title>
-                    <v-card-text>
-                      <v-container grid-list-md>
-                        <v-layout wrap>
-                          <v-flex xs12 sm6 md4>
-                            <v-text-field label="Codigo do Pai" v-model="codigo_pai" required></v-text-field>
-                          </v-flex>
-                          <v-flex xs12 sm6 md4>
-                            <v-text-field label="codigo da Mãe" v-model="codigo_mae" required></v-text-field>
-                          </v-flex>
+              <v-container px-0>
+                <v-tooltip bottom>
+                  <v-switch label="É primogênito?"
+                            slot="activator"
+                            v-model="animal.is_primogenito"/>
+                  <span>
+                    Marque como verdadeiro se o animal
+                    <br/>
+                    não possui registros de pai e mãe
+                  </span>
+                </v-tooltip>
 
-                        </v-layout>
-                      </v-container>
-                      <small>*Preencha os campos necessários!</small>
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn color="blue darken-1" flat @click.native="dialog = false">Close</v-btn>
-                      <v-btn color="blue darken-1" flat @click.native="dialog = false">Save</v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-              </v-layout>
+              </v-container>
             </v-flex>
-
-            <v-flex xs6>
-              <v-text-field
-                label='Vivo?'
+            <v-flex xs12 sm4 md4 lg4 v-if="!animal.is_primogenito">
+              <v-select
+                label="Pesquise a mãe"
+                autocomplete
+                :loading="selectMae.loading"
+                :items="selectMae.items"
+                item-text="nome"
+                item-value="id"
+                :search-input.sync="selectMae.search"
+                v-model="animal.mae"
+                @focus="getMaes('')"
               />
             </v-flex>
-
+            <v-flex xs12 sm4 md4 lg4 v-if="!animal.is_primogenito">
+              <v-select
+                label="Selecione o pai"
+                autocomplete
+                :loading="selectPai.loading"
+                required
+                :items="selectPai.items"
+                item-text="nome"
+                :search-input.sync="selectPai.search"
+                v-model="animal.mae"
+              />
+            </v-flex>
             <v-flex xs12>
               <br/>
               <v-divider/>
@@ -131,6 +124,7 @@
                 required
                 :items="selectFazenda.items"
                 item-text="nome"
+                item-value="id"
                 :search-input.sync="selectFazenda.search"
                 v-model="animal.fazenda"
               />
@@ -164,9 +158,6 @@
               />
             </v-flex>
           </v-layout>
-
-          <v-btn color="success" v-on:click="">Cadastrar!</v-btn>
-          <v-btn color="secondary" v-on:click="btnLimpar">Limpar</v-btn>
         </v-form>
       </v-card-text>
     </v-card>
@@ -175,23 +166,23 @@
 
 <script>
   import FazendasService from '../../services/FazendasService'
+  import {AnimaisService} from '../../services/AnimaisService'
 
   export default {
     name: 'cadastro-animal',
     data() {
       return {
-        dialog: false,
         animal: {
           is_vivo: true,
+          is_primogenito: false,
           sexo: 'f',
           fazenda: {
             nome: 'Não selecionado',
             limite: 'Limite indisponível',
-            quantidade_animais: 0,
-            codigo_pai: '',
-            codigo_mae: ''
-
-          }
+            quantidade_animais: 0
+          },
+          mae: {},
+          pai: {}
         },
         selectSexo: [
           {text: 'Macho', value: 'm'},
@@ -208,18 +199,39 @@
           {text: 'Novilho', value: 'NOVILHO'},
           {text: 'Adulto', value: 'ADULTO'}
         ],
+        selectPai: {
+          loading: false,
+          items: [],
+          search: null
+        },
+        selectMae: {
+          loading: false,
+          items: [],
+          search: ''
+        },
         switchJaTeveDoenca: false,
         switchJaFoiPesado: false
-
       }
     },
     watch: {
+      'animal.mae': function () {
+        console.log(this.animal.mae)
+      },
       'selectFazenda.search'(val) {
+        val && this.getFazendas(val)
+      },
+      'selectMae.search'(val) {
+        if (this.selectMae.search !== '' || this.selectMae.search !== null) {
+          const a = val
+          val && this.getMaes(val)
+          this.selectMae.search = a
+        }
+      },
+      'selectPai.search'(val) {
         val && this.getFazendas(val)
       }
     },
     mounted() {
-      this.getFazendas('')
     },
     methods: {
       async getFazendas(val) {
@@ -233,6 +245,15 @@
         }
         this.selectFazenda.items = res.data.fazendas.data
         this.selectFazenda.loading = false
+      },
+      async getMaes(val) {
+        this.selectMae.loading = true
+        let res
+        if (val) {
+          res = await AnimaisService._getByNome(val)
+        }
+        this.selectMae.items = res.data.animais.data
+        this.selectMae.loading = false
       }
     }
   }

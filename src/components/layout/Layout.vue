@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <left-navigation></left-navigation>
+    <left-navigation/>
     <v-toolbar
       class="green"
       app
@@ -16,9 +16,7 @@
       <v-spacer/>
     </v-toolbar>
     <v-content class="grey lighten-2">
-      <v-container fluid>
-        <router-view/>
-      </v-container>
+      <router-view/>
     </v-content>
 
     <v-footer :fixed="fixed" app class="elevation-2">

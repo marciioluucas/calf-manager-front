@@ -7,8 +7,11 @@ export const AnimaisService = {
   _getById: (busca) => {
     return Service.get(`/animal/${parseInt(busca.id)}?vivo=${busca.vivo}`)
   },
-  _getByNome: (busca) => {
-    return Service.get(`/animal/${busca.nome}?vivo=${busca.vivo}&pagina=${busca.page}`)
+  _getByNome: async (busca) => {
+    if (typeof busca === 'string') {
+      return Service.get(`/animal/${busca.split(' ').join('-')}`)
+    }
+    return Service.get(`/animal/${busca.nome.split(' ').join('-')}?vivo=${busca.vivo}&pagina=${busca.page}`)
   },
   _getByIdLote: (busca) => {
     return Service.get(`/animal?id-lote=${busca.lote.id}&vivo=${busca.vivo}&pagina=${busca.page}`)
