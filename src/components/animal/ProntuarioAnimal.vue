@@ -255,7 +255,6 @@
                   }
                 }
               },
-
               animationDurationUpdate: 750
             }
           ]
@@ -271,6 +270,7 @@
         let response = await AnimaisService._getGraficoGanhoDePeso(this.animal.id)
         let pesos = []
         let data = []
+        console.log(response.data)
         for (let i = 0; i < response.data[0].length; i++) {
           let a = response.data[0][i].peso.split(' ')
           pesos.push(a[0])

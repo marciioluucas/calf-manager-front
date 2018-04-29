@@ -14,7 +14,7 @@
 
       <v-flex lg12>
         <v-container class="text-xs-center">
-          <img src="/static/logo-calf.jpg" alt="logo" style="width: 200px">
+          <img src="static/logo-calf.jpg" alt="logo" style="width: 200px">
         </v-container>
         <modulos/>
       </v-flex>
