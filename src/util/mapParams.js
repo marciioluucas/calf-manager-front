@@ -1,8 +1,12 @@
 export default {
   map(params) {
-    const arrObjKeys = Object.keys(params);
-    return arrObjKeys.map((key) => {
-      return `${key}=${params[key]}`;
-    })
+    if (typeof params !== 'undefined') {
+      const arrObjKeys = Object.keys(params);
+      let arrToReturn = arrObjKeys.map((key) => {
+        return `${key}=${params[key]}`;
+      })
+      return `?${arrToReturn.join('&')}`;
+    }
+    return '';
   }
 }

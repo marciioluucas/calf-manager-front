@@ -161,7 +161,16 @@
                 v-model="animal.is_vivo"
               />
             </v-flex>
+            <v-flex xs12 sm6 md6 lg6>
+              <v-text-field
+                v-model="animal.peso"
+                label='Peso em @ da primeira pesagem'
+              />
+            </v-flex>
           </v-layout>
+          <v-flex>
+            <v-btn @click="cadastrar">Enviar</v-btn>
+          </v-flex>
         </v-form>
       </v-card-text>
     </v-card>
@@ -185,6 +194,7 @@
             limite: 'Limite indisponível',
             quantidade_animais: 0
           },
+          peso: '',
           mae: {},
           pai: {}
         },
@@ -266,6 +276,12 @@
         let res = await AnimaisService._getByNome(busca)
         this.selectPai.items = res.data.animais.data
         this.selectPai.loading = false
+      },
+      async cadastrar() {
+        let res = await AnimaisService._create(this.animal).catch(e => {
+          console.log(e.response.data)
+        });
+        console.log(res.data)
       }
     }
   }

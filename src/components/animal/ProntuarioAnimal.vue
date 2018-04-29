@@ -157,8 +157,9 @@
 
 <script>
   import moment from 'moment';
-  moment.defineLocale('pt-br', null)
   import {AnimaisService} from '../../services/AnimaisService'
+
+  moment.defineLocale('pt-br', null)
 
 
   export default {
@@ -291,13 +292,8 @@
         }
       },
       async getAnimal() {
-        let res = await AnimaisService._getById({id: this.animal.id, vivo: true})
-        if (res.data.animais.data.length > 0) {
-          this.animal = await res.data.animais.data[0]
-        } else {
-          res = await AnimaisService._getById({id: this.animal.id, vivo: false})
-          this.animal = await res.data.animais.data[0]
-        }
+        let res = await AnimaisService._getById({id: this.animal.id})
+        this.animal = await res.data.animais.data[0]
       }
     },
     async mounted() {

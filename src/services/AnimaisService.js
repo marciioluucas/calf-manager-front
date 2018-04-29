@@ -8,16 +8,16 @@ export const AnimaisService = {
   },
 
   _getById: (busca) => {
-    const paramsArray = Params.map(busca.params)
-    return Service.get(`/animal/${parseInt(busca.id)}?${paramsArray.join('&')}`)
+    const params = Params.map(busca.params)
+    return Service.get(`/animal/${parseInt(busca.id)}${params}`)
   },
 
   _getByNome: async (busca) => {
     if (typeof busca === 'string') {
       return Service.get(`/animal/${busca.split(' ').join('-')}`)
     }
-    const paramsArray = Params.map(busca.params)
-    return Service.get(`/animal/${busca.nome.split(' ').join('-')}?${paramsArray.join('&')}`)
+    const params = Params.map(busca.params)
+    return Service.get(`/animal/${busca.nome.split(' ').join('-')}${params}`)
   },
 
   _getByIdLote: (busca) => {
@@ -46,9 +46,11 @@ export const AnimaisService = {
       is_vivo: form.is_vivo,
       fase_vida: form.fase_vida,
       usuario_cadastro: form.usuario_cadastro,
-      id_pesagem: form.id_pesagem,
       id_lote: form.id_lote,
-      id_fazenda: form.id_fazenda
+      id_fazenda: form.id_fazenda,
+      id_mae: form.mae,
+      id_pai: form.pai,
+      peso: form.peso
     })
   }
 }
