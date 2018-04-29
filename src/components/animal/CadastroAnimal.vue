@@ -90,6 +90,7 @@
                 :loading="selectMae.loading"
                 :items="selectMae.items"
                 item-text="nome"
+                required
                 cache-items
                 item-value="id"
                 :search-input.sync="selectMae.search"
@@ -126,6 +127,7 @@
                 :items="selectFazenda.items"
                 item-text="nome"
                 item-value="id"
+                cache-items
                 :search-input.sync="selectFazenda.search"
                 v-model="animal.fazenda"
                 return-object=""
@@ -208,7 +210,7 @@
         },
         selectMae: {
           loading: false,
-          items: [],
+          items: []
         },
         switchJaTeveDoenca: false,
         switchJaFoiPesado: false
@@ -221,12 +223,12 @@
       'selectFazenda.search'(val) {
         val && this.getFazendas(val)
       },
-      'selectMae.search': function(val) {
+      'selectMae.search': function (val) {
         console.log(val)
         val && this.getMaes(val)
       },
       'selectPai.search'(val) {
-        val && this.getFazendas(val)
+        val && this.getPais(val)
       }
     },
     mounted() {
@@ -245,10 +247,25 @@
         this.selectFazenda.loading = false
       },
       async getMaes(val) {
+        const busca = {
+          nome: val,
+          params: {sexo: 'F'}
+        }
         this.selectMae.loading = true
-        let res = await AnimaisService._getByNome(val)
+        let res = await AnimaisService._getByNome(busca)
         this.selectMae.items = res.data.animais.data
         this.selectMae.loading = false
+      },
+
+      async getPais(val) {
+        const busca = {
+          nome: val,
+          params: {sexo: 'M'}
+        }
+        this.selectPai.loading = true
+        let res = await AnimaisService._getByNome(busca)
+        this.selectPai.items = res.data.animais.data
+        this.selectPai.loading = false
       }
     }
   }
