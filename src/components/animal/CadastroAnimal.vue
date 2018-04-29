@@ -90,10 +90,10 @@
                 :loading="selectMae.loading"
                 :items="selectMae.items"
                 item-text="nome"
+                cache-items
                 item-value="id"
                 :search-input.sync="selectMae.search"
                 v-model="animal.mae"
-                @focus="getMaes('')"
               />
             </v-flex>
             <v-flex xs12 sm4 md4 lg4 v-if="!animal.is_primogenito">
@@ -102,6 +102,7 @@
                 autocomplete
                 :loading="selectPai.loading"
                 required
+                cache-items
                 :items="selectPai.items"
                 item-text="nome"
                 :search-input.sync="selectPai.search"
@@ -127,6 +128,7 @@
                 item-value="id"
                 :search-input.sync="selectFazenda.search"
                 v-model="animal.fazenda"
+                return-object=""
               />
             </v-flex>
             <v-flex xs6 sm3 md3 lg3>
@@ -207,7 +209,6 @@
         selectMae: {
           loading: false,
           items: [],
-          search: ''
         },
         switchJaTeveDoenca: false,
         switchJaFoiPesado: false
@@ -220,12 +221,9 @@
       'selectFazenda.search'(val) {
         val && this.getFazendas(val)
       },
-      'selectMae.search'(val) {
-        if (this.selectMae.search !== '' || this.selectMae.search !== null) {
-          const a = val
-          val && this.getMaes(val)
-          this.selectMae.search = a
-        }
+      'selectMae.search': function(val) {
+        console.log(val)
+        val && this.getMaes(val)
       },
       'selectPai.search'(val) {
         val && this.getFazendas(val)
@@ -248,10 +246,7 @@
       },
       async getMaes(val) {
         this.selectMae.loading = true
-        let res
-        if (val) {
-          res = await AnimaisService._getByNome(val)
-        }
+        let res = await AnimaisService._getByNome(val)
         this.selectMae.items = res.data.animais.data
         this.selectMae.loading = false
       }
