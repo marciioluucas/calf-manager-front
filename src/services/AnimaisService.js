@@ -3,8 +3,8 @@ import Params from '../util/mapParams'
 
 export const AnimaisService = {
   _getAll: (busca) => {
-    const paramsArray = Params.map(busca.params)
-    return Service.get(`/animal?${paramsArray.join('&')}`)
+    const params = Params.map(busca.params)
+    return Service.get(`/animal${params}`)
   },
 
   _getById: (busca) => {
