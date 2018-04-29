@@ -5,7 +5,6 @@ import Dashboard from '@/components/dashboard/Dashboard'
 import ListagemAnimal from '@/components/animal/ListagemAnimal'
 import ProntuarioAnimal from '@/components/animal/ProntuarioAnimal'
 import CadastroAnimal from '@/components/animal/CadastroAnimal'
-import CadastroPais from '@/components/animal/CadastroPais'
 import CicloVida from '@/components/ciclos/CiclosVida'
 import Peso from '@/components/pesagem/Pesagem'
 import CadastroFazenda from '@/components/fazenda/CadastroFazenda'
@@ -35,11 +34,6 @@ export default new Router({
           name: 'CadastroAnimal',
           path: 'animal/novo',
           component: CadastroAnimal
-        },
-        {
-          name: 'CadastroPais',
-          path: 'animais/pais/novo',
-          component: CadastroPais
         },
         {
           name: 'ProntuarioAnimal',

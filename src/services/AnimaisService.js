@@ -3,11 +3,13 @@ import Params from '../util/mapParams'
 
 export const AnimaisService = {
   _getAll: (busca) => {
-    return Service.get(`/animal?vivo=${busca.vivo}&pagina=${busca.page}`)
+    const paramsArray = Params.map(busca.params)
+    return Service.get(`/animal?${paramsArray.join('&')}`)
   },
 
   _getById: (busca) => {
-    return Service.get(`/animal/${parseInt(busca.id)}?vivo=${busca.vivo}`)
+    const paramsArray = Params.map(busca.params)
+    return Service.get(`/animal/${parseInt(busca.id)}?${paramsArray.join('&')}`)
   },
 
   _getByNome: async (busca) => {

@@ -10,7 +10,7 @@
 
       <v-card-text>
         <div v-if='isLoading'>Carregando prontuário...</div>
-        <v-form v-if='!isLoading'>
+        <v-form v-if='!isLoading' class="prontuario">
           <v-layout row wrap>
             <v-flex xs12>
               <span class='title'>Informações gerais</span>
@@ -23,17 +23,24 @@
                 disabled
               />
             </v-flex>
-            <v-flex xs12 sm6 md4 lg4>
+            <v-flex xs12 sm3 md2 lg2>
               <v-text-field
                 label='Código do Brinco'
                 v-model='animal.codigo_brinco'
                 disabled
               />
             </v-flex>
-            <v-flex xs12 sm6 md2 lg2>
+            <v-flex xs6 sm3 md2 lg2>
               <v-text-field
                 label='Nascimento'
                 v-model='animal.data_nascimento'
+                disabled
+              />
+            </v-flex>
+            <v-flex xs6 sm6 md2 lg2>
+              <v-text-field
+                label='Idade'
+                v-model='animal.idade'
                 disabled
               />
             </v-flex>
@@ -134,11 +141,11 @@
 
             <v-flex xs12 sm6 md6 lg6 v-if='hasValueToGraphDeGanhoDePeso'>
               <br>
-              <chart :options='graficoGanhoPeso' :auto-resize="true" />
+              <chart :options='graficoGanhoPeso' :auto-resize="true"/>
             </v-flex>
             <v-flex xs12 sm6 md6 lg6>
               <chart :options='option = graficoHereditariedade' :auto-resize="true"
-                     />
+              />
             </v-flex>
 
           </v-layout>
@@ -149,7 +156,10 @@
 </template>
 
 <script>
+  import moment from 'moment';
+  moment.defineLocale('pt-br', null)
   import {AnimaisService} from '../../services/AnimaisService'
+
 
   export default {
     name: 'prontuario-animal',
@@ -163,6 +173,7 @@
           codigo_raca: 56561,
           codigo_brinco: 12351,
           sexo: 'Macho',
+          data_nascimento: '',
           fazenda: {
             nome: 'Nossa senhora aparecida',
             limite: '100 Alqueres',
@@ -202,9 +213,6 @@
           }]
         },
         graficoHereditariedade: {
-          events: {
-            click: this.click
-          },
           layout: 'orthogonal',
           grid: {
             height: 100,
@@ -254,8 +262,9 @@
       }
     },
     methods: {
-      click(data) {
-        console.log(data)
+
+      calcularIdade() {
+        this.animal.idade = moment().diff(new Date(this.animal.data_nascimento), 'months', false) + ' meses';
       },
       async getGraficoPesagem() {
         let response = await AnimaisService._getGraficoGanhoDePeso(this.animal.id)
@@ -274,7 +283,9 @@
       },
       async getGraficoHereditariedade() {
         let res = await AnimaisService._getGraficoHereditariedade(this.animal.id)
-        this.graficoHereditariedade.series[0].data = await [res.data]
+        this.graficoHereditariedade.series[0].data = await [
+          res.data
+        ]
         if (res.data.name !== undefined) {
           this.hasValueToGraphDeArvore = true
         }
@@ -294,10 +305,14 @@
       await this.getGraficoPesagem()
       await this.getGraficoHereditariedade()
       await this.getAnimal()
+      this.calcularIdade();
       this.isLoading = false
     }
   }
 </script>
 
 <style scoped>
+  .prontuario .input-group--disabled {
+    color: black;
+  }
 </style>

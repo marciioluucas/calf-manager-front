@@ -17,6 +17,8 @@
     "axios": "^0.18.0",
     "axios-progress-bar": "^1.1.8",
     "echarts": "^4.0.4",
+    "moment": "^2.22.1",
+    "momentjs": "^2.0.0",
     "vue": "^2.5.15",
     "vue-echarts": "^3.0.4",
     "vue-progressbar": "^0.7.4",

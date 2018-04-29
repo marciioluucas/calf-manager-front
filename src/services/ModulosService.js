@@ -15,13 +15,6 @@ const ModulosService = {
             }
           },
           {
-            nome: 'Cadastro de Pais',
-            icone: '',
-            link: {
-              name: 'CadastroPais'
-            }
-          },
-          {
             nome: 'Listagem',
             icone: '',
             link: {

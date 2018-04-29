@@ -42,7 +42,7 @@
                 <v-flex xs12 md3 lg3 class="mx-auto">
                   <v-switch
                     :label="`Buscar pelos vivos`"
-                    v-model="buscaAnimal.vivo"
+                    v-model="buscaAnimal.params.vivo"
                   />
                 </v-flex>
 
@@ -105,8 +105,10 @@
           lote: {
             id: undefined
           },
-          vivo: true,
-          page: 1
+          params: {
+            vivo: true
+          }
+
         },
         search: null,
         lotes: [],
