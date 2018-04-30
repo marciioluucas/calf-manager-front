@@ -103,6 +103,7 @@
                 autocomplete
                 :loading="selectPai.loading"
                 required
+                item-value="id"
                 cache-items
                 :items="selectPai.items"
                 item-text="nome"
