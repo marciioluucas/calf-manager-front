@@ -107,7 +107,7 @@
                 :items="selectPai.items"
                 item-text="nome"
                 :search-input.sync="selectPai.search"
-                v-model="animal.mae"
+                v-model="animal.pai"
               />
             </v-flex>
             <v-flex xs12>
