@@ -187,10 +187,12 @@
     data() {
       return {
         animal: {
+          nome: '',
           is_vivo: true,
           is_primogenito: false,
-          sexo: 'f',
+          sexo: 'F',
           fazenda: {
+            id: 0,
             nome: 'Não selecionado',
             limite: 'Limite indisponível',
             quantidade_animais: 0
@@ -279,9 +281,10 @@
         this.selectPai.loading = false
       },
       async cadastrar() {
+        console.log(this.animal)
         let res = await AnimaisService._create(this.animal).catch(e => {
           console.log(e.response.data)
-        });
+        })
         console.log(res.data)
       }
     }
