@@ -76,7 +76,7 @@
           <v-card-actions v-if="items.length !== 0" class="text-xs-center">
             <v-layout>
               <v-flex xs12>
-                <v-pagination :length="items.last_page" v-model="buscaAnimal.page" @input="getAnimais"/>
+                <v-pagination :length="items.last_page" v-model="buscaAnimal.params.pagina" @input="getAnimais"/>
               </v-flex>
             </v-layout>
 
@@ -106,7 +106,8 @@
             id: undefined
           },
           params: {
-            vivo: true
+            vivo: true,
+            pagina: 1,
           }
 
         },
