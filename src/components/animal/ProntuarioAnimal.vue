@@ -141,10 +141,16 @@
 
             <v-flex xs12 sm6 md6 lg6 v-if='hasValueToGraphDeGanhoDePeso'>
               <br>
+              <v-flex xs12>
+                <span class='title'>Gráficos de ganho de peso</span>
+              </v-flex>
               <chart :options='graficoGanhoPeso' :auto-resize="true"/>
             </v-flex>
             <v-flex xs12 sm6 md6 lg6>
-              <chart :options='option = graficoHereditariedade' :auto-resize="true"
+              <v-flex xs12>
+                <span class='title'>Grafico de hereditariedade</span>
+              </v-flex>
+              <chart class="graficoH" :options='option = graficoHereditariedade' :auto-resize="true"
               />
             </v-flex>
 
@@ -194,9 +200,6 @@
             height: 100,
             width: 300
           },
-          title: {
-            text: 'Gráfico de ganho de peso'
-          },
           tooltip: {
             trigger: 'axis'
           },
@@ -219,9 +222,6 @@
             height: 100,
             width: 100
           },
-          title: {
-            text: 'Árvore Genealógica'
-          },
           tooltip: {
             trigger: 'item',
             triggerOn: 'mousemove'
@@ -241,6 +241,7 @@
                   position: 'top',
                   verticalAlign: 'middle',
                   align: 'center',
+                    rotate: -180,
                   fontSize: 12
                 }
               },
@@ -293,7 +294,7 @@
       },
       async getAnimal() {
         let res = await AnimaisService._getById({id: this.animal.id})
-        this.animal = await res.data.animais.data[0]
+        this.animal = await res.data.animais
       }
     },
     async mounted() {
@@ -310,5 +311,10 @@
 <style scoped>
   .prontuario .input-group--disabled {
     color: black;
+  }
+  .graficoH {
+    -ms-transform: rotate(180deg); /* IE 9 */
+    -webkit-transform: rotate(180deg); /* Safari 3-8 */
+    transform: rotate(180deg);
   }
 </style>

@@ -46,16 +46,21 @@ module.exports = {
         loader: 'vue-loader',
         options: vueLoaderConfig
       },
-      {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        include: [
-          resolve('src'),
-          resolve('test'),
-          resolve('node_modules/webpack-dev-server/client'),
-          resolve('node_modules/vue-echarts'),
-          resolve('node_modules/resize-detector')]
-      },
+        {
+            test: /\.js$/,
+            loader: 'babel-loader',
+            exclude: /node_modules/, // THAT IS THE IMPORTANT LINE
+            include: [/src/, '/node_modules\/webpack-dev-server\/client', 'node_modules/vue-echarts'],
+        },
+      //   {
+      //   test: /\.js$/,
+      //   loader: 'babel-loader',
+      //   include: [
+      //     resolve('src'),
+      //     resolve('test'),
+      //     resolve('node_modules/webpack-dev-server/client'),
+      //     resolve('node_modules/vue-echarts')]
+      // },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
         loader: 'url-loader',

@@ -14,10 +14,10 @@ export const AnimaisService = {
 
   _getByNome: async (busca) => {
     if (typeof busca === 'string') {
-      return Service.get(`/animal/${busca.split(' ').join('-')}`)
+      return Service.get(`/animal?nome=${busca}`)
     }
     const params = Params.map(busca.params)
-    return Service.get(`/animal/${busca.nome.split(' ').join('-')}${params}`)
+    return Service.get(`/animal${params}`)
   },
 
   _getByIdLote: (busca) => {

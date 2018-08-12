@@ -19,34 +19,22 @@
               <v-text-field
                 v-model="animal.codigo_brinco"
                 label='Código do Brinco'
-              />
+              ></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md6 lg6>
               <v-text-field
                 v-model="animal.codigo_raca"
                 label='Código da raça'
-
-              />
+              ></v-text-field>
             </v-flex>
-            <!--<v-flex xs12 sm6 md2 lg3>-->
-            <!--<v-text-field-->
-            <!--label='Hora do Nascimento'-->
-
-            <!--/>-->
-            <!--</v-flex>-->
-            <!--<v-flex xs12 sm6 md2 lg3>-->
-            <!--<v-text-field-->
-            <!--label='Hora da colostragem'-->
-
-            <!--/>-->
-            <!--</v-flex>-->
             <v-flex xs12 sm6 md4 lg4>
               <v-text-field
                 v-model="animal.data_nascimento"
                 mask="##/##/####"
+                :return-masked-value="true"
                 label='Nascimento'
 
-              />
+              ></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md4 lg4>
               <v-select
@@ -56,7 +44,7 @@
                 item-value="value"
                 label="Sexo"
                 required
-              />
+              ></v-select>
             </v-flex>
             <v-flex xs12 sm4 md4 lg4>
               <v-select
@@ -66,7 +54,7 @@
                 item-value="value"
                 label="Fase da vida"
                 required
-              />
+              ></v-select>
             </v-flex>
             <v-flex xs12 sm4 md4 lg4>
               <v-container px-0>
@@ -84,11 +72,12 @@
               </v-container>
             </v-flex>
             <v-flex xs12 sm4 md4 lg4 v-if="!animal.is_primogenito">
-              <v-select
+              <v-autocomplete
                 label="Pesquise a mãe"
-                autocomplete
                 :loading="selectMae.loading"
                 :items="selectMae.items"
+                hide-no-data
+                hide-selected
                 item-text="nome"
                 required
                 cache-items
@@ -98,11 +87,12 @@
               />
             </v-flex>
             <v-flex xs12 sm4 md4 lg4 v-if="!animal.is_primogenito">
-              <v-select
+              <v-autocomplete
                 label="Selecione o pai"
-                autocomplete
                 :loading="selectPai.loading"
                 required
+                hide-no-data
+                hide-selected
                 item-value="id"
                 cache-items
                 :items="selectPai.items"
@@ -113,32 +103,24 @@
             </v-flex>
             <v-flex xs12>
               <br/>
-              <v-divider/>
+              <v-divider></v-divider>
               <br/>
             </v-flex>
             <v-flex xs12>
               <span class='title'>Fazenda de locação do animal</span>
             </v-flex>
             <v-flex xs12 sm6 md6 lg6>
-              <v-select
-                label="Selecione a fazenda"
-                autocomplete
-                :loading="selectFazenda.loading"
-                required
-                :items="selectFazenda.items"
-                item-text="nome"
-                item-value="id"
-                cache-items
-                :search-input.sync="selectFazenda.search"
-                v-model="animal.fazenda"
-                return-object=""
-              />
-            </v-flex>
-            <v-flex xs6 sm3 md3 lg3>
-              <v-text-field
-                label='Limite'
-                disabled
-                :value="animal.fazenda.limite"
+              <v-autocomplete
+                      v-model="animal.fazenda"
+                      :items="selectFazenda.items"
+                      :search-input.sync="selectFazenda.search"
+                      hide-no-data
+                      hide-selected
+                      item-text="nome"
+                      item-value="id"
+                      label="Fazendas"
+                      placeholder="Comece digitando o nome da fazenda"
+                      return-object
               />
             </v-flex>
             <v-flex xs6 sm3 md3 lg3>
@@ -146,7 +128,7 @@
                 :value="animal.fazenda.quantidade_animais"
                 disabled
                 label='Quantidade de animais'
-              />
+              ></v-text-field>
             </v-flex>
             <v-flex xs12>
               <br/>
@@ -163,10 +145,78 @@
               />
             </v-flex>
             <v-flex xs12 sm6 md6 lg6>
-              <v-text-field
-                v-model="animal.peso"
-                label='Peso em @ da primeira pesagem'
-              />
+              <v-layout wrap>
+                  <v-flex xs12 sm8 md8 lg8>
+                      <v-text-field
+                              v-model="animal.pesagem.peso"
+                              label='Peso em @ da primeira pesagem'
+                      ></v-text-field>
+                  </v-flex>
+                    <v-flex xs12 sm4 md4 lg4>
+                        <v-text-field
+                                mask="##/##/####"
+                                :return-masked-value="true"
+                                v-model="animal.pesagem.data"
+                                label='Data'
+                        ></v-text-field>
+                    </v-flex>
+              </v-layout>
+
+            </v-flex>
+            <v-flex xs12 sm6 md6 lg6>
+                <v-layout wrap>
+                    <v-flex xs12 sm7 md7 lg7>
+                        <v-autocomplete v-model="selectDoenca.selected"
+                                        :items="selectDoenca.items"
+                                        :search-input.sync="selectDoenca.search"
+                                        hide-no-data
+                                        hide-selected
+                                        item-text="nome"
+                                        item-value="id"
+                                        label="Doenças"
+                                        placeholder="Pesquisar por doença"
+                                        return-object
+                        />
+                    </v-flex>
+                    <v-flex xs12 sm3 md3 lg3>
+                        <v-select
+                                v-model="selectDoencaStatus.selected"
+                                :items="selectDoencaStatus.items"
+                                label="Status"></v-select>
+                    </v-flex>
+                   <v-flex xs12 sm1 md1 lg1>
+                       <v-btn color="primary" fab small dark @click="addDoenca">
+                           <v-icon>add</v-icon>
+                       </v-btn>
+                   </v-flex>
+                </v-layout>
+                <v-flex xs12>
+                    <v-list two-line>
+                        <template v-for="(item, index) in animal.doencas">
+                            <v-list-tile
+                                    :key="index"
+                                    avatar
+                                    ripple>
+                                <v-list-tile-content>
+                                    <v-list-tile-title>{{ item.nome }}</v-list-tile-title>
+                                    <v-list-tile-sub-title class="text--primary">{{ item.descricao }}</v-list-tile-sub-title>
+                                </v-list-tile-content>
+
+                                <v-list-tile-action>
+                                    <v-list-tile-action-text>Excluir</v-list-tile-action-text>
+                                    <v-icon color="grey lighten-1" @click="removeDoenca(index)">
+                                        close
+                                    </v-icon>
+                                </v-list-tile-action>
+
+                            </v-list-tile>
+                            <v-divider
+                                    v-if="index + 1 < animal.doencas.length"
+                                    :key="index"
+                            ></v-divider>
+                        </template>
+                    </v-list>
+                </v-flex>
             </v-flex>
           </v-layout>
           <v-flex>
@@ -181,6 +231,7 @@
 <script>
   import FazendasService from '../../services/FazendasService'
   import {AnimaisService} from '../../services/AnimaisService'
+  import DoencasService from "../../services/DoencasService";
 
   export default {
     name: 'cadastro-animal',
@@ -197,7 +248,11 @@
             limite: 'Limite indisponível',
             quantidade_animais: 0
           },
-          peso: '',
+            doencas: [],
+         pesagem: {
+              peso: 0,
+             data: '',
+         },
           mae: {},
           pai: {}
         },
@@ -205,6 +260,12 @@
           {text: 'Macho', value: 'm'},
           {text: 'Fêmea', value: 'f'}
         ],
+          selectDoenca: {
+              loading: false,
+              items: [],
+              search: null,
+              selected: {}
+          },
         selectFazenda: {
           loading: false,
           items: [],
@@ -225,6 +286,10 @@
           loading: false,
           items: []
         },
+          selectDoencaStatus: {
+              items:[{text: 'CURADO', value: 'CURADO'}, {text: 'DOENTE', value: 'DOENTE'}],
+              selected: {},
+          },
         switchJaTeveDoenca: false,
         switchJaFoiPesado: false
       }
@@ -235,6 +300,9 @@
       },
       'selectFazenda.search'(val) {
         val && this.getFazendas(val)
+      },
+        'selectDoenca.search'(val) {
+        val && this.getDoencas(val)
       },
       'selectMae.search': function (val) {
         console.log(val)
@@ -247,6 +315,32 @@
     mounted() {
     },
     methods: {
+        removeDoenca(index) {
+            this.animal.doencas.splice(index,1);
+        },
+
+        addDoenca() {
+            const doenca = {
+                id: this.selectDoenca.selected.id,
+                nome: this.selectDoenca.selected.nome,
+                descricao: this.selectDoenca.selected.descricao,
+                situacao: this.selectDoencaStatus.selected,
+            }
+            this.animal.doencas.push(doenca);
+        },
+
+        async getDoencas(val) {
+            let busca = {
+                nome: val
+            }
+            this.selectDoenca.loading = true
+            let res = await DoencasService._getAll({pagina: 1})
+            if (val) {
+                res = await DoencasService._getByNome(busca)
+            }
+            this.selectDoenca.items = res.data.doencas.data
+            this.selectDoenca.loading = false
+        },
       async getFazendas(val) {
         let busca = {
           nome: val

@@ -10,8 +10,8 @@ export default {
   _getByNome: (busca) => {
     let continuacaoUrl = ''
     if (busca.page) {
-      continuacaoUrl = `?pagina=${busca.page}`
+      continuacaoUrl = `&pagina=${busca.page}`
     }
-    return Service.get(`/fazenda/${busca.nome.split(' ').join('').toLowerCase()}${continuacaoUrl}`)
+    return Service.get(`/fazenda?nome=${busca.nome}${continuacaoUrl}`)
   }
 }
