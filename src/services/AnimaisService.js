@@ -38,5 +38,8 @@ export const AnimaisService = {
 
   _create: (form) => {
     return Service.post(`/animal`, form)
+  },
+  _createPesagem: (form) => {
+    return Service.post('/pesagem', form)
   }
 }

@@ -21,34 +21,8 @@
                       required
                     ></v-text-field>
                   </v-flex>
-                  <v-flex xs12 md2 lg6>
-                    <v-text-field
-                      v-model="regiao"
-                      label="Região"
-                      data-vv-name="regiao"
-                      required
-                    ></v-text-field>
-                  </v-flex>
-                  <v-flex xs12 md2 lg6>
-                    <v-text-field
-                      v-model="cidade"
-                      label="Cidade"
-                      data-vv-name="cidade"
-                      required
-                    ></v-text-field>
-                  </v-flex>
-                  <v-flex xs12 md2 lg6>
-                    <v-text-field
-                      v-model="estado"
-                      label="Estado"
-                      v-validate="'required'"
-                      data-vv-name="estado"
-                      required
-                    ></v-text-field>
-                  </v-flex>
 
-
-                  </v-layout>
+                </v-layout>
                 <v-btn @click="submit">Cadastrar</v-btn>
                 <v-btn @click="clear">Limpar formulário</v-btn>
 
@@ -62,32 +36,30 @@
 </template>
 
 <script>
+  import FazendasService from "../../services/FazendasService";
+
   export default {
-    $_veeValidate: {
-      validator: 'new'
+    data() {
+      return {
+        nome: '',
+        regiao: '',
+        cidade: '',
+        estado: ''
+      }
     },
-
-    data: () => ({
-      nome: '',
-      regiao: '',
-      cidade: '',
-      estado: ''}),
-
     methods: {
-      submit () {
-        this.$validator.validateAll()
+      async submit() {
+        const res = await
+          FazendasService._create({nome: this.nome})
+        console.log(res.data)
       },
-      clear () {
+      clear() {
         this.nome = ''
-        this.regiao = ''
-        this.cidade = ''
-        this.estado = ''
         this.$validator.reset()
       }
     }
   }
 </script>
-
 
 
 <style scoped>

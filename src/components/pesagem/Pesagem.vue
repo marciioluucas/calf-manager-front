@@ -14,70 +14,86 @@
               <v-layout row wrap>
 
                 <v-flex xs12 md2 lg6>
-                  <v-text-field
-                    label="codigo do animal"
-                    v-model="codigo"
-                    :counter="10"
-
-                    v-validate="'required|max:10'"
-                    data-vv-name="codigo"
+                  <v-autocomplete
+                    label="Pesquise o animal"
+                    :loading="selectAnimal.loading"
+                    :items="selectAnimal.items"
+                    hide-no-data
+                    hide-selected
+                    item-text="nome"
                     required
-
+                    cache-items
+                    item-value="id"
+                    :search-input.sync="selectAnimal.search"
+                    v-model="pesagem.animal_id"
                   />
                 </v-flex>
-                <v-flex xs12 md2 lg6>
+                <v-flex xs6 md3 lg3>
                   <v-text-field
                     label="Peso"
-                    v-model="peso"
-                    :counter="10"
-
-                    v-validate="'required|max:10'"
-                    data-vv-name="peso"
+                    v-model="pesagem.peso"
                     required
                   />
                 </v-flex>
-
-
-
+                <v-flex xs6 md3 lg3>
+                  <v-text-field
+                    label="Data de pesagem"
+                    v-model="pesagem.data_pesagem"
+                    :return-masked-value="true"
+                    mask="##/##/####"
+                  />
+                </v-flex>
               </v-layout>
-              <v-btn color="success" >Cadastrar!</v-btn>
+              <v-btn color="success" @click="cadastrar" >Cadastrar!</v-btn>
 
             </v-form>
           </v-card-text>
         </v-card>
       </v-flex>
-
-      <v-flex xs12>
-        <v-card>
-          <v-card-text>
-            <v-data-table>
-              <template  slot-scope="props">
-                <tr >
-                  <td class="text-xs-center"></td>
-                  <td class="text-xs-center"></td>
-                  <td class="text-xs-center"></td>
-                  <td class="text-xs-center"></td>
-                </tr>
-              </template>
-            </v-data-table>
-          </v-card-text>
-          <v-card-actions  class="text-xs-center">
-            <v-layout>
-              <v-flex xs12>
-                <v-pagination  />
-              </v-flex>
-            </v-layout>
-
-          </v-card-actions>
-        </v-card>
-      </v-flex>
-
     </v-layout>
   </v-container>
 </template>
 
 <script>
+import {AnimaisService} from '../../services/AnimaisService'
 
+export default {
+  data() {
+    return {
+      pesagem: {
+        animal_id: '',
+        peso: 0,
+        data_pesagem: ''
+      },
+      selectAnimal: {
+        loading: false,
+        items: [],
+        search: null
+      }
+    }
+  },
+  watch: {
+    'selectAnimal.search'(val) {
+      val && this.getAnimais(val)
+    }
+  },
+  methods: {
+    async getAnimais(val) {
+      const busca = {
+        nome: val,
+        params: {vivo: true}
+      }
+      this.selectAnimal.loading = true
+      let res = await AnimaisService._getByNome(busca)
+      this.selectAnimal.items = res.data.animais.data
+      this.selectAnimal.loading = false
+    },
+    async cadastrar() {
+      const res = await AnimaisService._createPesagem(this.pesagem)
+      console.log(res.data)
+    }
+  }
+}
 </script>
 
 <style scoped>

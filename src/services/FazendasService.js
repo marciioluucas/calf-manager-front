@@ -13,5 +13,8 @@ export default {
       continuacaoUrl = `&pagina=${busca.page}`
     }
     return Service.get(`/fazenda?nome=${busca.nome}${continuacaoUrl}`)
+  },
+  _create: (form) => {
+    return Service.post('/fazenda', form)
   }
 }
