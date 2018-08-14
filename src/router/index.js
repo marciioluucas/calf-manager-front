@@ -5,11 +5,13 @@ import Dashboard from '@/components/dashboard/Dashboard'
 import ListagemAnimal from '@/components/animal/ListagemAnimal'
 import ProntuarioAnimal from '@/components/animal/ProntuarioAnimal'
 import CadastroAnimal from '@/components/animal/CadastroAnimal'
+
 import CicloVida from '@/components/ciclos/CiclosVida'
 import Peso from '@/components/pesagem/Pesagem'
 import CadastroFazenda from '@/components/fazenda/CadastroFazenda'
 import Lote from '@/components/lote/Lote'
 import Laboratorio from '@/components/laboratorio/Laboratorio'
+import ListagemFazenda from '@/components/fazenda/ListagemFazenda'
 
 Vue.use(Router)
 
@@ -54,6 +56,11 @@ export default new Router({
           name: 'CadastroFazenda',
           path: 'fazenda/novo',
           component: CadastroFazenda
+        },
+        {
+          name: 'ListagemFazenda',
+          path: 'fazenda/listagem',
+          component: ListagemFazenda
         },
         {
           name: 'Pesagem',

@@ -11,6 +11,7 @@ import Peso from '@/components/pesagem/Pesagem'
 import CadastroFazenda from '@/components/fazenda/CadastroFazenda'
 import Lote from '@/components/lote/Lote'
 import Laboratorio from '@/components/laboratorio/Laboratorio'
+import ListagemFazenda from '@/components/fazenda/ListagemFazenda'
 
 export default {
   App,
@@ -24,5 +25,6 @@ export default {
   Lote,
   CadastroFazenda,
   Peso,
-  Laboratorio
+  Laboratorio,
+  ListagemFazenda
 }
