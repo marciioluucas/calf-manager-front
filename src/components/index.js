@@ -11,7 +11,12 @@ import Peso from '@/components/pesagem/Pesagem'
 import CadastroFazenda from '@/components/fazenda/CadastroFazenda'
 import Lote from '@/components/lote/Lote'
 import Laboratorio from '@/components/laboratorio/Laboratorio'
+// Fazendas
 import ListagemFazenda from '@/components/fazenda/ListagemFazenda'
+
+// Doencas
+import CadastroDoenca from '@/components/doenca/CadastroDoenca'
+import ListagemDoenca from '@/components/doenca/ListagemDoenca'
 
 export default {
   App,
@@ -26,5 +31,7 @@ export default {
   CadastroFazenda,
   Peso,
   Laboratorio,
-  ListagemFazenda
+  ListagemFazenda,
+  CadastroDoenca,
+  ListagemDoenca
 }

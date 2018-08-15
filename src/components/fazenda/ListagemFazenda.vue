@@ -39,20 +39,21 @@
           <v-flex xs12>
             <v-card>
               <v-card-text>
-                <v-data-table
-                  :headers="headers"
-                  :items="items.data"
-                >
-                  <template slot="items" slot-scope="props">
-                    <tr>
-                      <td class="text-xs-center">{{ props.item.id }}</td>
-                      <td class="text-xs-center">{{ props.item.nome }}</td>
-                    </tr>
-                  </template>
-                </v-data-table>
               </v-card-text>
 
-              <!--Paginação da tabela-->
+              <v-data-table
+                :headers="headers"
+                :items="items.data"
+                hide-actions
+              >
+                <template slot="items" slot-scope="props">
+                  <tr>
+                    <td class="text-xs-center">{{ props.item.id }}</td>
+                    <td class="text-xs-center">{{ props.item.nome }}</td>
+                  </tr>
+                </template>
+              </v-data-table>
+
               <v-card-actions v-if="items.length !== 0" class="text-xs-center">
                 <v-layout>
                   <v-flex xs12>
@@ -61,6 +62,8 @@
                 </v-layout>
 
               </v-card-actions>
+
+
             </v-card>
           </v-flex>
 
@@ -98,6 +101,7 @@ export default {
     async getFazendas() {
       if (this.buscaFazenda.id && !this.buscaFazenda.nome) {
         this.$Progress.start()
+        console.log(this.buscaFazenda.id)
         let response = await FazendasService._getById(this.buscaFazenda)
         await this.$Progress.finish()
         this.items = response.data.fazendas

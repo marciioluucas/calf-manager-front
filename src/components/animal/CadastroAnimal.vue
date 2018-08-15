@@ -230,7 +230,7 @@
 <script>
   import FazendasService from '../../services/FazendasService'
   import {AnimaisService} from '../../services/AnimaisService'
-  import DoencasService from "../../services/DoencasService";
+  import DoencasService from '../../services/DoencasService'
 
   export default {
     name: 'cadastro-animal',
@@ -250,7 +250,7 @@
           doencas: [],
           pesagem: {
             peso: 0,
-            data: '',
+            data: ''
           },
           mae: {},
           pai: {}

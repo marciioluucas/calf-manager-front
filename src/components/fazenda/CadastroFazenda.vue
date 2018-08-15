@@ -3,7 +3,16 @@
     <v-layout row wrap>
       <v-flex xs12>
         <v-card>
+          <!--Componente de alerta-->
+          <v-alert
+            v-if="alerter.estado"
+            :value="true"
+            :type="alerter.tipo"
+          >
+            {{alerter.message}}
+          </v-alert>
           <v-card-title primary-title>
+
             <div>
               <h2 class="title mb-0">Cadastro de Fazenda</h2>
               <span class="caption">Busque pelo codigo para cadastrar novas fazendas</span>
@@ -13,9 +22,9 @@
             <v-form>
               <form>
                 <v-layout row wrap>
-                  <v-flex xs12 md2 lg6>
+                  <v-flex xs12 md4 lg8>
                     <v-text-field
-                      v-model="nome"
+                      v-model="fazenda.nome"
                       label="Nome"
                       data-vv-name="name"
                       required
@@ -36,8 +45,6 @@
 </template>
 
 <script>
-  import FazendasService from "../../services/FazendasService";
-
   export default {
     data() {
       return {
@@ -47,14 +54,22 @@
         estado: ''
       }
     },
+
+    data: () => ({
+      nome: '',
+      regiao: '',
+      cidade: '',
+      estado: ''}),
+
     methods: {
-      async submit() {
-        const res = await
-          FazendasService._create({nome: this.nome})
-        console.log(res.data)
+      submit () {
+        this.$validator.validateAll()
       },
       clear() {
         this.nome = ''
+        this.regiao = ''
+        this.cidade = ''
+        this.estado = ''
         this.$validator.reset()
       }
     }

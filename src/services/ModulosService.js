@@ -35,6 +35,13 @@ const ModulosService = {
             link: {
               name: 'CadastroFazenda'
             }
+          },
+          {
+            nome: 'Listagem',
+            icone: '',
+            link: {
+              name: 'ListagemFazenda'
+            }
           }
         ]
       },
@@ -113,7 +120,29 @@ const ModulosService = {
             }
           }
         ]
-      }
+      },
+      {
+        icone: 'bubble_chart',
+        nome: 'Doenças',
+        breve_descricao: 'Controle de doenças',
+        link: '',
+        filhos: [
+          {
+            nome: 'Cadastro',
+            icone: '',
+            link: {
+              name: 'CadastroDoenca'
+            }
+          },
+          {
+            nome: 'Listagem',
+            icone: '',
+            link: {
+              name: 'ListagemDoenca'
+            }
+          }
+        ]
+      },
     ]
   }
 }

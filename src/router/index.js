@@ -13,6 +13,10 @@ import Lote from '@/components/lote/Lote'
 import Laboratorio from '@/components/laboratorio/Laboratorio'
 import ListagemFazenda from '@/components/fazenda/ListagemFazenda'
 
+// Doencas
+import CadastroDoenca from '@/components/doenca/CadastroDoenca'
+import ListagemDoenca from '@/components/doenca/ListagemDoenca'
+
 Vue.use(Router)
 
 export default new Router({
@@ -71,6 +75,16 @@ export default new Router({
           name: 'Laboratorio',
           path: 'laboratorio/novo',
           component: Laboratorio
+        },
+        { //  Doencas
+          name: 'CadastroDoenca',
+          path: 'doenca/novo',
+          component: CadastroDoenca
+        },
+        {
+          name: 'ListagemDoenca',
+          path: 'doenca/listagem',
+          component: ListagemDoenca
         }
       ]
     }
