@@ -36,24 +36,24 @@
           </v-card-text>
 
           <!--Tabela de apresentação de dados-->
+
           <v-flex xs12>
             <v-card>
               <v-card-text>
                 <v-data-table
                   :headers="headers"
                   :items="items.data"
+                  hide-actions
                 >
                   <template slot="items" slot-scope="props">
                     <tr>
                       <td class="text-xs-center">{{ props.item.id }}</td>
                       <td class="text-xs-center">{{ props.item.nome }}</td>
-                      <td class="text-xs-center">{{ props.item.descrisao }}</td>
+                      <td class="text-xs-center">{{ props.item.descricao }}</td>
                     </tr>
                   </template>
                 </v-data-table>
               </v-card-text>
-
-              <!--Paginação da tabela-->
               <v-card-actions v-if="items.length !== 0" class="text-xs-center">
                 <v-layout>
                   <v-flex xs12>
@@ -72,7 +72,7 @@
 </template>
 
 <script>
-  import DoencasService from "../../services/DoencasService"
+  import DoencasService from '../../services/DoencasService'
   export default {
     name: 'listagem-doenca',
     data() {
@@ -88,27 +88,42 @@
             pagina: 1
           }
         },
-        search: null
+        search: null,
+        headers: [
+          {text: 'ID', value: 'id'},
+          {text: 'Nome', value: 'nome'},
+          {text: 'Descrição', value: 'descricao'}
+        ]
       }
     },
     methods: {
       async getDoencas() {
+        let n = this
         if (this.buscaDoenca.id && !this.buscaDoenca.nome) {
           this.$Progress.start()
           let response = await DoencasService._getById(this.buscaDoenca)
           await this.$Progress.finish()
+          n.clear()
           this.items = response.data.doencas
         } else if (!this.buscaDoenca.id && this.buscaDoenca.nome) {
           this.$Progress.start()
           let response = await DoencasService._getByNome(this.buscaDoenca)
           await this.$Progress.finish()
           this.items = response.data.doencas
+          n.clear()
         } else {
           this.$Progress.start()
           let response = await DoencasService._getAll(this.buscaDoenca)
           await this.$Progress.finish()
           this.items = response.data.doencas
+          n.clear()
         }
+      },
+      clear() {
+        this.buscaDoenca.id = ''
+        this.buscaDoenca.nome = ''
+        this.buscaDoenca.descricao = ''
+
       }
     }
   }

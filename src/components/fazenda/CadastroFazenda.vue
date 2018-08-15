@@ -11,6 +11,8 @@
           >
             {{alerter.message}}
           </v-alert>
+
+          <!--Cabecalho da pagina-->
           <v-card-title primary-title>
 
             <div>
@@ -32,7 +34,7 @@
                   </v-flex>
 
                 </v-layout>
-                <v-btn @click="submit">Cadastrar</v-btn>
+                <v-btn @click="cadastrar">Cadastrar</v-btn>
                 <v-btn @click="clear">Limpar formulário</v-btn>
 
               </form>
@@ -45,33 +47,45 @@
 </template>
 
 <script>
+  import FazendasService from '../../services/FazendasService'
   export default {
     data() {
       return {
-        nome: '',
-        regiao: '',
-        cidade: '',
-        estado: ''
+        fazenda: {
+          nome: ''
+        },
+        alerter: {
+          tipo: 'success',
+          estado: false,
+          message: 'message'
+        }
       }
     },
 
-    data: () => ({
-      nome: '',
-      regiao: '',
-      cidade: '',
-      estado: ''}),
-
     methods: {
-      submit () {
-        this.$validator.validateAll()
+      async cadastrar() {
+        let n = this
+        if (this.fazenda.nome !== '' && this.fazenda.nome !== undefined) {
+          await FazendasService._create(this.fazenda).catch(e => {
+            console.log(e.response.data)
+          }).finally(function () {
+            n.alerta('success', true, 'Cadastro realizado com sucesso!')
+            n.fazenda.nome = ''
+          })
+        } else {
+          n.alerta('warning', true, 'Preencha os campos corretamente')
+        }
       },
       clear() {
-        this.nome = ''
-        this.regiao = ''
-        this.cidade = ''
-        this.estado = ''
-        this.$validator.reset()
+        this.fazenda.nome = ''
+        this.alerta('success', false, 'message')
+      },
+      alerta (tipo, estado, message) {
+        this.alerter.tipo = tipo
+        this.alerter.estado = estado
+        this.alerter.message = message
       }
+
     }
   }
 </script>

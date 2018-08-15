@@ -31,7 +31,7 @@
                 </v-flex>
               </v-layout>
               <v-btn color="success" v-on:click="getFazendas">Buscar!</v-btn>
-              <v-btn color="secondary" v-on:click="">Redefinir busca</v-btn>
+              <v-btn color="secondary" v-on:click="clear">Redefinir busca</v-btn>
             </v-form>
           </v-card-text>
 
@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import FazendasService from "../../services/FazendasService";
+import FazendasService from '../../services/FazendasService'
 
 export default {
   name: 'Listagem-fazenda',
@@ -105,17 +105,24 @@ export default {
         let response = await FazendasService._getById(this.buscaFazenda)
         await this.$Progress.finish()
         this.items = response.data.fazendas
+        this.clear()
       } else if (!this.buscaFazenda.id && this.buscaFazenda.nome) {
         this.$Progress.start()
         let response = await FazendasService._getByNome(this.buscaFazenda)
         await this.$Progress.finish()
         this.items = response.data.fazendas
+        this.clear()
       } else {
         this.$Progress.start()
         let response = await FazendasService._getAll(this.buscaFazenda)
         await this.$Progress.finish()
         this.items = response.data.fazendas
+        this.clear()
       }
+    },
+    clear() {
+      this.buscaFazenda.id = '',
+      this.buscaFazenda.nome = ''
     }
   }
 }
