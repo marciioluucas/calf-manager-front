@@ -50,6 +50,21 @@
                   <tr>
                     <td class="text-xs-center">{{ props.item.id }}</td>
                     <td class="text-xs-center">{{ props.item.nome }}</td>
+                    <td class="justify-center layout px-0">
+                      <v-icon
+                        small
+                        class="mr-2"
+                        @click="editarFazenda(props.item.id)"
+                      >
+                        edit
+                      </v-icon>
+                      <v-icon
+                        small
+                        @click="deletarFazenda(props.item.id)"
+                      >
+                        delete
+                      </v-icon>
+                    </td>
                   </tr>
                 </template>
               </v-data-table>
@@ -93,9 +108,13 @@ export default {
       search: null,
       headers: [
         {text: 'ID', value: 'id'},
-        {text: 'Nome', value: 'nome'}
+        {text: 'Nome', value: 'nome'},
+        { text: 'Actions', value: 'name', sortable: false }
       ]
     }
+  },
+  mounted() {
+    this.getFazendas()
   },
   methods: {
     async getFazendas() {
@@ -123,6 +142,15 @@ export default {
     clear() {
       this.buscaFazenda.id = '',
       this.buscaFazenda.nome = ''
+    },
+    deletarFazenda(id) {
+      // ainda nada
+    },
+    editarFazenda(id) {
+      this.$router.push({
+        name: 'CadastroFazenda',
+        params: {id: id}
+      })
     }
   }
 }

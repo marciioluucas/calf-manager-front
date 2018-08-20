@@ -1,11 +1,13 @@
 import Service from './Service'
+import Params from '../util/mapParams'
 
 export default {
   _getAll: (busca) => {
     return Service.get(`/doenca?pagina=${busca.page}`)
   },
   _getById: (busca) => {
-    return Service.get(`/doenca/${parseInt(busca.id)}`)
+    const params = Params.map(busca.params)
+    return Service.get(`/doenca/${parseInt(busca.id)}${params}`)
   },
   _getByNome: (busca) => {
     let continuacaoUrl = ''

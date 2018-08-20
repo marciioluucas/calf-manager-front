@@ -17,6 +17,7 @@ import ListagemFazenda from '@/components/fazenda/ListagemFazenda'
 import CadastroDoenca from '@/components/doenca/CadastroDoenca'
 import ListagemDoenca from '@/components/doenca/ListagemDoenca'
 
+import CadastroUsuario from '@/components/usuario/CadastroUsuario'
 Vue.use(Router)
 
 export default new Router({
@@ -85,6 +86,11 @@ export default new Router({
           name: 'ListagemDoenca',
           path: 'doenca/listagem',
           component: ListagemDoenca
+        },
+        {
+          name: 'CadastroUsuario',
+          path: 'usuario/novo',
+          component: CadastroUsuario
         }
       ]
     }

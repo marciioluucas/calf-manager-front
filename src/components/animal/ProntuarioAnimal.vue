@@ -162,11 +162,10 @@
 </template>
 
 <script>
-  import moment from 'moment';
+  import moment from 'moment'
   import {AnimaisService} from '../../services/AnimaisService'
 
   moment.defineLocale('pt-br', null)
-
 
   export default {
     name: 'prontuario-animal',
@@ -265,7 +264,7 @@
     methods: {
 
       calcularIdade() {
-        this.animal.idade = moment().diff(new Date(this.animal.data_nascimento), 'months', false) + ' meses';
+        this.animal.idade = moment().diff(new Date(this.animal.data_nascimento), 'months', false) + ' meses'
       },
       async getGraficoPesagem() {
         let response = await AnimaisService._getGraficoGanhoDePeso(this.animal.id)
@@ -294,6 +293,7 @@
       },
       async getAnimal() {
         let res = await AnimaisService._getById({id: this.animal.id})
+        console.log(res.data)
         this.animal = await res.data.animais
       }
     },
@@ -302,7 +302,7 @@
       await this.getGraficoPesagem()
       await this.getGraficoHereditariedade()
       await this.getAnimal()
-      this.calcularIdade();
+      this.calcularIdade()
       this.isLoading = false
     }
   }

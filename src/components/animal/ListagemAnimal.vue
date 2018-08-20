@@ -21,8 +21,8 @@
                 </v-flex>
                 <v-flex xs12 md4 lg4>
                   <v-text-field xs12 md3
-                                label="Buscar pelo nome"
-                                v-model="buscaAnimal.nome"
+                    label="Buscar pelo nome"
+                    v-model="buscaAnimal.nome"
                   />
                 </v-flex>
 
@@ -69,6 +69,21 @@
                   <td class="text-xs-center">{{ props.item.nome }}</td>
                   <td class="text-xs-center">{{ props.item.lote.codigo }}</td>
                   <td class="text-xs-center">{{ props.item.codigo_brinco }}</td>
+                  <td class="justify-center layout px-0">
+                    <v-icon
+                      small
+                      class="mr-2"
+                      @click="editarAnimal(props.item.id)"
+                    >
+                      edit
+                    </v-icon>
+                    <v-icon
+                      small
+                      @click="deletarAnimal(props.item.id)"
+                    >
+                      delete
+                    </v-icon>
+                  </td>
                 </tr>
               </template>
             </v-data-table>
@@ -117,7 +132,8 @@
           {text: 'ID', value: 'id'},
           {text: 'Nome', value: 'nome'},
           {text: 'Lote', value: 'lote'},
-          {text: 'Código do brinco', value: 'codigo_brinco'}
+          {text: 'Código do brinco', value: 'codigo_brinco'},
+          { text: 'Actions', value: 'name', sortable: false }
         ]
       }
     },
@@ -125,6 +141,9 @@
       search(val) {
         val && this.getLotesByCodigo(val)
       }
+    },
+    async mounted() {
+      this.getAnimais()
     },
     methods: {
       async getAnimais() {
@@ -169,7 +188,14 @@
           name: 'ProntuarioAnimal',
           params: {id: id}
         })
-      }
+      },
+      editarAnimal(id) {
+        this.$router.push({
+          name: 'CadastroAnimal',
+          params: {id: id}
+        })
+      },
+      deletarAnimal (id) {}
     }
   }
 </script>

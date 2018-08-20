@@ -13,8 +13,8 @@
       <!--Cabeçalho da pagina-->
       <v-card-title primary-title>
         <div>
-          <h2 class='title mb-0'>Cadastro de doença</h2>
-          <span class='caption'>Aqui você poderá fazer o cadastro dos animais.</span>
+          <h2 class='title mb-0'>{{nomeTitulo}}</h2>
+          <span class='caption'></span>
         </div>
       </v-card-title>
 
@@ -40,7 +40,9 @@
             </v-flex>
           </v-layout>
           <v-flex>
-            <v-btn @click="cadastrar">Enviar</v-btn>
+            <v-btn v-if="!this.doenca.id" @click="cadastrar">Enviar</v-btn>
+            <v-btn v-if="this.doenca.id" @click="editar">Editar</v-btn>
+
             <v-btn @click="clear">Limpar formulário</v-btn>
           </v-flex>
         </v-form>
@@ -56,6 +58,7 @@
     data() {
       return {
         doenca: {
+          id: null,
           nome: '',
           descricao: ''
         },
@@ -63,7 +66,15 @@
           tipo: 'success',
           estado: false,
           message: 'message'
-        }
+        },
+        nomeTitulo: 'Cadastro de Doença'
+      }
+    },
+    async mounted() {
+      this.doenca.id = this.$route.params.id
+      if (this.doenca.id) {
+        this.nomeTitulo = 'Editar Doença'
+        this.getDoença()
       }
     },
     methods: {
@@ -82,6 +93,7 @@
           n.alerta('warning', true, 'Preencha os campos corretamente')
         }
       },
+      async editar() {},
       clear() {
         this.doenca.nome = ''
         this.doenca.descricao = ''
@@ -91,6 +103,11 @@
         this.alerter.tipo = tipo
         this.alerter.estado = estado
         this.alerter.message = message
+      },
+
+      async getDoença() {
+        let response = await DoencasService._getById({id: this.doenca.id})
+        this.doenca = response.data.doencas[0]
       }
 
     }

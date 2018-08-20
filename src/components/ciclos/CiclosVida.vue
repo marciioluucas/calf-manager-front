@@ -19,7 +19,7 @@
             <v-flex xs12 sm6 md4 lg4>
               <v-text-field
                 label='Ciclo de vida'
-                v-model="ciclovida"
+                v-model="nome"
                 :counter="10"
 
                 v-validate="'required|max:10'"
@@ -47,9 +47,18 @@
 </template>
 
 <script>
-
+  export default {
+    name: 'cadastro-ciclo-vida',
+    data() {
+      return {
+        cicloVida: {
+          nome: '',
+          descricao: ''
+        }
+      }
+    }
+  }
 </script>
-
 <style scoped>
 
 </style>

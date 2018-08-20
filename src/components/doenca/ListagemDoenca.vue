@@ -50,6 +50,21 @@
                       <td class="text-xs-center">{{ props.item.id }}</td>
                       <td class="text-xs-center">{{ props.item.nome }}</td>
                       <td class="text-xs-center">{{ props.item.descricao }}</td>
+                      <td class="justify-center layout px-0">
+                        <v-icon
+                          small
+                          class="mr-2"
+                          @click="editarDoenca(props.item.id)"
+                        >
+                          edit
+                        </v-icon>
+                        <v-icon
+                          small
+                          @click="deletarDoença(props.item.id)"
+                        >
+                          delete
+                        </v-icon>
+                      </td>
                     </tr>
                   </template>
                 </v-data-table>
@@ -92,9 +107,13 @@
         headers: [
           {text: 'ID', value: 'id'},
           {text: 'Nome', value: 'nome'},
-          {text: 'Descrição', value: 'descricao'}
+          {text: 'Descrição', value: 'descricao'},
+          { text: 'Actions', value: 'name', sortable: false }
         ]
       }
+    },
+    mounted() {
+      this.getDoencas()
     },
     methods: {
       async getDoencas() {
@@ -123,7 +142,16 @@
         this.buscaDoenca.id = ''
         this.buscaDoenca.nome = ''
         this.buscaDoenca.descricao = ''
-
+      },
+      deletarDoença (item) {
+        const index = this.desserts.indexOf(item)
+        confirm('Are you sure you want to delete this item?') && this.desserts.splice(index, 1)
+      },
+      editarDoenca(id) {
+        this.$router.push({
+          name: 'CadastroDoenca',
+          params: {id: id}
+        })
       }
     }
   }

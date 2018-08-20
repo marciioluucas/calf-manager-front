@@ -16,7 +16,7 @@
           <v-card-title primary-title>
 
             <div>
-              <h2 class="title mb-0">Cadastro de Fazenda</h2>
+              <h2 class="title mb-0">{{nomeTitulo}}</h2>
               <span class="caption">Busque pelo codigo para cadastrar novas fazendas</span>
             </div>
           </v-card-title>
@@ -34,7 +34,9 @@
                   </v-flex>
 
                 </v-layout>
-                <v-btn @click="cadastrar">Cadastrar</v-btn>
+                <v-btn v-if="!this.fazenda.id" @click="cadastrar">Enviar</v-btn>
+                <v-btn v-if="this.fazenda.id" @click="editar">Editar</v-btn>
+
                 <v-btn @click="clear">Limpar formulário</v-btn>
 
               </form>
@@ -52,16 +54,24 @@
     data() {
       return {
         fazenda: {
+          id: null,
           nome: ''
         },
         alerter: {
           tipo: 'success',
           estado: false,
           message: 'message'
-        }
+        },
+        nomeTitulo: 'Cadastro de Fazenda'
       }
     },
-
+    async mounted() {
+      this.fazenda.id = this.$route.params.id
+      if (this.fazenda.id) {
+        this.nomeTitulo = 'Editar Fazenda'
+        this.getFazenda()
+      }
+    },
     methods: {
       async cadastrar() {
         let n = this
@@ -84,6 +94,17 @@
         this.alerter.tipo = tipo
         this.alerter.estado = estado
         this.alerter.message = message
+      },
+      alterarFazenda() {
+        // ainda nada
+      },
+      async getFazenda() {
+        let response = await FazendasService._getById({id: this.fazenda.id})
+        console.log(response.data.fazendas)
+        // this.fazenda = response.data.fazendas
+      },
+      editar() {
+        // ainda nada
       }
 
     }
