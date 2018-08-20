@@ -29,19 +29,19 @@
             <v-flex xs12 sm6 md6 lg6>
               <v-text-field
                 v-model="doenca.nome"
-                label='Nome da Doença'
+                label='Nome da Doenca'
               ></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md6 lg6>
               <v-text-field
                 v-model="doenca.descricao"
-                label='Descrição da Doença'
+                label='Descrição da Doenca'
               ></v-text-field>
             </v-flex>
           </v-layout>
           <v-flex>
-            <v-btn v-if="!this.doenca.id" @click="cadastrar">Enviar</v-btn>
-            <v-btn v-if="this.doenca.id" @click="editar">Editar</v-btn>
+            <v-btn v-if="!doenca.id" @click="cadastrar">Enviar</v-btn>
+            <v-btn v-if="doenca.id" @click="editar">Editar</v-btn>
 
             <v-btn @click="clear">Limpar formulário</v-btn>
           </v-flex>
@@ -53,6 +53,7 @@
 
 <script>
   import DoencasService from '../../services/DoencasService'
+
   export default {
     name: 'cadastro-doenca',
     data() {
@@ -67,14 +68,14 @@
           estado: false,
           message: 'message'
         },
-        nomeTitulo: 'Cadastro de Doença'
+        nomeTitulo: 'Cadastro de Doenca'
       }
     },
     async mounted() {
       this.doenca.id = this.$route.params.id
       if (this.doenca.id) {
-        this.nomeTitulo = 'Editar Doença'
-        this.getDoença()
+        this.nomeTitulo = 'Editar Doenca'
+        this.getDoenca()
       }
     },
     methods: {
@@ -83,8 +84,8 @@
         if (this.doenca.nome !== '' && this.doenca.nome !== undefined && this.doenca.descricao !== '' && this.doenca.descricao !== undefined) {
           await DoencasService._create(this.doenca).catch(e => {
             console.log(e.response.data)
-            n.alerta('error', true, 'Erro ao cadastrar doença!')
-          }).finally(function () {
+            n.alerta('error', true, 'Erro ao cadastrar Doenca!')
+          }).finally(function (r) {
             n.alerta('success', true, 'Cadastro realizado com sucesso!')
             n.doenca.nome = ''
             n.doenca.descricao = ''
@@ -93,19 +94,22 @@
           n.alerta('warning', true, 'Preencha os campos corretamente')
         }
       },
-      async editar() {},
+      async editar() {
+        const res = await DoencasService._update(this.doenca)
+        this.alerta(res.status === 200 ? 'success' : 'error', true, res.data.message.description)
+      },
       clear() {
         this.doenca.nome = ''
         this.doenca.descricao = ''
         this.alerta('success', false, 'message')
       },
-      alerta (tipo, estado, message) {
+      alerta(tipo, estado, message) {
         this.alerter.tipo = tipo
         this.alerter.estado = estado
         this.alerter.message = message
       },
 
-      async getDoença() {
+      async getDoenca() {
         let response = await DoencasService._getById({id: this.doenca.id})
         this.doenca = response.data.doencas[0]
       }

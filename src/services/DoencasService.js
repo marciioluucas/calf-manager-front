@@ -18,5 +18,8 @@ export default {
   },
   _create: (form) => {
     return Service.post(`/doenca`, form)
+  },
+  _update: (form) => {
+    return Service.put(`/doenca/${form.id}`, form)
   }
 }
