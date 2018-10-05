@@ -1,5 +1,5 @@
 import Service from './Service'
-import Params from "../util/mapParams";
+import Params from '../util/mapParams'
 
 export default {
   _getAll: (busca) => {
@@ -18,5 +18,11 @@ export default {
   },
   _create: (form) => {
     return Service.post('/fazenda', form)
+  },
+  _update: (form) => {
+    return Service.put(`/fazenda/${form.id}`, form)
+  },
+  _delete: (id) => {
+    return Service.delete(`/fazenda/${id}`)
   }
 }

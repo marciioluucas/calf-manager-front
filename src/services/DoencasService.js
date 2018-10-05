@@ -21,5 +21,8 @@ export default {
   },
   _update: (form) => {
     return Service.put(`/doenca/${form.id}`, form)
+  },
+  _delete: (id) => {
+    return Service.delete(`/doenca/${id}`)
   }
 }

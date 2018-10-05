@@ -81,12 +81,27 @@ const ModulosService = {
             link: {
               name: 'CicloVida'
             }
-          },
+          }
+        ]
+      },
+      {
+        icone: 'bubble_chart',
+        nome: 'Lote',
+        breve_descricao: 'Lote de animais',
+        link: '',
+        filhos: [
           {
-            nome: 'Lote',
+            nome: 'Cadastro',
             icone: '',
             link: {
-              name: 'Lote'
+              name: 'CadastroLote'
+            }
+          },
+          {
+            nome: 'Listagem',
+            icone: '',
+            link: {
+              name: 'ListagemLote'
             }
           }
         ]

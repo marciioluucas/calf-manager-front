@@ -7,14 +7,16 @@ export default {
   _getById: (busca) => {
     return Service.get(`/usuario/${parseInt(busca.id)}`)
   },
-  _getByNome: (busca) => {
-    let continuacaoUrl = ''
-    if (busca.page) {
-      continuacaoUrl = `&pagina=${busca.page}`
-    }
-    return Service.get(`/usuario?nome=${busca.nome}${continuacaoUrl}`)
+  _getByIdGrupo: (busca) => {
+    return Service.get(`/usuario?id-grupo=${busca.usuario.id}&pagina=${busca.page}`)
   },
   _create: (form) => {
     return Service.post(`/usuario`, form)
+  },
+  _update: (form) => {
+    return Service.put(`/usuario/${form.id}`, form)
+  },
+  _delete: (id) => {
+    return Service.delete(`/usuario/${id}`)
   }
 }

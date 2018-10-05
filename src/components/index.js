@@ -7,9 +7,13 @@ import Modulos from '@/components/layout/Modulos'
 // Animais
 import CadastroAnimal from '@/components/animal/CadastroAnimal'
 import ListagemAnimal from '@/components/animal/ListagemAnimal'
+
 import CicloVida from '@/components/ciclos/CiclosVida'
 import Peso from '@/components/pesagem/Pesagem'
-import Lote from '@/components/lote/Lote'
+// Lotes
+import CadastroLote from '@/components/lote/CadastroLote'
+import ListagemLote from '@/components/lote/ListagemLote'
+
 import Laboratorio from '@/components/laboratorio/Laboratorio'
 // Fazendas
 import CadastroFazenda from '@/components/fazenda/CadastroFazenda'
@@ -29,7 +33,8 @@ export default {
   ListagemAnimal,
   CadastroAnimal,
   CicloVida,
-  Lote,
+  CadastroLote,
+  ListagemLote,
   CadastroFazenda,
   Peso,
   Laboratorio,
