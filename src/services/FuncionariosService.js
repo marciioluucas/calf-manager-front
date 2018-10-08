@@ -1,17 +1,15 @@
 import Service from './Service'
 import Params from '../util/mapParams'
 
-export const FuncionariosService = {
+export default {
   _getAll: (busca) => {
     const params = Params.map(busca.params)
     return Service.get(`/funcionario${params}`)
   },
-
   _getById: (busca) => {
     const params = Params.map(busca.params)
     return Service.get(`/funcionario/${parseInt(busca.id)}${params}`)
   },
-
   _getByIdCargo: (busca) => {
     return Service.get(`/funcionario?id-cargo=${busca.cargo.id}&pagina=${busca.page}`)
   },
@@ -24,7 +22,6 @@ export const FuncionariosService = {
   _getByIdPessoa: (busca) => {
     return Service.get(`/funcionario?id-pessoa=${busca.pessoa.id}&pagina=${busca.page}`)
   },
-
   _create: (form) => {
     return Service.post(`/funcionario`, form)
   },

@@ -1,7 +1,7 @@
 import Service from './Service'
 import Params from '../util/mapParams'
 
-export const EnderecosService = {
+export default {
   _getAll: (busca) => {
     const params = Params.map(busca.params)
     return Service.get(`/endereco${params}`)
@@ -16,6 +16,9 @@ export const EnderecosService = {
     }
     const params = Params.map(busca.params)
     return Service.get(`/endereco${params}`)
+  },
+  _getCep: (busca) => {
+    return Service.get(`viacep.com.br/ws/${busca}/json`)
   },
   _create: (form) => {
     return Service.post(`/endereco`, form)

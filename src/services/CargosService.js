@@ -1,7 +1,7 @@
 import Service from './Service'
 import Params from '../util/mapParams'
 
-export const CargosService = {
+export default {
   _getAll: (busca) => {
     const params = Params.map(busca.params)
     return Service.get(`/cargo${params}`)

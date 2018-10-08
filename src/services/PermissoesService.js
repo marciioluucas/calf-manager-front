@@ -1,10 +1,9 @@
 import Service from './Service'
 import Params from '../util/mapParams'
 
-export const PermissoesService = {
+export default {
   _getAll: (busca) => {
-    const params = Params.map(busca.params)
-    return Service.get(`/permissao${params}`)
+    return Service.get(`/permissao?pagina=${busca}`)
   },
   _getById: (busca) => {
     const params = Params.map(busca.params)

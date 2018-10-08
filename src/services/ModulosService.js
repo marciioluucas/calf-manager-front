@@ -54,10 +54,24 @@ const ModulosService = {
         },
         filhos: [
           {
-            nome: 'Cadastro',
+            nome: 'Cadastro de Usuários',
             icone: '',
             link: {
               name: ''
+            }
+          },
+          {
+            nome: 'Cadastro de Grupos',
+            icone: '',
+            link: {
+              name: 'CadastroGrupo'
+            }
+          },
+          {
+            nome: 'Cadastro de Permissões',
+            icone: '',
+            link: {
+              name: 'CadastroPermissao'
             }
           },
           {
@@ -158,6 +172,50 @@ const ModulosService = {
           }
         ]
       },
+      {
+        icone: 'bubble_chart',
+        nome: 'Medicamento',
+        breve_descricao: 'Controle de medicamentos',
+        link: '',
+        filhos: [
+          {
+            nome: 'Cadastro',
+            icone: '',
+            link: {
+              name: 'CadastroMedicamento'
+            }
+          },
+          {
+            nome: 'Listagem',
+            icone: '',
+            link: {
+              name: 'ListagemMedicamento'
+            }
+          }
+        ]
+      },
+      {
+        icone: 'bubble_chart',
+        nome: 'Funcionário',
+        breve_descricao: 'Controle de Funcionários e responsabilidades',
+        link: '',
+        filhos: [
+          {
+            nome: 'Cadastro de Pessoa',
+            icone: '',
+            link: {
+              name: 'CadastroFuncionario'
+            }
+          },
+          {
+            nome: 'Cadastro de Cargos',
+            icone: '',
+            link: {
+              name: 'CadastroCargo'
+            }
+          }
+        ]
+      }
     ]
   }
 }
