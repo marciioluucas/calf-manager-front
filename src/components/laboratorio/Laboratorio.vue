@@ -12,14 +12,16 @@
           <v-card-text>
             <v-form>
               <v-layout row wrap>
-
-                <v-flex xs12 md2 lg6>
-                  <v-text-field
-                    label="Buscar pelo codigo"
-
-                  />
+                <v-flex xs12>
+                  <span class='title'>Informações gerais</span>
                 </v-flex>
-                <v-btn color="success" >Buscar</v-btn>
+
+                <v-flex xs12 sm6 md6 lg6>
+                  <v-text-field
+                    v-model="animal.codigo_brinco"
+                    label='Código do Brinco'
+                  ></v-text-field>
+                </v-flex>
               </v-layout>
             </v-form>
           </v-card-text>
@@ -30,7 +32,9 @@
 </template>
 
 <script>
-
+  export default {
+    name: ""
+  }
 </script>
 
 <style scoped>
