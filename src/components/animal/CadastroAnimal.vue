@@ -237,6 +237,7 @@
     data() {
       return {
         animal: {
+          id: null,
           nome: '',
           is_vivo: true,
           is_primogenito: false,
@@ -378,7 +379,14 @@
           console.log(e.response.data)
         })
         console.log(res.data)
+      },
+      async editar() {
+        let res = await AnimaisService._update(this.animal).catch(e =>{
+          console.log(e.response.data)
+        })
+        console.log(res.data)
       }
+
     }
   }
 </script>

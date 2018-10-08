@@ -13,7 +13,7 @@
 
       <v-card-title primary-title>
         <div>
-          <h2 class='title mb-0'>Cadastro de Usuários</h2>
+          <h2 class='title mb-0'>{{nomeTitulo}}</h2>
           <span class='caption'>Aqui você poderá fazer o cadastro dos usuários</span>
         </div>
       </v-card-title>
@@ -59,7 +59,8 @@
             ></v-text-field>
 
           </v-layout>
-          <v-btn @click="cadastrar">Cadastrar</v-btn>
+          <v-btn v-if="!this.usuario.id" @click="cadastrar">Cadastrar</v-btn>
+          <v-btn v-if="this.usuario.id" @click="editar">Editar</v-btn>
           <v-btn @click="clear">Limpar formulário</v-btn>
         </v-form>
       </v-card-text>
@@ -69,21 +70,30 @@
 </template>
 
 <script>
-  // import UsuarioService from '../../services/CadastroUsuario'
+  import UsuariosService from '../../services/UsuariosService'
   export default {
     name: 'cadastro-usuario',
     data() {
       return {
         usuario: {
-          username: '',
-          password: '',
-          rePassword: ''
+          id: null,
+          username: null,
+          password: null,
+          rePassword: null
         },
         alerter: {
           tipo: 'success',
           estado: false,
           message: 'message'
-        }
+        },
+        nomeTitulo: 'Cadastro de Usuários'
+      }
+    },
+    async mounted() {
+      this.usuario.id = this.$route.params.id
+      if (this.usuario.id) {
+        this.nomeTitulo = 'Editar Usuário'
+        this.getUsuario()
       }
     },
     methods: {
@@ -119,6 +129,15 @@
         this.alerter.tipo = tipo,
         this.alerter.estado = estado,
         this.alerter.message = message
+      },
+      async editar() {
+        let response = await UsuariosService._update(this.usuario)
+        this.alerta(response.status === 200 ? 'success' : 'error', true, response.data.message.description)
+        this.clear()
+      },
+      async getUsuario () {
+        let response = await UsuariosService._getById({id: this.usuario.id})
+        this.usuario = response.data.usuarios
       }
     }
   }

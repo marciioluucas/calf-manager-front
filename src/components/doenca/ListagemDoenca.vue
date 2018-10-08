@@ -72,7 +72,7 @@
               <v-card-actions v-if="items.length !== 0" class="text-xs-center">
                 <v-layout>
                   <v-flex xs12>
-                    <v-pagination :length="items.last_page" v-model="buscaDoenca.params.pagina" @input="getDoencas"/>
+                    <v-pagination :length="items.last_page" v-model="buscaLote.params.pagina" @input="getDoencas"/>
                   </v-flex>
                 </v-layout>
 

@@ -105,7 +105,7 @@
 
 <script>
   import {AnimaisService} from '../../services/AnimaisService'
-  import {LotesService} from '../../services/LotesService'
+  import LotesService from '../../services/LotesService'
 
   export default {
     name: 'listagem-animal',
@@ -195,7 +195,12 @@
           params: {id: id}
         })
       },
-      deletarAnimal (id) {}
+      async deletarAnimal (id) {
+        let response = await AnimaisService._delete(id).catch(e => {
+          console.log(e.response.data)
+        })
+        console.log(response.data)
+      }
     }
   }
 </script>

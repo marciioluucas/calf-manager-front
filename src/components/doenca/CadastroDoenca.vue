@@ -7,7 +7,7 @@
         :value="true"
         :type="alerter.tipo"
       >
-        {{alerter.message}}
+        {{alerter.mensagem}}
       </v-alert>
 
       <!--Cabeçalho da pagina-->
@@ -66,7 +66,7 @@
         alerter: {
           tipo: 'success',
           estado: false,
-          message: 'message'
+          mensagem: 'message'
         },
         nomeTitulo: 'Cadastro de Doenca'
       }
@@ -81,39 +81,53 @@
     methods: {
       async cadastrar() {
         let n = this
-        if (this.doenca.nome !== '' && this.doenca.nome !== undefined && this.doenca.descricao !== '' && this.doenca.descricao !== undefined) {
-          await DoencasService._create(this.doenca).catch(e => {
-            console.log(e.response.data)
-            n.alerta('error', true, 'Erro ao cadastrar Doenca!')
-          }).finally(function (r) {
-            n.alerta('success', true, 'Cadastro realizado com sucesso!')
-            n.doenca.nome = ''
-            n.doenca.descricao = ''
-          })
+        if (this.validarFormulario()) {
+          let response = await DoencasService._create(this.doenca)
+          this.clear()
+          this.alerta(response.status === 200 ? 'error' : 'success', true, response.data.message.description)
+
+          // let response = await DoencasService._create(this.doenca).catch(e => {
+          //   console.log(e.response.data)
+          //   n.alerta('error', true, 'Erro ao cadastrar Doenca!')
+          // }).finally(function (r) {
+          //   n.alerta('success', true, 'Cadastro realizado com sucesso!')
+          //   n.doenca.nome = ''
+          //   n.doenca.descricao = ''
+          // })
         } else {
           n.alerta('warning', true, 'Preencha os campos corretamente')
         }
       },
       async editar() {
-        const res = await DoencasService._update(this.doenca)
-        this.alerta(res.status === 200 ? 'success' : 'error', true, res.data.message.description)
+        if (this.validarFormulario()) {
+          const response = await DoencasService._update(this.doenca)
+          this.alerta(response.status === 200 ? 'success' : 'error', true, response.data.message.description)
+          this.clear()
+          // Adicionar a funcionalidade de voltar a pagina alterior para voltar a tabela de doenças
+        } else {
+          this.alerta('warning', true, 'Preencha os campos corretamente!')
+        }
       },
       clear() {
         this.doenca.nome = ''
         this.doenca.descricao = ''
-        this.alerta('success', false, 'message')
       },
-      alerta(tipo, estado, message) {
+      alerta(tipo, estado, mensagem) {
         this.alerter.tipo = tipo
         this.alerter.estado = estado
-        this.alerter.message = message
+        this.alerter.mensagem = mensagem
       },
-
       async getDoenca() {
         let response = await DoencasService._getById({id: this.doenca.id})
         this.doenca = response.data.doencas[0]
+      },
+      validarFormulario() {
+        if (this.doenca.nome !== '' && this.doenca.nome !== undefined && this.doenca.descricao !== '' && this.doenca.descricao !== undefined) {
+          return true
+        } else {
+          return false
+        }
       }
-
     }
   }
 </script>

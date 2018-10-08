@@ -75,36 +75,41 @@
     methods: {
       async cadastrar() {
         let n = this
-        if (this.fazenda.nome !== '' && this.fazenda.nome !== undefined) {
-          await FazendasService._create(this.fazenda).catch(e => {
-            console.log(e.response.data)
-          }).finally(function () {
-            n.alerta('success', true, 'Cadastro realizado com sucesso!')
-            n.fazenda.nome = ''
-          })
+        if (this.validarFormulario()) {
+          let response = await FazendasService._create(this.fazenda)
+          this.alerta(response.data.status === 200 ? 'success' : 'error', true, response.data.message.description)
+          this.clear()
         } else {
           n.alerta('warning', true, 'Preencha os campos corretamente')
         }
       },
       clear() {
         this.fazenda.nome = ''
-        this.alerta('success', false, 'message')
       },
       alerta (tipo, estado, message) {
         this.alerter.tipo = tipo
         this.alerter.estado = estado
         this.alerter.message = message
       },
-      alterarFazenda() {
-        // ainda nada
-      },
       async getFazenda() {
         let response = await FazendasService._getById({id: this.fazenda.id})
-        console.log(response.data.fazendas)
-        // this.fazenda = response.data.fazendas
+        // console.log(response.data.fazendas[0])
+        this.fazenda = response.data.fazendas[0]
       },
-      editar() {
-        // ainda nada
+      async editar() {
+        if (this.validarFormulario()) {
+          let response = await FazendasService._update(this.fazenda)
+          this.alerta(response.data.status === 200 ? 'success' : 'error', true, response.data.message.description)
+        } else {
+          this.alerta('warning', true, 'Preencha os campos corretamente')
+        }
+      },
+      validarFormulario() {
+        if (this.fazenda.nome !== '' && this.fazenda.nome !== undefined) {
+          return true
+        } else {
+          return false
+        }
       }
 
     }
