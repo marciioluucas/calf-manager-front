@@ -64,7 +64,7 @@
           },
           alerter: {
             tipo: '',
-            estado: '',
+            estado: false,
             mensagem: ''
           },
           nomeTitulo: 'Cadastrar Cargo'

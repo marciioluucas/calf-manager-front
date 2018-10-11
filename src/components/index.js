@@ -24,15 +24,19 @@ import ListagemDoenca from '@/components/doenca/ListagemDoenca'
 // Usuario
 import CadastroUsuario from '@/components/usuario/CadastroUsuario'
 // medicamento
-import CadastroMedicamento from '@/components/laboratorio/CadastroMedicamento'
+import CadastroMedicamento from '@/components/medicamento/CadastroMedicamento'
 // funcionario
 import CadastroFuncionario from '@/components/funcionario/CadastroFuncionario'
 // cargo
 import CadastroCargo from '@/components/cargo/CadastroCargo'
+import ListagemCargo from '@/components/cargo/ListagemCargo'
 // Grupo
 import CadastroGrupo from '@/components/grupo/CadastroGrupo'
 // Permissão
 import CadastroPermissao from '@/components/permissao/CadastroPermissao'
+// Dose
+import CadastroDose from '@/components/dose/CadastroDose'
+
 export default {
   App,
   HelloWorld,
@@ -65,5 +69,8 @@ export default {
   // Funcionario
   CadastroFuncionario,
   // Cargo
-  CadastroCargo
+  CadastroCargo,
+  ListagemCargo,
+  // Dose
+  CadastroDose
 }

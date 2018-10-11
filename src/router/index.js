@@ -17,9 +17,10 @@ import CadastroLote from '@/components/lote/CadastroLote'
 import ListagemLote from '@/components/lote/ListagemLote'
 import Laboratorio from '@/components/laboratorio/Laboratorio'
 // medicamento
-import CadastroMedicamento from '@/components/laboratorio/CadastroMedicamento'
+import CadastroMedicamento from '@/components/medicamento/CadastroMedicamento'
 // cargo
 import CadastroCargo from '@/components/cargo/CadastroCargo'
+import ListagemCargo from '@/components/cargo/ListagemCargo'
 // funcionario
 import CadastroFuncionario from '@/components/funcionario/CadastroFuncionario'
 // Grupo
@@ -31,6 +32,8 @@ import CadastroDoenca from '@/components/doenca/CadastroDoenca'
 import ListagemDoenca from '@/components/doenca/ListagemDoenca'
 
 import CadastroUsuario from '@/components/usuario/CadastroUsuario'
+// Dose
+import CadastroDose from '@/components/dose/CadastroDose'
 Vue.use(Router)
 
 export default new Router({
@@ -124,20 +127,34 @@ export default new Router({
           path: 'funcionario/novo',
           component: CadastroFuncionario
         },
+        // Cargo
         {
           name: 'CadastroCargo',
           path: 'cargo/novo',
           component: CadastroCargo
         },
         {
+          name: 'ListagemCargo',
+          path: 'cargo/listagem',
+          component: ListagemCargo
+        },
+        // Grupo
+        {
           name: 'CadastroGrupo',
           path: 'grupo/novo',
           component: CadastroGrupo
         },
+        // Permissão
         {
           name: 'CadastroPermissao',
           path: 'permissao/novo',
           component: CadastroPermissao
+        },
+        // Dose
+        {
+          name: 'CadastroDose',
+          path: 'dose/novo',
+          component: CadastroDose
         }
       ]
     }

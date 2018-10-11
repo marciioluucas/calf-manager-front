@@ -142,10 +142,10 @@ const ModulosService = {
         link: '',
         filhos: [
           {
-            nome: 'Laboratório',
+            nome: 'Vacinação',
             icone: '',
             link: {
-              name: 'Laboratorio'
+              name: 'CadastroDose'
             }
           }
         ]
@@ -212,6 +212,13 @@ const ModulosService = {
             icone: '',
             link: {
               name: 'CadastroCargo'
+            }
+          },
+          {
+            nome: 'Lista de Cargos',
+            icone: '',
+            link: {
+              name: 'ListagemCargo'
             }
           }
         ]
