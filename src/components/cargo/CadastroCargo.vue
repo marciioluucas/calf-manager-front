@@ -43,7 +43,7 @@
             <v-btn v-if="!cargo.id" @click="cadastrar">Enviar</v-btn>
             <v-btn v-if="cargo.id" @click="editar">Editar</v-btn>
 
-            <v-btn @click="clear">Limpar formulário</v-btn>
+            <v-btn @click="clearForm">Limpar formulário</v-btn>
           </v-flex>
         </v-form>
       </v-card-text>
@@ -63,7 +63,7 @@
             descricao: ''
           },
           alerter: {
-            tipo: '',
+            tipo: 'success',
             estado: false,
             mensagem: ''
           },
@@ -80,14 +80,17 @@
       methods: {
         async getCargo() {
           let response = await CargosService._getById(this.cargo.id)
-          this.cargo = response.data.cargos[0]
+          // this.cargo = response.data.cargos[0]
         },
         async cadastrar() {
           if (this.validarForm()) {
             let response = await CargosService._create(this.cargo)
+            if(response.status === 200){
+              this.alerta('success', true, response.data.message.description)
+            }
             this.alerta(response.status === 200 ? 'error' : 'success', true, response.data.message.description)
-            this.clearFomr()
-            console.log(response.data)
+            this.clearForm()
+            console.log(response.data.message)
           }
           else {
             this.alerta('warning', true, 'Preencha os campos corretamente!')
@@ -97,7 +100,7 @@
           if (this.validarForm()) {
             let response = await CargosService._update(this.cargo)
             this.alerta(response.status === 200 ? 'error' : 'success', true, response.data.message.description)
-            this.clearFomr()
+            this.clearForm()
           } else {
             this.alerta('warning', true, 'Preencha os campos corretamente!')
           }
@@ -114,7 +117,7 @@
             return false
           }
         },
-        clearFomr() {
+        clearForm() {
           this.cargo.nome = ''
           this.cargo.descricao = ''
         }
