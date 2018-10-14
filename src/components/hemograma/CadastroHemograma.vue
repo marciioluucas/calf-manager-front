@@ -26,13 +26,16 @@
               <span class='title'>Informações gerais</span>
             </v-flex>
 
-            <v-flex xs12 sm6 d-flex>
-            <v-select
-              :items="items"
-              box
-              label="Selecionar Animal"
-            ></v-select>
-          </v-flex>
+            <v-flex xs12 sm4 md4 lg4>
+              <v-combobox
+                v-model="cargo"
+                :items="selectCargo.items"
+                item-text="nome"
+                item-value="id"
+                label="Cargos"
+                placeholder=""
+              ></v-combobox>
+            </v-flex>
 
 
             <v-flex xs12 sm6 md6 lg6>
@@ -68,16 +71,16 @@
       name: 'CadastroHemograma',
       data() {
         return {
+          items: [],
           hemograma: {
             id: null,
             data: '',
             ppt: null,
             hematocrito: null
           },
-          items: [],
           alerter: {
             tipo: '',
-            estado: '',
+            estado: false
             mensagem: ''
           },
           nomeTitulo: 'Cadastrar Exame'

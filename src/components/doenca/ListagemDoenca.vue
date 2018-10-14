@@ -143,9 +143,10 @@
         this.buscaDoenca.nome = ''
         this.buscaDoenca.descricao = ''
       },
-      deletarDoença (item) {
-        const index = this.desserts.indexOf(item)
-        confirm('Are you sure you want to delete this item?') && this.desserts.splice(index, 1)
+      deletarDoença (id) {
+        if(confirm('Deseja deletar este item?')){
+          DoencasService._delete(id)
+        }
       },
       editarDoenca(id) {
         this.$router.push({
