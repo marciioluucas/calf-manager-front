@@ -144,13 +144,20 @@ export default {
       this.buscaFazenda.nome = ''
     },
     deletarFazenda(id) {
-      // ainda nada
+      if(confirm('Deseja deletar este item?')){
+        FazendasService._delete(id)
+      }
+      this.atualizarTabela()
     },
     editarFazenda(id) {
       this.$router.push({
         name: 'CadastroFazenda',
         params: {id: id}
       })
+    },
+    atualizarTabela(){
+      this.items = []
+      this.getFazendas()
     }
   }
 }
