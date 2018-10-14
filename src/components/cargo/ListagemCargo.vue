@@ -124,30 +124,32 @@
         let n = this
         if (this.buscaCargo.id && !this.buscaCargo.nome) {
           let response = await CargosService._getById(this.buscaCargo)
-          n.clear()
-          this.items = response.data.cargos[0]
-          console.log(response.data.cargos)
-        } else if (!this.buscaCargo.id && this.buscaCargo.nome) {
-          let response = await CargosService._getByNome(this.buscaCargo)
-          n.clear()
           this.items = response.data.cargos
-          console.log(response.data.cargos)
+
+          // console.log(response.data.cargos)
+        }
+        else if (!this.buscaCargo.id && this.buscaCargo.nome) {
+          let response = await CargosService._getByNome(this.buscaCargo)
+          this.items = response.data.cargos
+          // console.log(response.data.cargos.data)
         } else {
           let response = await CargosService._getAll(this.buscaCargo)
           this.items = response.data.cargos
-          // console.log(response.data.cargos.data)
+          // console.log(response.data.cargos)
         }
       },
       async editar(id) {
+        console.log("Editar id:"+id);
         this.$router.push({
           name: 'CadastroCargo',
           params: {id: id}
         })
       },
       async deletar(id) {
-        let response = await CargosService._delete(id)
-        console.log(response.data.message)
-        this.getCargos()
+        if(confirm('Deseja deletar este item?')){
+          let response = await CargosService._delete(id)
+          this.getCargos()
+        }
       },
       clear() {
         this.buscaCargo.id = ''

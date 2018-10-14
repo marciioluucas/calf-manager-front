@@ -79,8 +79,8 @@
       },
       methods: {
         async getCargo() {
-          let response = await CargosService._getById(this.cargo.id)
-          // this.cargo = response.data.cargos[0]
+          let response = await CargosService._getById(this.cargo)
+          this.cargo = response.data.cargos
         },
         async cadastrar() {
           if (this.validarForm()) {
@@ -88,9 +88,14 @@
             if(response.status === 200){
               this.alerta('success', true, response.data.message.description)
             }
-            this.alerta(response.status === 200 ? 'error' : 'success', true, response.data.message.description)
+            else if(response.status === 400){
+              this.alerta('error', true, 'Erro ao validar formulário!')
+            } else if (response.status === 500) {
+              this.alerta('error', true, 'Erro ao cadastrar cargo. Entre em contato com suporte técnino!')
+            }
+            // this.alerta(response.status === 200 ? 'error' : 'success', true, response.data.message.description)
             this.clearForm()
-            console.log(response.data.message)
+            // console.log(response.data.message)
           }
           else {
             this.alerta('warning', true, 'Preencha os campos corretamente!')
@@ -99,7 +104,13 @@
         async editar() {
           if (this.validarForm()) {
             let response = await CargosService._update(this.cargo)
-            this.alerta(response.status === 200 ? 'error' : 'success', true, response.data.message.description)
+            if(response.status === 200){
+              this.alerta('success', true, response.data.message.description)
+            } else if (response.status === 400){
+              this.alerta('error', true, 'Erro ao validar formulário!')
+            } else if (response.status === 500){
+              this.alerta('error', true, 'Erro ao editar formulário. Entre em contato com suporte técnico')
+            }
             this.clearForm()
           } else {
             this.alerta('warning', true, 'Preencha os campos corretamente!')
