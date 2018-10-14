@@ -9,7 +9,7 @@
             :value="true"
             :type="alerter.tipo"
           >
-            {{alerter.message}}
+            {{alerter.mensagem}}
           </v-alert>
 
           <!--Cabeçalho da pagina-->
@@ -36,7 +36,7 @@
                 </v-flex>
                 <v-flex xs12 sm6 md6 lg6>
                   <v-text-field
-                    v-model="medicamento.prescicao"
+                    v-model="medicamento.prescricao"
                     label='Prescrição do Medicamento'
                   ></v-text-field>
                 </v-flex>
@@ -56,6 +56,7 @@
 </template>
 
 <script>
+  import MedicamentosService from '../../services/MedicamentosService'
     export default {
       name: 'cadastro-medicamento',
       data () {
@@ -63,11 +64,11 @@
           medicamento: {
             id: null,
             nome: null,
-            prescicao: null
+            prescricao: null
           },
           alerter: {
-            tipo: '',
-            estado: '',
+            tipo: 'success',
+            estado: false,
             message: ''
           },
           nomeTitulo: 'Cadastro Medicamento'
@@ -82,17 +83,50 @@
       },
       methods: {
         async cadastrar() {
-
+          if(this.validarForm()){
+            let response = await MedicamentosService._create(this.medicamento)
+            // console.log(response)
+            if(response.status ===201){
+              this.alerta(response.data.message.type, true, response.data.message.description)
+            }
+            this.clear()
+          }
+          else{
+            this.alerta('warning', true, 'Preencha todos os campos corretamente!')
+          }
         },
         async getMedicamento() {
-
+          let response = await MedicamentosService._getById(this.medicamento)
+          this.medicamento = response.data.medicamentos
         },
         async editar() {
-
+          if(this.validarForm()){
+            let response = await MedicamentosService._update(this.medicamento)
+            // console.log(response)
+            if(response.status ===201){
+              this.alerta(response.data.message.type, true, response.data.message.description)
+            }
+            this.clear()
+          }
+          else{
+            this.alerta('warning', true, 'Preencha todos os campos corretamente!')
+          }        },
+        alerta(tipo, estado, mensagem){
+          this.alerter.tipo = tipo
+          this.alerter.estado = estado
+          this.alerter.mensagem = mensagem
+        },
+        validarForm(){
+          if(this.medicamento.nome !== '' && this.medicamento.nome !== null && this.medicamento.prescicao !== '' && this.medicamento.prescicao !== null){
+            return true
+          }
+          else {
+            return false
+          }
         },
         clear() {
           this.medicamento.nome = ''
-          this.medicamento.prescicao = ''
+          this.medicamento.prescricao = ''
         }
 
       }
