@@ -23,6 +23,7 @@ import CadastroCargo from '@/components/cargo/CadastroCargo'
 import ListagemCargo from '@/components/cargo/ListagemCargo'
 // funcionario
 import CadastroFuncionario from '@/components/funcionario/CadastroFuncionario'
+import ListagemFuncionario from '@/components/funcionario/ListagemFuncionario'
 // Grupo
 import CadastroGrupo from '@/components/grupo/CadastroGrupo'
 // Permissão
@@ -126,6 +127,11 @@ export default new Router({
           name: 'CadastroFuncionario',
           path: 'funcionario/novo',
           component: CadastroFuncionario
+        },
+        {
+          name: 'ListagemFuncionario',
+          path: 'funcionario/listagem',
+          component: ListagemFuncionario
         },
         // Cargo
         {

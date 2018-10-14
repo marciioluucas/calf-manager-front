@@ -27,6 +27,7 @@ import CadastroUsuario from '@/components/usuario/CadastroUsuario'
 import CadastroMedicamento from '@/components/medicamento/CadastroMedicamento'
 // funcionario
 import CadastroFuncionario from '@/components/funcionario/CadastroFuncionario'
+import ListagemFuncionario from '@/components/funcionario/ListagemFuncionario'
 // cargo
 import CadastroCargo from '@/components/cargo/CadastroCargo'
 import ListagemCargo from '@/components/cargo/ListagemCargo'
@@ -68,6 +69,7 @@ export default {
   CadastroPermissao,
   // Funcionario
   CadastroFuncionario,
+  ListagemFuncionario,
   // Cargo
   CadastroCargo,
   ListagemCargo,

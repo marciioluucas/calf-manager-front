@@ -73,14 +73,14 @@ const ModulosService = {
             link: {
               name: 'CadastroPermissao'
             }
-          },
-          {
-            nome: 'Lista',
-            icone: '',
-            link: {
-              name: 'ListaFazenda'
-            }
           }
+          // {
+          //   nome: 'Lista',
+          //   icone: '',
+          //   link: {
+          //     name: 'ListaFazenda'
+          //   }
+          // }
         ]
       },
       {
@@ -184,14 +184,14 @@ const ModulosService = {
             link: {
               name: 'CadastroMedicamento'
             }
-          },
-          {
-            nome: 'Listagem',
-            icone: '',
-            link: {
-              name: 'ListagemMedicamento'
-            }
           }
+          // {
+          //   nome: 'Listagem',
+          //   icone: '',
+          //   link: {
+          //     name: 'ListagemMedicamento'
+          //   }
+          // }
         ]
       },
       {
@@ -205,6 +205,13 @@ const ModulosService = {
             icone: '',
             link: {
               name: 'CadastroFuncionario'
+            }
+          },
+          {
+            nome: 'Lista de Funcionários',
+            icone: '',
+            link: {
+              name: 'ListagemFuncionario'
             }
           },
           {
