@@ -54,13 +54,13 @@
                         <v-icon
                           small
                           class="mr-2"
-                          @click="editarLote(props.item.id)"
+                          @click="editar(props.item.id)"
                         >
                           edit
                         </v-icon>
                         <v-icon
                           small
-                          @click="deletarLote(props.item.id)"
+                          @click="deletar(props.item.id)"
                         >
                           delete
                         </v-icon>
@@ -104,7 +104,7 @@
         headers: [
           {text: 'ID', value: 'id'},
           {text: 'Código', value: 'codigo'},
-          {text: 'Descrição', value: 'descricao'}
+          {text: 'Ações', value: 'acoes'}
         ]
       }
     },
@@ -124,14 +124,17 @@
           this.items = response.data.lotes
         }
       },
-      editarLote(id) {
+      editar(id) {
         this.$router.push({
           name: 'CadastroLote',
           params: {id: id}
         })
       },
-      deletarLote(id) {
-
+      deletar(id) {
+        if(confirm('Deseja deletar este item?')){
+          LotesService._delete(id)
+        }
+        this.getLotes()
       }
     }
   }

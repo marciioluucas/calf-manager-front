@@ -63,16 +63,24 @@
       this.lote.id = this.$route.params.id
       if (this.lote.id) {
         this.nomeTitulo = 'Editar Lote'
+        this.getLote()
       }
     },
     methods: {
       async cadastrar() {
         if (this.validarFormulario()) {
           let response = await LotesService._create(this.lote)
-          console.log('--- Resposta ----')
-          console.log(response.data)
-          // this.alerta(response.data.status === 200 ? 'success' : 'error', true, response.data.message.description)
-          this.clear()
+          console.log(response);
+          if(response.status === 200){
+            this.alerta('success', true, response.data.message.description)
+            this.clear()
+          }
+          else if(response.status === 400){
+            this.alerta('error', true, 'Erro ao validar formulário')
+          }
+          else if(response.status === 500) {
+            this.alerta('error', true, 'Erro ao cadastrar lote. Entre em contato com o suporte técnico!')
+          }
         } else {
           this.alerta('warning', true, 'Preencha os campos corretamente!')
         }
@@ -80,15 +88,24 @@
       async editar() {
         if (this.validarFormulario()) {
           let response = await LotesService._update(this.lote)
-          this.alerta(response.data.status === 200 ? 'success' : 'error', true, response.data.message.description)
-          this.clear()
+          if(response.status === 200){
+            this.alerta('success', true, response.data.message.description)
+            this.clear()
+          }
+          else if(response.status === 400){
+            this.alerta('error', true, 'Erro ao validar formulário')
+          }
+          else if(response.status === 500) {
+            this.alerta('error', true, 'Erro ao cadastrar lote. Entre em contato com o suporte técnico!')
+          }
         } else {
           this.alerta('warning', true, 'Preencha os campos corretamente!')
         }
       },
-      async getLotes() {
-        let response = await LotesService._getById({id: this.lote.id})
-        this.lote = response.data.lotes
+      async getLote() {
+        let response = await LotesService._getById(this.lote.id)
+        this.lote = response.data.lotes[0]
+        console.log(this.lote);
       },
       clear() {
         this.lote.codigo = null
