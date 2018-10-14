@@ -8,14 +8,14 @@ const ModulosService = {
         link: '',
         filhos: [
           {
-            nome: 'Cadastro',
+            nome: 'Cadastro de Animal',
             icone: '',
             link: {
               name: 'CadastroAnimal'
             }
           },
           {
-            nome: 'Listagem',
+            nome: 'Lista de Animais',
             icone: '',
             link: {
               name: 'ListagemAnimal'
@@ -30,14 +30,14 @@ const ModulosService = {
         link: '',
         filhos: [
           {
-            nome: 'Cadastro',
+            nome: 'Cadastro de Fazenda',
             icone: '',
             link: {
               name: 'CadastroFazenda'
             }
           },
           {
-            nome: 'Listagem',
+            nome: 'Lista de Fazendas',
             icone: '',
             link: {
               name: 'ListagemFazenda'
@@ -53,13 +53,6 @@ const ModulosService = {
           name: ''
         },
         filhos: [
-          {
-            nome: 'Cadastro de Usuários',
-            icone: '',
-            link: {
-              name: ''
-            }
-          },
           {
             nome: 'Cadastro de Grupos',
             icone: '',
@@ -85,34 +78,19 @@ const ModulosService = {
       },
       {
         icone: 'bubble_chart',
-        nome: 'Ciclos',
-        breve_descricao: 'Ciclo de vida do animais',
-        link: '',
-        filhos: [
-          {
-            nome: 'Cadastro',
-            icone: '',
-            link: {
-              name: 'CicloVida'
-            }
-          }
-        ]
-      },
-      {
-        icone: 'bubble_chart',
         nome: 'Lote',
         breve_descricao: 'Lote de animais',
         link: '',
         filhos: [
           {
-            nome: 'Cadastro',
+            nome: 'Cadastro de Lote',
             icone: '',
             link: {
               name: 'CadastroLote'
             }
           },
           {
-            nome: 'Listagem',
+            nome: 'Lista de Lotes',
             icone: '',
             link: {
               name: 'ListagemLote'
@@ -127,7 +105,7 @@ const ModulosService = {
         link: '',
         filhos: [
           {
-            nome: 'Cadastro',
+            nome: 'Pesagem de Animais',
             icone: '',
             link: {
               name: 'Pesagem'
@@ -157,14 +135,14 @@ const ModulosService = {
         link: '',
         filhos: [
           {
-            nome: 'Cadastro',
+            nome: 'Cadastro de Doença',
             icone: '',
             link: {
               name: 'CadastroDoenca'
             }
           },
           {
-            nome: 'Listagem',
+            nome: 'Lista de Doenças',
             icone: '',
             link: {
               name: 'ListagemDoenca'
@@ -179,19 +157,19 @@ const ModulosService = {
         link: '',
         filhos: [
           {
-            nome: 'Cadastro',
+            nome: 'Cadastro de Medicamento',
             icone: '',
             link: {
               name: 'CadastroMedicamento'
             }
+          },
+          {
+            nome: 'Lista de Medicamentos',
+            icone: '',
+            link: {
+              name: 'ListagemMedicamento'
+            }
           }
-          // {
-          //   nome: 'Listagem',
-          //   icone: '',
-          //   link: {
-          //     name: 'ListagemMedicamento'
-          //   }
-          // }
         ]
       },
       {

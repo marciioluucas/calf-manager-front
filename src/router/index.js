@@ -18,6 +18,7 @@ import ListagemLote from '@/components/lote/ListagemLote'
 import Laboratorio from '@/components/laboratorio/Laboratorio'
 // medicamento
 import CadastroMedicamento from '@/components/medicamento/CadastroMedicamento'
+import ListagemMedicamento from '@/components/medicamento/ListagemMedicamento'
 // cargo
 import CadastroCargo from '@/components/cargo/CadastroCargo'
 import ListagemCargo from '@/components/cargo/ListagemCargo'
@@ -121,6 +122,11 @@ export default new Router({
           name: 'CadastroMedicamento',
           path: 'medicamento/novo',
           component: CadastroMedicamento
+        },
+        {
+          name: 'ListagemMedicamento',
+          path: 'medicamento/listagem',
+          component: ListagemMedicamento
         },
         // Funcionario
         {
