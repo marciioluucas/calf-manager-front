@@ -46,6 +46,12 @@
               ></v-text-field>
             </v-flex>
             <!-- TODO: Select sexo-->
+            <v-flex xs12>
+              <v-combobox
+                v-model="pessoa.sexo"
+                label="Sexo da pessoa"
+              ></v-combobox>
+            </v-flex>
 
             <v-flex xs12 sm6 md6 lg6>
               <v-text-field
