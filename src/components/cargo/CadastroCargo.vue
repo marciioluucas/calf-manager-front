@@ -90,7 +90,8 @@
             }
             else if(response.status === 400){
               this.alerta('error', true, 'Erro ao validar formulário!')
-            } else if (response.status === 500) {
+            }
+            else if (response.status === 500) {
               this.alerta('error', true, 'Erro ao cadastrar cargo. Entre em contato com suporte técnino!')
             }
             // this.alerta(response.status === 200 ? 'error' : 'success', true, response.data.message.description)
@@ -106,9 +107,11 @@
             let response = await CargosService._update(this.cargo)
             if(response.status === 200){
               this.alerta('success', true, response.data.message.description)
-            } else if (response.status === 400){
+            }
+            else if (response.status === 400){
               this.alerta('error', true, 'Erro ao validar formulário!')
-            } else if (response.status === 500){
+            }
+            else if (response.status === 500){
               this.alerta('error', true, 'Erro ao editar formulário. Entre em contato com suporte técnico')
             }
             this.clearForm()

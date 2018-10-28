@@ -7,7 +7,7 @@
         :value="true"
         :type="alerter.tipo"
       >
-        {{alerter.message}}
+        {{alerter.mensagem}}
       </v-alert>
       <!--Cabeçalho da pagina-->
       <v-card-title primary-title>
@@ -31,6 +31,21 @@
                 v-model="lote.codigo"
               />
             </v-flex>
+            <v-flex xs12 sm4 md4 lg4>
+              <v-autocomplete
+                label="Selecione a fazenda"
+                :loading="selectFazenda.loading"
+                required
+                hide-no-data
+                hide-selected
+                item-value="id"
+                cache-items
+                :items="selectFazenda.items"
+                item-text="nome"
+                :search-input.sync="selectFazenda.search"
+                v-model="lote.fazenda.id"
+              />
+            </v-flex>
           </v-layout>
           <v-btn v-if="!this.lote.id" @click="cadastrar" >Enviar</v-btn>
           <v-btn v-if="this.lote.id" @click="editar" >Editar</v-btn>
@@ -43,23 +58,33 @@
 
 <script>
   import LotesService from '../../services/LotesService'
+  import FazendasService from '../../services/FazendasService'
   export default {
     name: '',
     data() {
       return {
         lote: {
           id: null,
-          codigo: null
+          codigo: null,
+          fazenda: {
+            id: null
+          },
+        },
+        selectFazenda: {
+          items: [],
+          loading: false,
+          search: ''
         },
         alerter: {
           tipo: '',
           estado: false,
-          message: ''
+          mensagem: ''
         },
         nomeTitulo: 'Cadastro de Lotes'
       }
     },
     async mounted() {
+      this.getFazendas()
       this.lote.id = this.$route.params.id
       if (this.lote.id) {
         this.nomeTitulo = 'Editar Lote'
@@ -67,11 +92,14 @@
       }
     },
     methods: {
+      async getFazendas(){
+        let response = await FazendasService._getAll(this.lote.fazenda)
+        this.selectFazenda.items = response.data.fazendas.data
+      },
       async cadastrar() {
         if (this.validarFormulario()) {
           let response = await LotesService._create(this.lote)
-          console.log(response);
-          if(response.status === 200){
+          if(response.status === 201){
             this.alerta('success', true, response.data.message.description)
             this.clear()
           }
@@ -88,7 +116,7 @@
       async editar() {
         if (this.validarFormulario()) {
           let response = await LotesService._update(this.lote)
-          if(response.status === 200){
+          if(response.status === 202){
             this.alerta('success', true, response.data.message.description)
             this.clear()
           }
@@ -109,11 +137,12 @@
       },
       clear() {
         this.lote.codigo = null
+        this.lote.fazenda = {}
       },
-      alerta(tipo, estado, message) {
+      alerta(tipo, estado, mensagem) {
         this.alerter.tipo = tipo
         this.alerter.estado = estado
-        this.alerter.message = message
+        this.alerter.mensagem = mensagem
       },
       validarFormulario() {
         if (this.lote.codigo !== '' && this.lote.codigo !== null) {

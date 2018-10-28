@@ -61,19 +61,26 @@ const ModulosService = {
             }
           },
           {
+            nome: 'Lista de Grupos',
+            icone: '',
+            link: {
+              name: 'ListagemGrupo'
+            }
+          },
+          {
             nome: 'Cadastro de Permissões',
             icone: '',
             link: {
               name: 'CadastroPermissao'
             }
+          },
+          {
+            nome: 'Lista de Permissões',
+            icone: '',
+            link: {
+              name: 'ListagemPermissao'
+            }
           }
-          // {
-          //   nome: 'Lista',
-          //   icone: '',
-          //   link: {
-          //     name: 'ListaFazenda'
-          //   }
-          // }
         ]
       },
       {
@@ -110,6 +117,13 @@ const ModulosService = {
             link: {
               name: 'Pesagem'
             }
+          },
+          {
+            nome: 'Gráfico de pesagens',
+            icone: '',
+            link: {
+              name: 'ListagemPesagem'
+            }
           }
         ]
       },
@@ -120,10 +134,17 @@ const ModulosService = {
         link: '',
         filhos: [
           {
-            nome: 'Vacinação',
+            nome: 'Vacinar Animal',
             icone: '',
             link: {
               name: 'CadastroDose'
+            }
+          },
+          {
+            nome: 'Registrar Exame',
+            icone: '',
+            link: {
+              name: 'CadastroHemograma'
             }
           }
         ]

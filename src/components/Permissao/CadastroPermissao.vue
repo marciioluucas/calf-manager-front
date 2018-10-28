@@ -86,6 +86,7 @@
 </template>
 
 <script>
+  import PermissoesService from '../../services/PermissoesService'
   export default {
     name: "cadastro-permissao",
     data(){
@@ -116,18 +117,24 @@
       async getPermissao(){
         let response = await PermissoesService._getById(this.permissao)
         this.permissao = response.data.permissoes
+        console.log(this.permissao);
       },
       async cadastrar(){
         if (this.validarForm()){
-          let response = await PermissaoService._create(this.permissao)
+          let response = await PermissoesService._create(this.permissao)
           if (response.status === 201){
             this.alerta(response.data.message.type, true, response.data.message.description)
           }
+
+          else {
+            console.log(response);
+          }
+          this.clear()
         }
       },
       async editar(){
         if (this.validarForm()){
-          let response = await PermissaoService._update(this.permissao)
+          let response = await PermissoesService._update(this.permissao)
           if (response.status === 201){
             this.alerta(response.data.message.type, true, response.data.message.description)
           }
@@ -146,6 +153,11 @@
         this.alerter.mensagem = mensagem
       },
       clear(){
+        this.permissao.nome_modulo = ''
+        this.permissao.create = 0
+        this.permissao.Read = 0
+        this.permissao.update = 0
+        this.permissao.delete = 0
 
       }
     }

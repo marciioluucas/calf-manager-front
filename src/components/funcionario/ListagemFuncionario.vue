@@ -56,13 +56,13 @@
                       <v-icon
                         small
                         class="mr-2"
-                        @click="editarDoenca(props.item.id)"
+                        @click="editar(props.item.id)"
                       >
                         edit
                       </v-icon>
                       <v-icon
                         small
-                        @click="deletarDoença(props.item.id)"
+                        @click="deletar(props.item.id)"
                       >
                         delete
                       </v-icon>
@@ -159,7 +159,7 @@
         let response = FuncionariosService._delete(id)
         console.log(response);
       },
-      async editar() {
+      async editar(id) {
         this.$router.push({
           name: 'CadastroFuncionario',
           params: {id: id}

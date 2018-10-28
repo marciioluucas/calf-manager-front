@@ -49,7 +49,7 @@
                     <tr>
                       <td class="text-xs-center">{{ props.item.id }}</td>
                       <td class="text-xs-center">{{ props.item.codigo }}</td>
-                      <td class="text-xs-center">{{ props.item.descricao }}</td>
+                      <td class="text-xs-center">{{ props.item.fazenda.nome }}</td>
                       <td class="justify-center layout px-0">
                         <v-icon
                           small
@@ -104,7 +104,9 @@
         headers: [
           {text: 'ID', value: 'id'},
           {text: 'Código', value: 'codigo'},
+          {text: 'Fazenda', value: 'fazenda'},
           {text: 'Ações', value: 'acoes'}
+
         ]
       }
     },
@@ -122,6 +124,7 @@
         } else {
           let response = await LotesService._getAll()
           this.items = response.data.lotes
+          // console.log(this.items);
         }
       },
       editar(id) {
@@ -134,6 +137,10 @@
         if(confirm('Deseja deletar este item?')){
           LotesService._delete(id)
         }
+        this.atualizarTabela()
+      },
+      atualizarTabela(){
+        this.items = []
         this.getLotes()
       }
     }

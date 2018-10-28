@@ -3,6 +3,14 @@
     <v-layout row wrap>
       <v-flex xs12>
         <v-card>
+          <!--Componente de alerta-->
+          <v-alert
+            v-if="alerter.estado"
+            :value="true"
+            :type="alerter.tipo"
+          >
+            {{alerter.mensagem}}
+          </v-alert>
           <v-card-title primary-title>
             <div>
               <h2 class="title mb-0">Pesagem</h2>
@@ -15,7 +23,7 @@
 
                 <v-flex xs12 md2 lg6>
                   <v-autocomplete
-                    label="Pesquise o animal"
+                    label="Digite o nome do animal"
                     :loading="selectAnimal.loading"
                     :items="selectAnimal.items"
                     hide-no-data
@@ -69,6 +77,11 @@ export default {
         loading: false,
         items: [],
         search: null
+      },
+      alerter: {
+        tipo: 'success',
+        estado: false,
+        mensagem: ''
       }
     }
   },
@@ -89,8 +102,27 @@ export default {
       this.selectAnimal.loading = false
     },
     async cadastrar() {
-      const res = await AnimaisService._createPesagem(this.pesagem)
-      console.log(res.data)
+      if(this.validarForm()){
+        let response = await AnimaisService._createPesagem(this.pesagem)
+        console.log(response.data)
+      } else {
+        this.alerta('warning', true, 'Preencha os campos corretamente!')
+      }
+    },
+    validarForm(){
+      if(this.pesagem.animal_id !== null && this.pesagem.animal_id !== '' &&
+        this.pesagem.data_pesagem !== null && this.pesagem.data_pesagem !== '' &&
+        this.pesagem.peso !== null && this.pesagem.peso !== ''){
+          return true
+        } else {
+          return false
+        }
+    },
+    alerta(tipo, estado, mensagem){
+      this.alerter.tipo = tipo
+      this.alerter.estado = estado
+      this.alerter.mensagem = mensagem
+
     }
   }
 }

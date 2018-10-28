@@ -28,23 +28,23 @@
 
             <v-flex xs12 sm4 md4 lg4>
               <v-combobox
-                v-model="cargo"
-                :items="selectCargo.items"
+                v-model="hemograma.animal"
+                :items="selectAnimais.items"
                 item-text="nome"
                 item-value="id"
-                label="Cargos"
+                label="Animal"
                 placeholder=""
               ></v-combobox>
             </v-flex>
 
 
-            <v-flex xs12 sm6 md6 lg6>
+            <v-flex xs12 sm4 md4 lg4>
               <v-text-field
                 v-model="hemograma.ppt"
                 label='PPT'
               ></v-text-field>
             </v-flex>
-            <v-flex xs12 sm6 md6 lg6>
+            <v-flex xs12 sm4 md4 lg4>
               <v-text-field
                 v-model="hemograma.hematocrito"
                 label='Hematocrito'
@@ -64,29 +64,33 @@
 </template>
 
 <script>
-  import AnimaisService from '../../services/AnimaisServeice'
+  import {AnimaisService} from '../../services/AnimaisService'
   import HemogramaService from '../../services/HemogramasService'
 
     export default {
-      name: 'CadastroHemograma',
+      name: 'cadastro-hemograma',
       data() {
         return {
           items: [],
           hemograma: {
             id: null,
-            data: '',
             ppt: null,
-            hematocrito: null
+            hematocrito: null,
+            animal:[]
+          },
+          selectAnimais: {
+            items: []
           },
           alerter: {
             tipo: '',
-            estado: false
+            estado: false,
             mensagem: ''
           },
           nomeTitulo: 'Cadastrar Exame'
         }
       },
       mounted() {
+        this.getAnimais()
         this.hemograma.id = this.$route.params.id
         if (this.hemograma.id) {
           this.nomeTitulo = 'Editar Exame'
@@ -104,7 +108,21 @@
 
         },
         async getAnimais() {
+          let response = await AnimaisService._getAll(this.selectAnimais)
+          // console.log(response.data.animais);
+          this.selectAnimais.items = response.data.animais.data
+        },
+        clear(){
 
+        },
+        validarForm(){
+          if(this.animal !== null && this.hemograma.ppt !== null && this.hemograma.ppt !== '' &&
+             this.hemograma.hematocrito !== null && this.hemograma.hematocrito !== ''){
+            return true
+          }
+          else{
+            return false
+          }
         }
       }
     }

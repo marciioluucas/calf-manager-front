@@ -3,8 +3,7 @@ import Params from '../util/mapParams'
 
 export default {
   _getAll: (busca) => {
-    const params = Params.map(busca.params)
-    return Service.get(`/grupo${params}`)
+    return Service.get(`/grupo?pagina=${busca.page}`)
   },
 
   _getById: (busca) => {

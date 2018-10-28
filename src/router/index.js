@@ -8,7 +8,10 @@ import ListagemAnimal from '@/components/animal/ListagemAnimal'
 import ProntuarioAnimal from '@/components/animal/ProntuarioAnimal'
 
 import CicloVida from '@/components/ciclos/CiclosVida'
+// Peso
 import Peso from '@/components/pesagem/Pesagem'
+import ListagemPesagem from '@/components/pesagem/ListagemPesagem'
+
 // Fazenda
 import CadastroFazenda from '@/components/fazenda/CadastroFazenda'
 import ListagemFazenda from '@/components/fazenda/ListagemFazenda'
@@ -27,8 +30,10 @@ import CadastroFuncionario from '@/components/funcionario/CadastroFuncionario'
 import ListagemFuncionario from '@/components/funcionario/ListagemFuncionario'
 // Grupo
 import CadastroGrupo from '@/components/grupo/CadastroGrupo'
+import ListagemGrupo from '@/components/grupo/ListagemGrupo'
 // Permissão
 import CadastroPermissao from '@/components/permissao/CadastroPermissao'
+import ListagemPermissao from '@/components/permissao/ListagemPermissao'
 // Doencas
 import CadastroDoenca from '@/components/doenca/CadastroDoenca'
 import ListagemDoenca from '@/components/doenca/ListagemDoenca'
@@ -36,6 +41,7 @@ import ListagemDoenca from '@/components/doenca/ListagemDoenca'
 import CadastroUsuario from '@/components/usuario/CadastroUsuario'
 // Dose
 import CadastroDose from '@/components/dose/CadastroDose'
+import CadastroHemograma from '@/components/hemograma/CadastroHemograma'
 Vue.use(Router)
 
 export default new Router({
@@ -94,6 +100,11 @@ export default new Router({
           name: 'Pesagem',
           path: 'pesagem/novo',
           component: Peso
+        },
+        {
+          name: 'ListagemPesagem',
+          path: 'pesagem/listagem',
+          component: ListagemPesagem
         },
         {
           name: 'Laboratorio',
@@ -156,18 +167,35 @@ export default new Router({
           path: 'grupo/novo',
           component: CadastroGrupo
         },
+        {
+          name: 'ListagemGrupo',
+          path: 'grupo/listagem',
+          component: ListagemGrupo
+        },
         // Permissão
         {
           name: 'CadastroPermissao',
           path: 'permissao/novo',
           component: CadastroPermissao
         },
+        {
+          name: 'ListagemPermissao',
+          path: 'permissao/listagem',
+          component: ListagemPermissao
+        },
         // Dose
         {
           name: 'CadastroDose',
           path: 'dose/novo',
           component: CadastroDose
+        },
+        // Hemograma
+        {
+          name: 'CadastroHemograma',
+          path: 'hemograma/novo',
+          component: CadastroHemograma
         }
+
       ]
     }
   ]

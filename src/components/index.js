@@ -9,7 +9,9 @@ import CadastroAnimal from '@/components/animal/CadastroAnimal'
 import ListagemAnimal from '@/components/animal/ListagemAnimal'
 
 import CicloVida from '@/components/ciclos/CiclosVida'
+// Peso
 import Peso from '@/components/pesagem/Pesagem'
+import ListagemPesagem from '@/components/pesagem/ListagemPesagem'
 // Lote
 import CadastroLote from '@/components/lote/CadastroLote'
 import ListagemLote from '@/components/lote/ListagemLote'
@@ -35,10 +37,14 @@ import CadastroCargo from '@/components/cargo/CadastroCargo'
 import ListagemCargo from '@/components/cargo/ListagemCargo'
 // Grupo
 import CadastroGrupo from '@/components/grupo/CadastroGrupo'
+import ListagemGrupo from '@/components/grupo/ListagemGrupo'
 // Permissão
 import CadastroPermissao from '@/components/permissao/CadastroPermissao'
+import ListagemPermissao from '@/components/permissao/ListagemPermissao'
+
 // Dose
 import CadastroDose from '@/components/dose/CadastroDose'
+import CadastroHemograma from '@/components/hemograma/CadastroHemograma'
 
 export default {
   App,
@@ -57,6 +63,7 @@ export default {
   CadastroFazenda,
   ListagemFazenda,
   Peso,
+  ListagemPesagem,
   Laboratorio,
   // Doenca
   CadastroDoenca,
@@ -68,8 +75,10 @@ export default {
   CadastroUsuario,
   // Grupo
   CadastroGrupo,
+  ListagemGrupo,
   // Permissao
   CadastroPermissao,
+  ListagemPermissao,
   // Funcionario
   CadastroFuncionario,
   ListagemFuncionario,
@@ -77,5 +86,7 @@ export default {
   CadastroCargo,
   ListagemCargo,
   // Dose
-  CadastroDose
+  CadastroDose,
+  // Hemograma
+  CadastroHemograma
 }
