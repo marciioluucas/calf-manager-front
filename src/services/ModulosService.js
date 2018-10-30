@@ -146,6 +146,13 @@ const ModulosService = {
             link: {
               name: 'CadastroHemograma'
             }
+          },
+          {
+            nome: 'Resultado de exames',
+            icone: '',
+            link: {
+              name: 'ListagemHemograma'
+            }
           }
         ]
       },

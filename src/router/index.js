@@ -42,6 +42,8 @@ import CadastroUsuario from '@/components/usuario/CadastroUsuario'
 // Dose
 import CadastroDose from '@/components/dose/CadastroDose'
 import CadastroHemograma from '@/components/hemograma/CadastroHemograma'
+import ListagemHemograma from '@/components/hemograma/ListagemHemograma'
+
 Vue.use(Router)
 
 export default new Router({
@@ -194,6 +196,11 @@ export default new Router({
           name: 'CadastroHemograma',
           path: 'hemograma/novo',
           component: CadastroHemograma
+        },
+        {
+          name: 'ListagemHemograma',
+          path: 'hemograma/listagem',
+          component: ListagemHemograma
         }
 
       ]
