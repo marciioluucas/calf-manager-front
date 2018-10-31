@@ -3,7 +3,7 @@
     <v-card>
       <v-card-title primary-title>
         <div>
-          <h2 class='title mb-0'>Cadastro de animal</h2>
+          <h2 class='title mb-0'>{{nomeTitulo}}</h2>
           <span class='caption'>Aqui você poderá fazer o cadastro dos animais.</span>
         </div>
       </v-card-title>
@@ -14,28 +14,37 @@
             <v-flex xs12>
               <span class='title'>Informações gerais</span>
             </v-flex>
-
+<!-- text Nome             -->
+            <v-flex xs12 sm6 md6 lg6>
+              <v-text-field
+                v-model="animal.nome"
+                label='Nome'
+              ></v-text-field>
+            </v-flex>
+<!-- text Codigo_brinco             -->
             <v-flex xs12 sm6 md6 lg6>
               <v-text-field
                 v-model="animal.codigo_brinco"
                 label='Código do Brinco'
               ></v-text-field>
             </v-flex>
+<!-- text Codigo_raca             -->
             <v-flex xs12 sm6 md6 lg6>
               <v-text-field
                 v-model="animal.codigo_raca"
                 label='Código da raça'
               ></v-text-field>
             </v-flex>
-            <v-flex xs12 sm6 md4 lg4>
+<!-- text Data_nascimento -->
+            <v-flex xs12 sm6 md6 lg6>
               <v-text-field
                 v-model="animal.data_nascimento"
                 mask="##/##/####"
-                :return-masked-value="true"
                 label='Nascimento'
               ></v-text-field>
             </v-flex>
-            <v-flex xs12 sm6 md4 lg4>
+<!-- Select Sexo -->
+            <v-flex xs12 sm6 md6 lg6>
               <v-select
                 :items="selectSexo"
                 v-model="animal.sexo"
@@ -45,7 +54,8 @@
                 required
               ></v-select>
             </v-flex>
-            <v-flex xs12 sm4 md4 lg4>
+<!-- Select Fase Vida -->
+            <v-flex xs12 sm6 md6 lg6>
               <v-select
                 :items="selectFaseVida"
                 v-model="animal.fase_vida"
@@ -55,7 +65,17 @@
                 required
               ></v-select>
             </v-flex>
-            <v-flex xs12 sm4 md4 lg4>
+
+            <v-flex xs12>
+              <br/>
+              <v-divider/>
+              <br/>
+            </v-flex>
+            <v-flex xs12>
+              <span class='title'>Família</span>
+            </v-flex>
+<!-- Switch is_primogenito -->
+            <v-flex xs12 sm2 md2 lg2 >
               <v-container px-0>
                 <v-tooltip bottom>
                   <v-switch label="É primogênito?"
@@ -70,6 +90,7 @@
 
               </v-container>
             </v-flex>
+<!-- autocomplete Mae -->
             <v-flex xs12 sm4 md4 lg4 v-if="!animal.is_primogenito">
               <v-autocomplete
                 label="Pesquise a mãe"
@@ -85,6 +106,7 @@
                 v-model="animal.mae"
               />
             </v-flex>
+<!-- autocomplete Pai -->
             <v-flex xs12 sm4 md4 lg4 v-if="!animal.is_primogenito">
               <v-autocomplete
                 label="Selecione o pai"
@@ -108,9 +130,10 @@
             <v-flex xs12>
               <span class='title'>Fazenda de locação do animal</span>
             </v-flex>
+<!-- autocomplete Fazenda -->
             <v-flex xs12 sm6 md6 lg6>
               <v-autocomplete
-                v-model="animal.fazenda"
+                v-model="selectedFazenda"
                 :items="selectFazenda.items"
                 :search-input.sync="selectFazenda.search"
                 hide-no-data
@@ -118,13 +141,24 @@
                 item-text="nome"
                 item-value="id"
                 label="Fazendas"
-                placeholder="Comece digitando o nome da fazenda"
+                placeholder="Digite o nome da fazenda"
                 return-object
               />
             </v-flex>
+<!-- Select Lote -->
+            <v-flex xs12 sm6 md6 lg6>
+              <v-select
+                :items="selectedFazenda.lote"
+                v-model="animal.lote"
+                item-text="codigo"
+                label="Sexo"
+                return-object
+              ></v-select>
+            </v-flex>
+<!-- text quantidade_animais -->
             <v-flex xs6 sm3 md3 lg3>
               <v-text-field
-                :value="animal.fazenda.quantidade_animais"
+                :value="animal.lote.quantidade_animais"
                 disabled
                 label='Quantidade de animais'
               ></v-text-field>
@@ -137,24 +171,27 @@
             <v-flex xs12>
               <span class='title'>Saúde</span>
             </v-flex>
-            <v-flex xs6>
+            <v-flex xs12>
               <v-switch
                 label="Está vivo?"
                 v-model="animal.is_vivo"
+                slot="activator"
               />
             </v-flex>
-            <v-flex xs12 sm6 md6 lg6>
+            <v-flex v-if="animal.is_vivo == true" xs12 sm6 md6 lg6>
               <v-layout wrap>
-                <v-flex xs12 sm8 md8 lg8>
+                <v-flex xs12>
+                  <span class='caption'>Primeira Pesagem.</span>
+                </v-flex>
+                <v-flex xs12>
                   <v-text-field
                     v-model="animal.pesagem.peso"
                     label='Peso em @ da primeira pesagem'
                   ></v-text-field>
                 </v-flex>
-                <v-flex xs12 sm4 md4 lg4>
+                <v-flex xs12>
                   <v-text-field
                     mask="##/##/####"
-                    :return-masked-value="true"
                     v-model="animal.pesagem.data"
                     label='Data'
                   ></v-text-field>
@@ -162,19 +199,47 @@
               </v-layout>
 
             </v-flex>
-            <v-flex xs12 sm6 md6 lg6>
+            <v-flex v-if="animal.is_vivo == true" xs12 sm6 md6 lg6>
+              <v-layout wrap>
+                <v-flex xs12>
+                  <span class='caption'>Primeiro Hemograma.</span>
+                </v-flex>
+                <v-flex xs12 sm6 md6 lg6>
+                  <v-text-field
+                    v-model="animal.hemograma.ppt"
+                    label='Primeiro teste de proteína plasmática'
+                  ></v-text-field>
+                </v-flex>
+                <v-flex xs12 sm6 md6 lg6>
+                  <v-text-field
+                    v-model="animal.hemograma.hematocrito"
+                    label='Primeiro teste de hematocrito'
+                  ></v-text-field>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field
+                    mask="##/##/####"
+                    v-model="animal.hemograma.data"
+                    label='Data'
+                  ></v-text-field>
+                </v-flex>
+              </v-layout>
+
+            </v-flex>
+            <v-flex  xs12 sm6 md6 lg6>
               <v-layout wrap>
                 <v-flex xs12 sm7 md7 lg7>
-                  <v-autocomplete v-model="selectDoenca.selected"
-                                  :items="selectDoenca.items"
-                                  :search-input.sync="selectDoenca.search"
-                                  hide-no-data
-                                  hide-selected
-                                  item-text="nome"
-                                  item-value="id"
-                                  label="Doenças"
-                                  placeholder="Pesquisar por doença"
-                                  return-object
+                  <v-autocomplete
+                    v-model="selectDoenca.selected"
+                    :items="selectDoenca.items"
+                    :search-input.sync="selectDoenca.search"
+                    hide-no-data
+                    hide-selected
+                    item-text="nome"
+                    item-value="id"
+                    label="Doenças"
+                    placeholder="Pesquisar por doença"
+                    return-object
                   />
                 </v-flex>
                 <v-flex xs12 sm3 md3 lg3>
@@ -219,7 +284,11 @@
             </v-flex>
           </v-layout>
           <v-flex>
-            <v-btn @click="cadastrar">Enviar</v-btn>
+            <v-btn v-if="!animal.id" @click="cadastrar">Enviar</v-btn>
+            <v-btn v-if="animal.id" @click="editar">Enviar</v-btn>
+
+            <v-btn @click="clear">Limpar Formulário</v-btn>
+
           </v-flex>
         </v-form>
       </v-card-text>
@@ -229,6 +298,7 @@
 
 <script>
   import FazendasService from '../../services/FazendasService'
+  import LotesService from '../../services/LotesService'
   import {AnimaisService} from '../../services/AnimaisService'
   import DoencasService from '../../services/DoencasService'
 
@@ -241,20 +311,24 @@
           nome: '',
           is_vivo: true,
           is_primogenito: false,
-          sexo: 'F',
-          fazenda: {
-            id: 0,
-            nome: 'Não selecionado',
-            limite: 'Limite indisponível',
+          sexo: '',
+          lote: {
+            id: null,
+            codigo: '',
             quantidade_animais: 0
           },
           doencas: [],
           pesagem: {
-            peso: 0,
+            peso: '',
             data: ''
           },
           mae: {},
-          pai: {}
+          pai: {},
+          hemograma:{
+            ppt: '',
+            hematocrito: '',
+            data: ''
+          }
         },
         selectSexo: [
           {text: 'Macho', value: 'm'},
@@ -271,6 +345,7 @@
           items: [],
           search: null
         },
+        selectedFazenda: {},
         selectFaseVida: [
           {text: 'Recém-nascido', value: 'RECEM_NASCIDO'},
           {text: 'Bezerro', value: 'BEZERRO'},
@@ -291,13 +366,11 @@
           selected: {}
         },
         switchJaTeveDoenca: false,
-        switchJaFoiPesado: false
+        switchJaFoiPesado: false,
+        nomeTitulo: 'Cadastro de Animal'
       }
     },
     watch: {
-      'animal.mae': function () {
-        console.log(this.animal.mae)
-      },
       'selectFazenda.search'(val) {
         val && this.getFazendas(val)
       },
@@ -312,6 +385,12 @@
       }
     },
     mounted() {
+      this.getFazendas()
+      this.getDoencas()
+      this.animal.id = this.$route.params.id
+      if(this.animal.id){
+        nomeTitulo = 'Editar Animal'
+      }
     },
     methods: {
       removeDoenca(index) {
@@ -340,18 +419,30 @@
         this.selectDoenca.items = res.data.doencas.data
         this.selectDoenca.loading = false
       },
-      async getFazendas(val) {
+      async getFazendas(val){
         let busca = {
           nome: val
         }
         this.selectFazenda.loading = true
-        let res = await FazendasService._getAll({pagina: 1})
-        if (val) {
-          res = await FazendasService._getByNome(busca)
+        let response = await FazendasService._getAll({pagina: 1})
+        if (busca){
+          let response = await FazendasService._getByNome(busca)
         }
-        this.selectFazenda.items = res.data.fazendas.data
+        this.selectFazenda.items = response.data.fazendas.data
         this.selectFazenda.loading = false
       },
+      // async getLotes(val) {
+      //   let busca = {
+      //     nome: val
+      //   }
+      //   this.selectLote.loading = true
+      //   let res = await LotesService._getAll({pagina: 1})
+      //   if (val) {
+      //     res = await LotesService._getByCodigo(busca)
+      //   }
+      //   this.selectLote.items = res.data.lotes.data
+      //   this.selectLote.loading = false
+      // },
       async getMaes(val) {
         const busca = {
           nome: val,
@@ -374,19 +465,29 @@
         this.selectPai.loading = false
       },
       async cadastrar() {
+        console.log('cadastrar');
         console.log(this.animal)
-        let res = await AnimaisService._create(this.animal).catch(e => {
-          console.log(e.response.data)
-        })
-        console.log(res.data)
+        // let res = await AnimaisService._create(this.animal).catch(e => {
+        //   console.log(e.response.data)
+        // })
+        // console.log(res.data)
       },
       async editar() {
-        let res = await AnimaisService._update(this.animal).catch(e =>{
-          console.log(e.response.data)
-        })
-        console.log(res.data)
+        console.log('editar');
+      //   let res = await AnimaisService._update(this.animal).catch(e =>{
+      //     console.log(e.response.data)
+      //   })
+      //   console.log(res.data)
+      },
+      clear(){
+        this.animal.nome = ''
+        this.animal.sexo = ''
+        this.animal.lote.codigo = ''
+        this.animal.doencas = []
+        this.animal.pesagem.peso = 0
+        this.animal.pai = {}
+        this.animal.mae = {}
       }
-
     }
   }
 </script>
