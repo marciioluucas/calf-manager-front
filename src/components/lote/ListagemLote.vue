@@ -98,7 +98,9 @@
           id: null,
           codigo: null,
           descricao: null,
-          params: {pagina: 1}
+          params: {
+            pagina: 1
+          }
         },
         search: null,
         headers: [
@@ -115,17 +117,19 @@
     },
     methods: {
       async getLotes() {
+        let response = []
         if (this.buscaLote.id && !this.buscaLote.codigo) {
-          let response = await LotesService._getById(this.buscaLote)
+          response = await LotesService._getById(this.buscaLote)
           this.items = response.data.lotes
         } else if (!this.buscaLote.id && this.buscaLote.codigo) {
-          let response = await LotesService._getByCodigo(this.buscaLote)
+          response = await LotesService._getByCodigo(this.buscaLote)
           this.items = response.data.lotes
         } else {
-          let response = await LotesService._getAll()
+          response = await LotesService._getAll(this.buscaLote)
           this.items = response.data.lotes
-          // console.log(this.items);
+
         }
+        // console.log(response)
       },
       editar(id) {
         this.$router.push({

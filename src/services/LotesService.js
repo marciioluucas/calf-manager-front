@@ -1,14 +1,21 @@
 import Service from './Service'
+import Params from '../util/mapParams'
 
 export default {
-  _getAll: () => {
-    return Service.get('/lote')
+  _getAll: (busca) => {
+    const params = Params.map(busca.params)
+    return Service.get(`/lote${params}`)
   },
-  _getById: (id) => {
-    return Service.get(`/lote/${parseInt(id)}`)
+  _getById: (busca) => {
+    const params = Params.map(busca.params)
+    return Service.get(`/lote/${parseInt(busca.id)}${params}`)
   },
-  _getByCodigo: (codigo) => {
-    return Service.get(`/lote?codigo=${codigo}`)
+  _getByCodigo: async (busca) => {
+    if(typeof busca === 'string'){
+      return Service.get(`/lote?codigo=${codigo}`)
+    }
+    const params = Params.map(busca.params)
+    return Service.get(`/lote${params}`)
   },
   _create: (form) => {
     return Service.post(`/lote`, form)
