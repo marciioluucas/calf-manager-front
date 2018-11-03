@@ -3,28 +3,20 @@
     <v-layout row wrap>
       <v-flex xs12>
         <v-card>
-          <!--Componente de alerta-->
-          <v-alert
-            v-if="alerter.estado"
-            :value="true"
-            :type="alerter.tipo"
-          >
-            {{alerter.message}}
-          </v-alert>
 
           <!--Cabecalho da pagina-->
           <v-card-title primary-title>
 
             <div>
               <h2 class="title mb-0">{{nomeTitulo}}</h2>
-              <span class="caption">Busque pelo codigo para cadastrar novas fazendas</span>
+              <span class="caption">Preencha o formulário para cadastrar novas fazendas</span>
             </div>
           </v-card-title>
           <v-card-text>
             <v-form>
               <form>
                 <v-layout row wrap>
-                  <v-flex xs12 md4 lg8>
+                  <v-flex xs12>
                     <v-text-field
                       v-model="fazenda.nome"
                       label="Nome"
@@ -42,6 +34,25 @@
               </form>
             </v-form>
           </v-card-text>
+
+          <!--Componente de alerta-->
+          <v-snackbar
+             v-model="snackbar.estado"
+             :right="true"
+             :timeout="4000"
+             :multi-line="true"
+
+             :top="true"
+             :color="snackbar.color">
+             {{ snackbar.mensagem }}
+             <v-btn
+               color="black"
+               flat
+               @click="snackbar.mode = false"
+             >
+               Close
+             </v-btn>
+           </v-snackbar>
         </v-card>
       </v-flex>
     </v-layout>
@@ -57,10 +68,10 @@
           id: null,
           nome: ''
         },
-        alerter: {
-          tipo: 'success',
+        snackbar: {
+          color: 'success',
           estado: false,
-          message: 'message'
+          mensagem: ''
         },
         nomeTitulo: 'Cadastro de Fazenda'
       }
@@ -73,35 +84,48 @@
       }
     },
     methods: {
+
       async cadastrar() {
-        let n = this
         if (this.validarFormulario()) {
-          let response = await FazendasService._create(this.fazenda)
-          this.alerta(response.data.status === 200 ? 'success' : 'error', true, response.data.message.description)
+          let response = await FazendasService._create(this.fazenda).catch(exception => {
+            if(exception){
+              this.alerta('error', true, 'Erro ao cadastrar Fazenda!')
+            }
+          })
+          if(response.status === 201){
+            this.alerta(response.data.message.type, true, response.data.message.description)
+          }
           this.clear()
         } else {
-          n.alerta('warning', true, 'Preencha os campos corretamente')
+          this.alerta('warning', true, 'Preencha todos os campos corretamente!')
+
         }
       },
       clear() {
         this.fazenda.nome = ''
       },
-      alerta (tipo, estado, message) {
-        this.alerter.tipo = tipo
-        this.alerter.estado = estado
-        this.alerter.message = message
+      alerta(color, estado, mensagem) {
+        this.snackbar.color = color
+        this.snackbar.estado = estado
+        this.snackbar.mensagem = mensagem
       },
       async getFazenda() {
         let response = await FazendasService._getById({id: this.fazenda.id})
-        // console.log(response.data.fazendas[0])
-        this.fazenda = response.data.fazendas[0]
+        this.fazenda = response.data.fazendas
       },
       async editar() {
         if (this.validarFormulario()) {
-          let response = await FazendasService._update(this.fazenda)
-          this.alerta(response.data.status === 200 ? 'success' : 'error', true, response.data.message.description)
+
+          let response = await FazendasService._update(this.fazenda).catch(exception => {
+            if(exception){
+              this.alerta('error', true, 'Erro ao alterar Fazenda!')
+            }
+          })
+          if(response.status === 201){
+            this.alerta(response.status, true, response.data.message.description)
+          }
         } else {
-          this.alerta('warning', true, 'Preencha os campos corretamente')
+          this.alerta('warning', true, 'Preencha todos os campos corretamente')
         }
       },
       validarFormulario() {
@@ -110,6 +134,10 @@
         } else {
           return false
         }
+      },
+      closeAlert(){
+        let n = this
+
       }
 
     }

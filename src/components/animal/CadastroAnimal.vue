@@ -287,11 +287,29 @@
             <v-btn v-if="!animal.id" @click="cadastrar">Enviar</v-btn>
             <v-btn v-if="animal.id" @click="editar">Enviar</v-btn>
 
-            <v-btn @click="clear">Limpar Formulário</v-btn>
+            <v-btn @click="clearFormAnimal">Limpar Formulário</v-btn>
 
           </v-flex>
         </v-form>
       </v-card-text>
+      <!--Componente de alerta-->
+      <v-snackbar
+         v-model="snackbar.estado"
+         :right="true"
+         :timeout="4000"
+         :multi-line="true"
+
+         :top="true"
+         :color="snackbar.color">
+         {{ snackbar.mensagem }}
+         <v-btn
+           color="black"
+           flat
+           @click="snackbar.mode = false"
+         >
+           Close
+         </v-btn>
+       </v-snackbar>
     </v-card>
   </v-container>
 </template>
@@ -365,6 +383,11 @@
           items: [{text: 'CURADO', value: 'CURADO'}, {text: 'DOENTE', value: 'DOENTE'}],
           selected: {}
         },
+        snackbar: {
+          color: 'success',
+          estado: false,
+          mensagem: ''
+        },
         switchJaTeveDoenca: false,
         switchJaFoiPesado: false,
         nomeTitulo: 'Cadastro de Animal'
@@ -431,18 +454,7 @@
         this.selectFazenda.items = response.data.fazendas.data
         this.selectFazenda.loading = false
       },
-      // async getLotes(val) {
-      //   let busca = {
-      //     nome: val
-      //   }
-      //   this.selectLote.loading = true
-      //   let res = await LotesService._getAll({pagina: 1})
-      //   if (val) {
-      //     res = await LotesService._getByCodigo(busca)
-      //   }
-      //   this.selectLote.items = res.data.lotes.data
-      //   this.selectLote.loading = false
-      // },
+
       async getMaes(val) {
         const busca = {
           nome: val,
@@ -465,28 +477,63 @@
         this.selectPai.loading = false
       },
       async cadastrar() {
-        console.log('cadastrar');
-        console.log(this.animal)
-        // let res = await AnimaisService._create(this.animal).catch(e => {
-        //   console.log(e.response.data)
-        // })
-        // console.log(res.data)
+        if(this.validaFormAnimal()){
+          let res = await AnimaisService._create(this.animal).catch(e => {
+            if(exception){
+              this.alerta('error', true, 'Erro ao cadastrar animal!')
+            }
+          })
+          if(response.status === 201){
+            this.alerta(response.data.message.type ,true, response.data.message.description)
+            this.clearFormAnimal()
+          }
+        }
+        else {
+          this.alerta('warning', true, 'Preencha todos os campos corretamente!')
+        }
+
       },
       async editar() {
-        console.log('editar');
-      //   let res = await AnimaisService._update(this.animal).catch(e =>{
-      //     console.log(e.response.data)
-      //   })
-      //   console.log(res.data)
+        if(this.validaFormAnimal()){
+          let res = await AnimaisService._update(this.animal).catch(e => {
+            if(exception){
+              this.alerta('error', true, 'Erro ao cadastrar animal!')
+            }
+          })
+          if(response.status === 201){
+            this.alerta(response.data.message.type ,true, response.data.message.description)
+            this.clearFormAnimal()
+          }
+        }
+        else {
+          this.alerta('warning', true, 'Preencha todos os campos corretamente!')
+        }
       },
-      clear(){
+      validaFormAnimal(){
+        if(this.animal.nome !== '' && this.animal.nome !== null &&
+          this.animal.sexo !== '' && this.animal.sexo !== null &&
+          this.animal.lote.codigo !== '' && this.animal.lote.codigo !== null &&
+          this.animal.pesagem.peso !== '' && this.animal.pesagem.peso !== null &&
+          this.animal.doencas !== [] && this.animal.pai !== {} && this.animal.mae !== {}){
+            return true
+          }
+          else{
+            return false
+          }
+      },
+      clearFormAnimal(){
         this.animal.nome = ''
         this.animal.sexo = ''
         this.animal.lote.codigo = ''
         this.animal.doencas = []
-        this.animal.pesagem.peso = 0
+        this.animal.pesagem.peso = ''
         this.animal.pai = {}
         this.animal.mae = {}
+      },
+      alerta(color, estado, mensagem) {
+        this.snackbar.color = color
+        this.snackbar.estado = estado
+        this.snackbar.mensagem = mensagem
       }
     }
   }

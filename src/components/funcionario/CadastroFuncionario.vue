@@ -2,17 +2,10 @@
   <v-container grid-list-md>
     <v-card>
 
-      <v-alert
-        v-if="alerter.estado"
-        :value="true"
-        :type="alerter.tipo"
-      >
-        {{alerter.mensagem}}
-      </v-alert>
-
       <v-card-title primary-title>
         <div>
           <h2 class='title mb-0'>{{nomeTitulo}}</h2>
+          <span class="caption">Preencha o formulário para cadastrar novos funcionários</span>
           <span class='caption'></span>
         </div>
       </v-card-title>
@@ -48,8 +41,9 @@
                     <v-card-title>
                       <v-flex xs12>
                         <span class='title'>Cadastrar Pessoa</span>
-                        <small v-if="dialog.mensagem.pessoa" color="red">*Preencha todos os campos corretamente</small>
-
+                      </v-flex>
+                      <v-flex xs12>
+                        <span class="caption">Preencha o formulário para cadastrar novos usuários</span>
                       </v-flex>
                     </v-card-title>
                     <v-card-text>
@@ -126,7 +120,9 @@
                                   <v-card-title>
                                     <v-flex xs12>
                                       <span class='title'>Cadastrar Endereço</span>
-                                      <small v-if="dialog.mensagem.endereco" color="red">*Preencha todos os campos corretamente</small>
+                                    </v-flex>
+                                    <v-flex xs12>
+                                      <span class="caption">Preencha o formulário para cadastrar novos usuários</span>
                                     </v-flex>
                                   </v-card-title>
                                   <v-card-text>
@@ -199,8 +195,8 @@
                                   </v-card-text>
                                   <v-card-actions>
                                     <v-spacer></v-spacer>
-                                    <v-btn color="blue darken-1" flat @click.native="dialog.endereco = false">Cancelar</v-btn>
                                     <v-btn color="blue darken-1" flat @click="cadastrarEndereco">Salvar</v-btn>
+                                    <v-btn color="blue darken-1" flat @click.native="dialog.endereco = false">Cancelar</v-btn>
                                     <v-btn color="blue darken-1" flat @click="clearFormEndereco">Limpar Formulário</v-btn>
                                   </v-card-actions>
                                 </v-card>
@@ -214,8 +210,8 @@
                     </v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn color="blue darken-1" flat @click.native="dialog.pessoa = false">Cancelar</v-btn>
                       <v-btn color="blue darken-1" flat @click="cadastrarPessoa">Salvar</v-btn>
+                      <v-btn color="blue darken-1" flat @click.native="dialog.pessoa = false">Cancelar</v-btn>
                       <v-btn color="blue darken-1" flat @click="clearFormPessoa">Limpar Formulário</v-btn>
                     </v-card-actions>
                   </v-card>
@@ -256,7 +252,9 @@
                   <v-card-title>
                     <v-flex xs12>
                       <span class='title'>Cadastrar Fazenda</span>
-                      <small v-if="dialog.mensagem.fazenda" color="red">*Preencha todos os campos corretamente</small>
+                    </v-flex>
+                    <v-flex xs12>
+                      <span class="caption">Preencha o formulário para cadastrar novos usuários</span>
                     </v-flex>
                   </v-card-title>
                   <v-card-text>
@@ -276,8 +274,8 @@
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" flat @click.native="dialog.fazenda = false">Cancelar</v-btn>
                     <v-btn color="blue darken-1" flat @click="cadastrarFazenda">Salvar</v-btn>
+                    <v-btn color="blue darken-1" flat @click.native="dialog.fazenda = false">Cancelar</v-btn>
                     <v-btn color="blue darken-1" flat @click="clearFormFazenda">Limpar Formulário</v-btn>
                   </v-card-actions>
                 </v-card>
@@ -309,7 +307,9 @@
                     <v-card-title>
                       <v-flex xs12>
                         <span class='title'>Cadastrar Cargo</span>
-                        <small v-if="dialog.mensagem.cargo">*Preencha todos os campos corretamente</small>
+                      </v-flex>
+                      <v-flex xs12>
+                        <span class="caption">Preencha o formulário para cadastrar novos usuários</span>
                       </v-flex>
                     </v-card-title>
                     <v-card-text>
@@ -336,14 +336,15 @@
                     </v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn color="blue darken-1" flat @click.native="dialog.cargo = false">Cancelar</v-btn>
                       <v-btn color="blue darken-1" flat @click="cadastrarCargo">Salvar</v-btn>
+                      <v-btn color="blue darken-1" flat @click.native="dialog.cargo = false">Cancelar</v-btn>
                       <v-btn color="blue darken-1" flat @click="clearFormCargo">Limpar Formulário</v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
               </v-layout>
             </v-flex>
+
             <v-flex xs12 sm6 md6 lg6>
               <v-text-field
                 v-model="funcionario.salario"
@@ -382,7 +383,9 @@
                     <v-card-title>
                       <v-flex xs12>
                         <span class='title'>Cadastrar Usuário</span>
-                        <small v-if="dialog.mensagem.usuario" color="red">*Preencha todos os campos corretamente</small>
+                      </v-flex>
+                      <v-flex xs12>
+                        <span class="caption">Preencha o formulário para cadastrar novos usuários</span>
                       </v-flex>
                     </v-card-title>
                     <v-card-text>
@@ -439,8 +442,8 @@
                     </v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn color="blue darken-1" flat @click.native="dialog.usuario = false">Cancelar</v-btn>
                       <v-btn color="blue darken-1" flat @click="cadastrarUsuario">Salvar</v-btn>
+                      <v-btn color="blue darken-1" flat @click.native="dialog.usuario = false">Cancelar</v-btn>
                       <v-btn color="blue darken-1" flat @click="clearFormUsuario">Limpar Formulário</v-btn>
                     </v-card-actions>
                   </v-card>
@@ -458,7 +461,24 @@
         </v-form>
 
       </v-card-text>
+      <!--Componente de alerta-->
+      <v-snackbar
+         v-model="snackbar.estado"
+         :right="true"
+         :timeout="4000"
+         :multi-line="true"
 
+         :top="true"
+         :color="snackbar.color">
+         {{ snackbar.mensagem }}
+         <v-btn
+           color="black"
+           flat
+           @click="snackbar.mode = false"
+         >
+           Close
+         </v-btn>
+       </v-snackbar>
     </v-card>
   </v-container>
 </template>
@@ -609,7 +629,12 @@
           }
         },
         show1: false,
-        nomeTitulo: 'Cadastrar Funcionário'
+        nomeTitulo: 'Cadastrar Funcionário',
+        snackbar: {
+          color: 'success',
+          estado: false,
+          mensagem: ''
+        }
       }
     },
     watch: {
@@ -633,7 +658,11 @@
       }
     },
     mounted() {
-      this.atualizarDados()
+      this.getPessoas()
+      this.getEnderecos()
+      this.getFazendas()
+      this.getCargos()
+      this.getUsuarios()
       this.funcionario.id = this.$route.params.id
       if (this.funcionario.id) {
         this.nomeTitulo = 'Editar Funcionário'
@@ -725,84 +754,127 @@
 
       async cadastrarCargo() {
         if (this.validarFormCargo()) {
-          this.dialog.mensagem.cargo
-          let response = await CargosService._create(this.cargo)
-          console.log(response.data)
-          this.dialog = false
+          let response = await CargosService._create(this.cargo).catch(exception => {
+            if(exception){
+              this.alerta('error', true, 'Erro ao cadastrar cargo!')
+            }
+          })
+          if(response.status === 201){
+            this.alerta(response.data.message.type, true, response.data.message.description)
+            this.getCargos()
+            this.dialog.cargo = false
+          }
         } else {
-          this.dialog = true
+          this.alerta('warning', true, 'Preencha todos os campos corretamente!')
         }
       },
       async cadastrarFazenda() {
-        if (this.validarFormFazenda){
-          let response = await FazendasService._create(this.funcionario.fazenda)
+        if (this.validarFormFazenda()){
+          let response = await FazendasService._create(this.funcionario.fazenda).catch(exception => {
+            if (exception){
+              this.alerta('error', true, 'Erro ao cadastrar fazenda!')
+            }
+          })
           if(response.status === 201){
-            this.atualizarDados()
+            this.alerta(response.data.message.type, true, response.data.message.description)
+            this.clearFormFazenda()
+            this.getFazendas()
             this.dialog.fazenda = false
-            this.dialog.mensagem.fazenda = null
           }
-          if (response.status === 200){
-            console.log(response);
-          }
+        }
+        else {
+          this.alerta('warning', true, 'Preencha todos os campos corretamente!')
         }
       },
       async cadastrarPessoa() {
         if (this.validarFormPessoa()) {
-          let response = await PessoasService._create(this.funcionario.pessoa)
+          let response = await PessoasService._create(this.funcionario.pessoa).catch(exception => {
+            if(exception){
+              this.alerta('error',true, 'Erro ao cadastrar pessoa!')
+            }
+          })
           if (response.status === 201){
+            this.alerta(response.data.message.type, true, response.data.message.description)
             this.dialog.pessoa = false
-            this.atualizarDados()
-          } else if (response.status === 200){
-            console.log(response);
+            this.clearFormPessoa()
+            this.getPessoas()
           }
-        } else {
-          this.dialog.mensagem.pessoa = true
-
+        }
+        else {
+          this.alerta('warning', true, 'Preencha todos os campos corretamente!')
         }
       },
       async cadastrarEndereco() {
         if(this.validarFormEndereco()){
-          let response = await EnderecosService._create(this.funcionario.pessoa.endereco)
+          let response = await EnderecosService._create(this.funcionario.pessoa.endereco).catch(exception => {
+            if(exception) {
+              this.alerta('error', true, 'Erro ao cadastrar endereço!')
+            }
+          })
           if(response.status === 201){
+            this.alerta(response.data.message.type, true, response.data.message.description)
             this.dialog.endereco = false
-            this.dialog.mensagem.endereco = null
             this.clearFormEndereco()
-            this.atualizarDados()
-          } else if (response.status === 200){
-            console.log(response);
+            this.getEnderecos()
           }
         }
         else {
-          this.dialog.mensagem.endereco = true
+          this.alerta('warning', true, 'Preencha todos os campos corretamente!')
         }
       },
       async cadastrarUsuario(){
         if (this.validarFormUsuario()){
           if(this.validarSenha()){
-            let response = await UsuariosService._create(this.funcionario.usuario)
-            this.dialog.usuario = false
+            let response = await UsuariosService._create(this.funcionario.usuario).catch(exception => {
+              if(exception){
+                this.alerta('error', true, 'Erro ao cadastrar usuário!')
+              }
+            })
             if(response.status === 201){
-              this.atualizarDados()
+              this.alerta(response.data.message.type, true, response.data.message.description)
+              this.dialog.usuario = false
               this.clearFormUsuario()
-            } else if(response.status === 200){
-              this.dialog.usuario = true
-              console.log(response);
             }
           }
         }
         else {
-          this.dialog.mensagem.usuario = true
+          this.alerta('warning', true, 'Preencha todos os campos corretamente!')
         }
       },
 
       async cadastrar() {
         if(this.validarFormFuncionario()){
-          let response = await FuncionariosService._create(this.funcionario)
-          console.log(this.funcionario);
+         let response = await FuncionariosService._create(this.funcionario).catch(exception => {
+           if(exception){
+             this.alerta('error', true, 'Erro ao cadastrar funcionário!')
+           }
+         })
+         if(response.status === 201){
+           this.alerta(response.data.message.type, true, response.data.message.description)
+           this.dialog.funcionario = false
+           this.clearformFuncionario()
+         }
+        }
+        else {
+          this.alerta('warning', true, 'Preencha todos os campos corretamente!')
         }
       },
       async editar() {
-
+        if(this.validarFormFuncionario()){
+         let response = await FuncionariosService._update(this.funcionario).catch(exception => {
+           if(exception){
+             this.alerta('error', true, 'Erro ao cadastrar funcionário!')
+           }
+         })
+         if(response.status === 201){
+           this.alerta(response.data.message.type, true, response.data.message.description)
+           this.dialog.funcionario = false
+           this.clearformFuncionario()
+         }
+        }
+        else {
+          this.alerta('warning', true, 'Preencha todos os campos corretamente!')
+        }
       },
 
       validarFormPessoa() {
@@ -904,10 +976,12 @@
         this.funcionario.cargo.descricao = ''
       },
       clearFormFazenda(){
-
+        this.funcionario.fazenda.nome = ''
       },
       clearFormUsuario(){
-
+        this.funcionario.usuario.login = ''
+        this.funcionario.usuario.senha = ''
+        this.funcionario.usuario.reSenha = ''
       },
       clearFormGrupo() {
         this.funcionario.grupo.nome = ''
@@ -922,13 +996,10 @@
         this.selectUsuario.items = []
         this.selectGrupo.items = []
       },
-      atualizarDados(){
-        this.getCargos()
-        this.getFazendas()
-        this.getGrupos()
-        this.getUsuarios()
-        this.getPessoas()
-        this.getEnderecos()
+      alerta(color, estado, mensagem) {
+        this.snackbar.color = color
+        this.snackbar.estado = estado
+        this.snackbar.mensagem = mensagem
       }
     }
   }

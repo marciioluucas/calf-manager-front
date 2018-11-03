@@ -1,20 +1,12 @@
 <template>
   <v-container grid-list-md>
     <v-card>
-      <!--Componente de alerta-->
-      <v-alert
-        v-if="alerter.estado"
-        :value="true"
-        :type="alerter.tipo"
-      >
-        {{alerter.mensagem}}
-      </v-alert>
 
       <!--Cabeçalho da pagina-->
       <v-card-title primary-title>
         <div>
           <h2 class='title mb-0'>{{nomeTitulo}}</h2>
-          <span class='caption'></span>
+          <span class='caption'>Preencha o formulário para cadastrar novos grupos.</span>
         </div>
       </v-card-title>
 
@@ -41,14 +33,18 @@
 
             <!--Adicionar Permissao-->
             <v-flex xs12 sm4 md4 lg4>
-              <v-combobox
+              <v-autocomplete
                 v-model="grupo.permissao"
                 :items="selectPermissao.items"
+                :search-input.sync="selectPermissao.search"
+                hide-no-data
+                hide-selected
                 item-text="nome_modulo"
                 item-value="id"
-                label="Permissão"
-                placeholder=""
-              ></v-combobox>
+                label="Permissões"
+                placeholder="Pesquisar por permissão"
+                return-object
+              />
             </v-flex>
 
             <!--Cadastrar Permissao-->
@@ -59,16 +55,11 @@
                   <v-card>
                     <v-card-title>
                       <v-flex xs12>
-                        <v-alert
-                          v-if="alerterPermissao.estado"
-                          :value="true"
-                          :type="alerterPermissao.tipo"
-                        >
-                          {{alerterPermissao.mensagem}}
-                        </v-alert>
                         <span class='title'>Cadastrar Permissão</span>
                       </v-flex>
-
+                      <v-flex xs12>
+                      <span class="caption">Preencha o formulário para cadastrar novas permissões</span>
+                    </v-flex>
                     </v-card-title>
                     <v-card-text>
                       <v-container grid-list-md>
@@ -125,8 +116,8 @@
                     </v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn color="blue darken-1" flat @click.native="dialog = false">Cancelar</v-btn>
                       <v-btn color="blue darken-1" flat @click="cadastrarPermissao">Salvar</v-btn>
+                      <v-btn color="blue darken-1" flat @click.native="dialog = false">Cancelar</v-btn>
                       <v-btn color="blue darken-1" flat @click="clearFormPermissao">Limpar Formulário</v-btn>
                     </v-card-actions>
                   </v-card>
@@ -140,10 +131,28 @@
             <v-btn v-if="!grupo.id" @click="cadastrar">Enviar</v-btn>
             <v-btn v-if="grupo.id" @click="editar">Editar</v-btn>
 
-            <v-btn @click="clear">Limpar formulário</v-btn>
+            <v-btn @click="clearFormGrupo">Limpar formulário</v-btn>
           </v-flex>
         </v-form>
       </v-card-text>
+      <!--Componente de alerta-->
+      <v-snackbar
+         v-model="snackbar.estado"
+         :right="true"
+         :timeout="4000"
+         :multi-line="true"
+
+         :top="true"
+         :color="snackbar.color">
+         {{ snackbar.mensagem }}
+         <v-btn
+           color="black"
+           flat
+           @click="snackbar.mode = false"
+         >
+           Close
+         </v-btn>
+       </v-snackbar>
     </v-card>
   </v-container>
 </template>
@@ -169,15 +178,12 @@
           }
         },
         selectPermissao: {
-          items: []
+          loading: false,
+          items: [],
+          search: null
         },
-        alerter: {
-          tipo: '',
-          estado: false,
-          mensagem: ''
-        },
-        alerterPermissao: {
-          tipo: '',
+        snackbar: {
+          color: 'success',
           estado: false,
           mensagem: ''
         },
@@ -193,80 +199,80 @@
         this.getGrupo()
       }
     },
+    watch: {
+      'selectPermissao.search'(val){
+        val && this.getPermissoes(val)
+      }
+    },
     methods: {
       async getGrupo() {
         let response = await GrupoService._getById(this.grupo.id)
         this.grupo = response.data.grupos[0]
       },
-      async getPermissoes() {
-        let response = await PermissaoService._getAll(this.grupo.permissao)
+      async getPermissoes(val) {
+        let busca = {
+          nome: val
+        }
+        let response  = await PermissaoService._getAll(this.grupo.permissao)
+        if(val){
+          response = await PermissaoService._getByNome(busca)
+        }
         this.selectPermissao.items = response.data.permissoes.data
       },
       async cadastrarPermissao() {
         if (this.validarFormPermissao()) {
-          let response = await PermissaoService._create(this.grupo.permissao)
-          if (response.status === 200) {
-            this.alertaPermissao('success', true, response.data.message.description)
+          let response = await PermissaoService._create(this.grupo.permissao).catch(exception => {
+            if (exception) {
+              this.alerta('error', true, 'Erro ao Cadastrar Grupo!')
+            }
+          })
+          if (response.status === 201) {
+            this.alerta(response.data.message.type, true, response.data.message.description)
+            this.dialog = false
+            this.clearFormPermissao()
+            this.getPermissoes()
           }
-          if (response.status === 400) {
-            this.alertaPermissao('error', true, 'Erro ao Cadastrar Grupo: Dados inválidos!')
-          }
-          if (response.status === 500) {
-            this.alertaPermissao('error', true, 'Erro ao Cadastrar Grupo: Erro interno, Solicite suporte!')
-          }
-          this.dialog = false
-          this.getPermissoes()
         } else {
-          this.alertaPermissao('warning', true, 'Preencha os campos corretamente!')
+          this.alerta('warning', true, 'Preencha os campos corretamente!')
         }
       },
       async cadastrar() {
-        if (this.validarForm()) {
-          let response = await GrupoService._create(this.grupo)
-          if (response.status === 200) {
-            this.alerta('success', true, response.data.message.description)
+        if (this.validarFormGrupo()) {
+          let response = await GrupoService._create(this.grupo).catch(exception => {
+            if (exception) {
+              this.alerta('error', true, 'Erro ao Cadastrar Grupo!')
+            }
+          })
+          if (response.status === 201) {
+            this.alerta(response.data.message.type, true, response.data.message.description)
+            this.clearFormGrupo()
+            this.getPermissoes()
           }
-          if (response.status === 400) {
-            this.alerta('error', true, 'Erro ao Cadastrar Grupo: Dados inválidos!')
-          }
-          if (response.status === 500) {
-            this.alerta('error', true, 'Erro ao Cadastrar Grupo: Erro interno, Solicite suporte!')
-          }
-          this.clear()
-          this.getPermissoes()
         } else {
           this.alerta('warning', true, 'Preencha os campos corretamente!')
         }
       },
       async editar() {
-        if (this.validarForm()) {
-          let response = await GrupoService._update(this.grupo)
-          if (response.status === 200) {
-            this.alerta('success', true, response.data.message.description)
+        if (this.validarFormGrupo()) {
+          let response = await GrupoService._update(this.grupo).catch(exception => {
+            if (exception) {
+              this.alerta('error', true, 'Erro ao Cadastrar Grupo!')
+            }
+          })
+          if (response.status === 201) {
+            this.alerta(response.data.message.type, true, response.data.message.description)
+            this.clearFormGrupo()
           }
-          if (response.status === 400) {
-            this.alerta('error', true, 'Erro ao Cadastrar Grupo: Dados inválidos!')
-          }
-          if (response.status === 500) {
-            this.alerta('error', true, 'Erro ao Cadastrar Grupo: Erro interno, Solicite suporte!')
-          }
-          this.clear()
-          this.getPermissoes()
         } else {
           this.alerta('warning', true, 'Preencha os campos corretamente!')
         }
       },
-      alerta(tipo, estado, mensagem) {
-        this.alerter.tipo = tipo
-        this.alerter.estado = estado
-        this.alerter.mensagem = mensagem
+      alerta(color, estado, mensagem) {
+        this.snackbar.color = color
+        this.snackbar.estado = estado
+        this.snackbar.mensagem = mensagem
       },
-      alertaPermissao(tipo, estado, mensagem) {
-        this.alerterPermissao.tipo = tipo
-        this.alerterPermissao.estado = estado
-        this.alerterPermissao.mensagem = mensagem
-      },
-      validarForm() {
+      validarFormGrupo() {
         if (this.grupo.nome !== '' && this.grupo.nome !== null &&
             this.grupo.descricao !== '' && this.grupo.descricao !== null &&
             this.grupo.permissao.id !== '' && this.grupo.permissao.id !== null) {
@@ -276,7 +282,8 @@
         }
       },
       validarFormPermissao() {
-        if (this.grupo.permissao.create !== '' && this.grupo.permissao.create !== null &&
+        if (this.grupo.permissao.nome_modulo !== '' && this.grupo.permissao.nome_modulo !== null &&
+          this.grupo.permissao.create !== '' && this.grupo.permissao.create !== null &&
           this.grupo.permissao.read !== '' && this.grupo.permissao.read !== null &&
           this.grupo.permissao.update !== '' && this.grupo.permissao.update !== null &&
           this.grupo.permissao.delete !== '' && this.grupo.permissao.delete !== null) {
@@ -285,7 +292,7 @@
           return false
         }
       },
-      clear() {
+      clearFormGrupo() {
         this.grupo.nome = ''
         this.grupo.descricao = ''
         this.selectPermissao = []

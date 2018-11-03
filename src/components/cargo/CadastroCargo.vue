@@ -1,14 +1,6 @@
 <template>
   <v-container grid-list-md>
     <v-card>
-      <!--Componente de alerta-->
-      <v-alert
-        v-if="alerter.estado"
-        :value="true"
-        :type="alerter.tipo"
-      >
-        {{alerter.mensagem}}
-      </v-alert>
 
       <!--Cabeçalho da pagina-->
       <v-card-title primary-title>
@@ -43,10 +35,28 @@
             <v-btn v-if="!cargo.id" @click="cadastrar">Enviar</v-btn>
             <v-btn v-if="cargo.id" @click="editar">Editar</v-btn>
 
-            <v-btn @click="clearForm">Limpar formulário</v-btn>
+            <v-btn @click="clearFormCargo">Limpar formulário</v-btn>
           </v-flex>
         </v-form>
       </v-card-text>
+      <!--Componente de alerta-->
+      <v-snackbar
+         v-model="snackbar.estado"
+         :right="true"
+         :timeout="4000"
+         :multi-line="true"
+
+         :top="true"
+         :color="snackbar.color">
+         {{ snackbar.mensagem }}
+         <v-btn
+           color="black"
+           flat
+           @click="snackbar.mode = false"
+         >
+           Close
+         </v-btn>
+       </v-snackbar>
     </v-card>
   </v-container>
 </template>
@@ -62,8 +72,8 @@
             nome: '',
             descricao: ''
           },
-          alerter: {
-            tipo: 'success',
+          snackbar: {
+            color: 'success',
             estado: false,
             mensagem: ''
           },
@@ -84,19 +94,15 @@
         },
         async cadastrar() {
           if (this.validarForm()) {
-            let response = await CargosService._create(this.cargo)
-            if(response.status === 200){
-              this.alerta('success', true, response.data.message.description)
+            let response = await CargosService._create(this.cargo).catch(exception => {
+              if(exception){
+                this.alerta('error', true, 'Erro ao cadastrar Fazenda!')
+              }
+            })
+            if(response.status === 201){
+              this.alerta(response.data.message.type, true, response.data.message.description)
             }
-            else if(response.status === 400){
-              this.alerta('error', true, 'Erro ao validar formulário!')
-            }
-            else if (response.status === 500) {
-              this.alerta('error', true, 'Erro ao cadastrar cargo. Entre em contato com suporte técnino!')
-            }
-            // this.alerta(response.status === 200 ? 'error' : 'success', true, response.data.message.description)
-            this.clearForm()
-            // console.log(response.data.message)
+            this.clearFormCargo()
           }
           else {
             this.alerta('warning', true, 'Preencha os campos corretamente!')
@@ -104,34 +110,33 @@
         },
         async editar() {
           if (this.validarForm()) {
-            let response = await CargosService._update(this.cargo)
-            if(response.status === 200){
-              this.alerta('success', true, response.data.message.description)
+            let response = await CargosService._create(this.cargo).catch(exception => {
+              if(exception){
+                this.alerta('error', true, 'Erro ao cadastrar Fazenda!')
+              }
+            })
+            if(response.status === 201){
+              this.alerta(response.data.message.type, true, response.data.message.description)
             }
-            else if (response.status === 400){
-              this.alerta('error', true, 'Erro ao validar formulário!')
-            }
-            else if (response.status === 500){
-              this.alerta('error', true, 'Erro ao editar formulário. Entre em contato com suporte técnico')
-            }
-            this.clearForm()
+            this.clearFormCargo()
           } else {
             this.alerta('warning', true, 'Preencha os campos corretamente!')
           }
         },
-        alerta(tipo, estado, mensagem) {
-          this.alerter.tipo = tipo
-          this.alerter.estado = estado
-          this.alerter.mensagem = mensagem
+        alerta(color, estado, mensagem) {
+          this.snackbar.color = color
+          this.snackbar.estado = estado
+          this.snackbar.mensagem = mensagem
         },
         validarForm() {
-          if (this.cargo.nome !== '' && this.cargo.nome !== null && this.cargo.descricao !== '' && this.cargo.descricao !== null) {
+          if (this.cargo.nome !== '' && this.cargo.nome !== null &&
+              this.cargo.descricao !== '' && this.cargo.descricao !== null) {
             return true
           } else {
             return false
           }
         },
-        clearForm() {
+        clearFormCargo() {
           this.cargo.nome = ''
           this.cargo.descricao = ''
         }

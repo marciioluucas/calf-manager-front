@@ -1,14 +1,6 @@
 <template>
   <v-container grid-list-md>
     <v-card>
-      <!--Componente de alerta-->
-      <v-alert
-        v-if="alerter.estado"
-        :value="true"
-        :type="alerter.tipo"
-      >
-        {{alerter.mensagem}}
-      </v-alert>
 
       <!--Cabeçalho da pagina-->
       <v-card-title primary-title>
@@ -47,6 +39,24 @@
           </v-flex>
         </v-form>
       </v-card-text>
+      <!--Componente de alerta-->
+      <v-snackbar
+         v-model="snackbar.estado"
+         :right="true"
+         :timeout="4000"
+         :multi-line="true"
+
+         :top="true"
+         :color="snackbar.color">
+         {{ snackbar.mensagem }}
+         <v-btn
+           color="black"
+           flat
+           @click="snackbar.mode = false"
+         >
+           Close
+         </v-btn>
+       </v-snackbar>
     </v-card>
   </v-container>
 </template>
@@ -63,10 +73,10 @@
           nome: '',
           descricao: ''
         },
-        alerter: {
-          tipo: 'success',
+        snackbar: {
+          color: 'success',
           estado: false,
-          mensagem: 'message'
+          mensagem: ''
         },
         nomeTitulo: 'Cadastro de Doenca'
       }
@@ -80,49 +90,53 @@
     },
     methods: {
       async cadastrar() {
-        let n = this
-        if (this.validarFormulario()) {
-          let response = await DoencasService._create(this.doenca)
-          this.clear()
-          this.alerta(response.status === 200 ? 'error' : 'success', true, response.data.message.description)
-
-          // let response = await DoencasService._create(this.doenca).catch(e => {
-          //   console.log(e.response.data)
-          //   n.alerta('error', true, 'Erro ao cadastrar Doenca!')
-          // }).finally(function (r) {
-          //   n.alerta('success', true, 'Cadastro realizado com sucesso!')
-          //   n.doenca.nome = ''
-          //   n.doenca.descricao = ''
-          // })
-        } else {
-          n.alerta('warning', true, 'Preencha os campos corretamente')
+        if(this.validarFormDoenca()){
+          let res = await DoencasService._create(this.doenca).catch(e => {
+            if(exception){
+              this.alerta('error', true, 'Erro ao cadastrar doença!')
+            }
+          })
+          if(response.status === 201){
+            this.alerta(response.data.message.type ,true, response.data.message.description)
+            this.clearFormAnimal()
+          }
+        }
+        else {
+          this.alerta('warning', true, 'Preencha todos os campos corretamente!')
         }
       },
       async editar() {
-        if (this.validarFormulario()) {
-          const response = await DoencasService._update(this.doenca)
-          this.alerta(response.status === 200 ? 'success' : 'error', true, response.data.message.description)
-          this.clear()
-          // Adicionar a funcionalidade de voltar a pagina alterior para voltar a tabela de doenças
-        } else {
-          this.alerta('warning', true, 'Preencha os campos corretamente!')
+        if(this.validarFormDoenca()){
+          let res = await DoencasService._update(this.doenca).catch(e => {
+            if(exception){
+              this.alerta('error', true, 'Erro ao cadastrar doença!')
+            }
+          })
+          if(response.status === 201){
+            this.alerta(response.data.message.type ,true, response.data.message.description)
+            this.clearFormAnimal()
+          }
+        }
+        else {
+          this.alerta('warning', true, 'Preencha todos os campos corretamente!')
         }
       },
       clear() {
         this.doenca.nome = ''
         this.doenca.descricao = ''
       },
-      alerta(tipo, estado, mensagem) {
-        this.alerter.tipo = tipo
-        this.alerter.estado = estado
-        this.alerter.mensagem = mensagem
+      alerta(color, estado, mensagem) {
+        this.snackbar.color = color
+        this.snackbar.estado = estado
+        this.snackbar.mensagem = mensagem
       },
       async getDoenca() {
         let response = await DoencasService._getById({id: this.doenca.id})
         this.doenca = response.data.doencas[0]
       },
-      validarFormulario() {
-        if (this.doenca.nome !== '' && this.doenca.nome !== undefined && this.doenca.descricao !== '' && this.doenca.descricao !== undefined) {
+      validarFormDoenca() {
+        if (this.doenca.nome !== '' && this.doenca.nome !== null &&
+            this.doenca.descricao !== '' && this.doenca.descricao !== null) {
           return true
         } else {
           return false
