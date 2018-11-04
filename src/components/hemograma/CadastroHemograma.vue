@@ -1,14 +1,6 @@
 <template>
   <v-container grid-list-md>
     <v-card>
-      <!--Componente de alerta-->
-      <v-alert
-        v-if="alerter.estado"
-        :value="true"
-        :type="alerter.tipo"
-      >
-        {{alerter.mensagem}}
-      </v-alert>
 
       <!--Cabeçalho da pagina-->
       <v-card-title primary-title>
@@ -67,10 +59,28 @@
             <v-btn v-if="!hemograma.id" @click="cadastrar">Enviar</v-btn>
             <v-btn v-if="hemograma.id" @click="editar">Editar</v-btn>
 
-            <v-btn @click="clear">Limpar formulário</v-btn>
+            <v-btn @click="clearFormHemograma">Limpar formulário</v-btn>
           </v-flex>
         </v-form>
       </v-card-text>
+      <!--Componente de alerta-->
+      <v-snackbar
+         v-model="snackbar.estado"
+         :right="true"
+         :timeout="4000"
+         :multi-line="true"
+
+         :top="true"
+         :color="snackbar.color">
+         {{ snackbar.mensagem }}
+         <v-btn
+           color="black"
+           flat
+           @click="snackbar.mode = false"
+         >
+           Close
+         </v-btn>
+       </v-snackbar>
     </v-card>
   </v-container>
 </template>
@@ -96,8 +106,8 @@
             items: [],
             search: null
           },
-          alerter: {
-            tipo: '',
+          snackbar: {
+            color: 'success',
             estado: false,
             mensagem: ''
           },
@@ -119,25 +129,34 @@
       methods: {
         async cadastrar() {
           if(this.validarForm()){
-            console.log(this.hemograma);
-            // let response = await HemogramaService._create(this.hemograma)
-            // if(response.status === 201){
-            //   this.alerta(response.status, true, response.data.message.description)
-            // }
+            let response = await HemogramaService._create(this.hemograma).catch(exception => {
+              if(exception){
+                this.alerta('error', true, 'Erro ao cadastrar exame!')
+              }
+            })
+            if(response.status === 201){
+              this.alerta(response.data.message.type, true, response.data.message.description)
+              this.clearFormHemograma()
+            }
           }
           else {
-            this.alerta('success', true, 'Preencha os campos corretamente!')
+            this.alerta('success', true, 'Preencha todos os campos corretamente!')
           }
         },
         async editar() {
           if(this.validarForm()){
-            let response = await HemogramaService._update(this.hemograma)
+            let response = await HemogramaService._update(this.hemograma).catch(exception => {
+              if(exception){
+                this.alerta('error', true, 'Erro ao alterar exame!')
+              }
+            })
             if(response.status === 201){
-              this.alerta(response.status, true, response.data.message.description)
+              this.alerta(response.data.message.type, true, response.data.message.description)
+              this.clearFormHemograma()
             }
           }
           else {
-            this.alerta('success', true, 'Preencha os campos corretamente!')
+            this.alerta('success', true, 'Preencha todos os campos corretamente!')
           }
         },
         async getHemograma() {
@@ -156,7 +175,7 @@
           this.selectAnimais.items = response.data.animais.data
           this.selectAnimais.loading = false
         },
-        clear(){
+        clearFormHemograma(){
           this.animal = {}
           this.hemograma.ppt = ''
           this.hemograma.hematocrito = ''
@@ -171,7 +190,12 @@
           else{
             return false
           }
-        }
+        },
+        alerta(color, estado, mensagem) {
+          this.snackbar.color = color
+          this.snackbar.estado = estado
+          this.snackbar.mensagem = mensagem
+        },
       }
     }
 </script>

@@ -56,19 +56,18 @@
                 <v-dialog v-model="dialog" persistent max-width="500px">
                   <v-btn fab slot="activator" color="indigo" dark><v-icon dark>add</v-icon></v-btn>
                   <v-card>
+                    <v-card-title>
                       <v-flex xs12>
                         <span class='title'>Cadastrar Medicamento</span>
                       </v-flex>
                       <v-flex xs12>
                         <span class='caption'>Preencha o formulário para cadastrar novos medicamentos.</span>
                       </v-flex>
-                      <v-card-title>
-
                     </v-card-title>
                     <v-card-text>
                       <v-container grid-list-md>
                         <v-layout wrap>
-                          <v-flex xs12 sm6 md6>
+                          <v-flex xs12>
                             <v-text-field
                               v-model="dose.medicamento.nome"
                               label="Nome"
@@ -76,7 +75,7 @@
                             >
                             </v-text-field>
                           </v-flex>
-                          <v-flex xs12 sm6 md6>
+                          <v-flex xs12>
                             <v-text-field
                               v-model="dose.medicamento.prescricao"
                               label="Prescricao"

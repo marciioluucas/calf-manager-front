@@ -3,20 +3,12 @@
     <v-layout row wrap>
       <v-flex xs12>
         <v-card>
-          <!--Componente de alerta-->
-          <v-alert
-            v-if="alerter.estado"
-            :value="true"
-            :type="alerter.tipo"
-          >
-            {{alerter.mensagem}}
-          </v-alert>
 
           <!--Cabeçalho da pagina-->
           <v-card-title primary-title>
             <div>
               <h2 class='title mb-0'>{{nomeTitulo}}</h2>
-              <span class='caption'></span>
+              <span class="caption">Preencha o formulário para cadastrar novos medicamentos</span>
             </div>
           </v-card-title>
 
@@ -26,6 +18,7 @@
               <v-layout row wrap>
                 <v-flex xs12>
                   <span class='title'>Informações gerais</span>
+
                 </v-flex>
 
                 <v-flex xs12 sm6 md6 lg6>
@@ -45,10 +38,28 @@
                 <v-btn v-if="!medicamento.id" @click="cadastrar">Enviar</v-btn>
                 <v-btn v-if="medicamento.id" @click="editar">Editar</v-btn>
 
-                <v-btn @click="clear">Limpar formulário</v-btn>
+                <v-btn @click="clearFormMedicamento">Limpar formulário</v-btn>
               </v-flex>
             </v-form>
           </v-card-text>
+          <!--Componente de alerta-->
+          <v-snackbar
+             v-model="snackbar.estado"
+             :right="true"
+             :timeout="4000"
+             :multi-line="true"
+
+             :top="true"
+             :color="snackbar.color">
+             {{ snackbar.mensagem }}
+             <v-btn
+               color="black"
+               flat
+               @click="snackbar.mode = false"
+             >
+               Close
+             </v-btn>
+           </v-snackbar>
         </v-card>
       </v-flex>
     </v-layout>
@@ -66,10 +77,10 @@
             nome: null,
             prescricao: null
           },
-          alerter: {
-            tipo: 'success',
+          snackbar: {
+            color: 'success',
             estado: false,
-            message: ''
+            mensagem: ''
           },
           nomeTitulo: 'Cadastro Medicamento'
         }
@@ -84,12 +95,15 @@
       methods: {
         async cadastrar() {
           if(this.validarForm()){
-            let response = await MedicamentosService._create(this.medicamento)
-            // console.log(response)
+            let response = await MedicamentosService._create(this.medicamento).catch(exception => {
+              if(exception) {
+                this.alerta('error', true, 'Erro ao cadastrar medicamento!')
+              }
+            })
             if(response.status ===201){
               this.alerta(response.data.message.type, true, response.data.message.description)
+              this.clearFormMedicamento()
             }
-            this.clear()
           }
           else{
             this.alerta('warning', true, 'Preencha todos os campos corretamente!')
@@ -101,21 +115,25 @@
         },
         async editar() {
           if(this.validarForm()){
-            let response = await MedicamentosService._update(this.medicamento)
-            // console.log(response)
+            let response = await MedicamentosService._update(this.medicamento).catch(exception => {
+              if(exception) {
+                this.alerta('error', true, 'Erro ao alterar medicamento!')
+              }
+            })
             if(response.status ===201){
               this.alerta(response.data.message.type, true, response.data.message.description)
+              this.clearFormMedicamento()
             }
-            this.clear()
           }
           else{
             this.alerta('warning', true, 'Preencha todos os campos corretamente!')
-          }        },
-        alerta(tipo, estado, mensagem){
-          this.alerter.tipo = tipo
-          this.alerter.estado = estado
-          this.alerter.mensagem = mensagem
+          }
         },
+          alerta(color, estado, mensagem) {
+            this.snackbar.color = color
+            this.snackbar.estado = estado
+            this.snackbar.mensagem = mensagem
+          },
         validarForm(){
           if(this.medicamento.nome !== '' && this.medicamento.nome !== null && this.medicamento.prescicao !== '' && this.medicamento.prescicao !== null){
             return true
@@ -124,7 +142,7 @@
             return false
           }
         },
-        clear() {
+        clearFormMedicamento() {
           this.medicamento.nome = ''
           this.medicamento.prescricao = ''
         }

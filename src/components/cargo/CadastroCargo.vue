@@ -6,7 +6,8 @@
       <v-card-title primary-title>
         <div>
           <h2 class='title mb-0'>{{nomeTitulo}}</h2>
-          <span class='caption'></span>
+          <span class="caption">Preencha o formulário para cadastrar novas fazendas</span>
+
         </div>
       </v-card-title>
 

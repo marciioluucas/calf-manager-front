@@ -97,7 +97,9 @@
                               placeholder="YYYY-MM-DD"
                             ></v-text-field>
                           </v-flex>
-                          <v-flex xs12 sm6 md6 lg6>
+                          <v-flex xs12 sm10 md10 lg10>
+
+
                             <v-autocomplete
                               v-model="funcionario.pessoa.endereco"
                               :items="selectEndereco.items"
@@ -109,7 +111,21 @@
                               label="Selecionar Endereço"
                               placeholder="Pesquisar por endereço"
                               return-object
-                            />
+                            >
+                            <template
+                              slot="item"
+                              slot-scope="data">
+                              <template v-if="typeof data.item !== 'object'">
+                                <v-list-tile-content v-text="data.item"></v-list-tile-content>
+                              </template>
+                              <template v-else>
+                                <v-list-tile-content>
+                                  <v-list-tile-title v-html="data.item.logradouro"></v-list-tile-title>
+                                  <v-list-tile-sub-title v-html="data.item.bairro"></v-list-tile-sub-title>
+                                </v-list-tile-content>
+                              </template>
+                            </template>
+                          </v-autocomplete>
                           </v-flex>
               <!-- Cadastrar Endereco -->
                           <v-flex xs12 sm2 md2 lg2>
@@ -315,7 +331,7 @@
                     <v-card-text>
                       <v-container grid-list-md>
                         <v-layout wrap>
-                          <v-flex xs12 sm6 md6>
+                          <v-flex xs12>
                             <v-text-field
                               v-model="funcionario.cargo.nome"
                               label="Nome"
@@ -323,7 +339,7 @@
                             >
                             </v-text-field>
                           </v-flex>
-                          <v-flex xs12 sm6 md6>
+                          <v-flex xs12>
                             <v-text-field
                               v-model="funcionario.cargo.descricao"
                               label="descrição"
