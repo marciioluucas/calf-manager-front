@@ -32,20 +32,17 @@
                   v-model="animal"
                 />
               </v-flex>
+              <v-flex xs12>
+                <chart :options='graficoHematocrito' :auto-resize="true"/>
+              </v-flex>
+              <v-flex xs12>
+                <chart :options='graficoPPT' :auto-resize="true"/>
+              </v-flex>
               </v-layout>
              <!-- <v-btn color="success" v-on:click="getFuncionarios">Buscar!</v-btn> -->
               <!-- <v-btn color="secondary" v-on:click="clear">Redefinir busca</v-btn> -->
             </v-form>
           </v-card-text>
-
-          <!--Tabela de apresentação de dados-->
-
-          <v-flex xs12 sm12 md12 lg12>
-            <v-layout wrap>
-              <chart :options='graficoHemograma' :auto-resize="true"/>
-            </v-layout>
-          </v-flex>
-
         </v-card>
       </v-flex>
     </v-layout>
@@ -54,6 +51,7 @@
 
 <script>
 import {AnimaisService} from '../../services/AnimaisService'
+import HemogramasService from '../../services/HemogramasService'
     export default {
         name: "listagem-hemograma",
         data(){
@@ -67,78 +65,40 @@ import {AnimaisService} from '../../services/AnimaisService'
                 hematocrito: null
               }
             },
-            mesesAno: [
-              'Janeiro',
-              'Fevereiro',
-              'Março',
-              'Abril',
-              'Maio',
-              'Junho',
-              'Julho',
-              'Agosto',
-              'Setembro',
-              'Outubro',
-              'Novembro',
-              'Dezembro'
-            ],
             selectAnimal: {
               items: [],
               loading: false,
               search: ''
             },
-            graficoHemograma: {
-              title: {
-                text: 'Animais'
+            graficoHematocrito: {
+              xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: []
               },
-              tooltip : {
-                trigger: 'axis',
-                axisPointer: {
-                  type: 'cross',
-                  label: {
-                      backgroundColor: '#6a7985'
-                  }
-                }
+              yAxis: {
+                type: 'value'
               },
-              legend: {
-                data:['PPT', 'Hematocrito']
-              },
-              toolbox: {
-                feature: {
-                  saveAsImage: {}
-                }
-              },
-              grid: {
-                left: '3%',
-                right: '4%',
-                bottom: '3%',
-                containLabel: true
-              },
-              xAxis :
-                {
-                  type : 'category',
-                  boundaryGap : false,
-                  data : []
-                }
-              ,
-              yAxis : [
-                {
-                  type : 'value'
-                }
-              ],
-              series : [
-                {
-                  name: 'PPT',
-                  data: [45, 46, 49, 42, 37, 55, 60],
-                  type: 'line',
+              series: [{
+                data: [],
+                type: 'line',
                   areaStyle: {}
-                },
-                {
-                  name: 'Hematocrito',
-                  data: [44, 40, 32, 46, 32, 43, 59],
-                  type: 'line',
+              }]
+            },
+            graficoPPT: {
+              xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: []
+              },
+              yAxis: {
+                type: 'value'
+              },
+              series: [{
+                data: [],
+                type: 'line',
                   areaStyle: {}
-                }
-              ]
+              }]
             }
           }
         },

@@ -64,7 +64,7 @@
                         <!--Icone de deletar-->
                         <v-icon
                           small
-                          @click="deletar(props.item.id)"
+                          @click="deletar(props.item)"
                         >
                           delete
                         </v-icon>
@@ -83,7 +83,24 @@
               </v-card-actions>
             </v-card>
           </v-flex>
+          <!--Componente de alerta-->
+          <v-snackbar
+             v-model="snackbar.estado"
+             :right="true"
+             :timeout="4000"
+             :multi-line="true"
 
+             :top="true"
+             :color="snackbar.color">
+             {{ snackbar.mensagem }}
+             <v-btn
+               color="black"
+               flat
+               @click="snackbar.mode = false"
+             >
+               Close
+             </v-btn>
+           </v-snackbar>
         </v-card>
       </v-flex>
     </v-layout>
@@ -110,7 +127,12 @@
           {text:'Nome', value: 'nome'},
           {text:'Permissão', value: 'permissao'},
           {text:'Ações', value: 'acoes'}
-        ]
+        ],
+        snackbar: {
+          color: 'success',
+          estado: false,
+          mensagem: ''
+        }
       }
     },
     mounted() {
@@ -127,19 +149,29 @@
           params: {id: id}
         })
       },
-      async deletar(id){
-        if(confirm('Deseja deletar este item?')){
-          await GruposService._delete(id)
+      async deletar(item){
+        if(confirm('Deseja realmente deletar este grupo?')){
+          let response = await GruposService._delete(item.id).catch(exception => {
+            if(exception){
+              this.alerta('error', true, 'Erro ao deletar grupo!')
+            }
+          })
+          if(response.status === 202){
+            this.alerta('success', true, 'Grupo excluido com sucesso!')
+            let index = this.items.data.indexOf(item)
+            this.items.data.splice(index, 1)
+          }
         }
-        this.atualizarTabela()
+
       },
       clear(){
         this.buscaGrupo.id = null
         this.buscaGrupo.nome = ''
       },
-      atualizarTabela(){
-        this.items = []
-        this.getGrupos()
+      alerta(color, estado, mensagem) {
+        this.snackbar.color = color
+        this.snackbar.estado = estado
+        this.snackbar.mensagem = mensagem
       }
     }
   }

@@ -49,7 +49,7 @@
                     <tr>
                       <td class="text-xs-center">{{ props.item.id }}</td>
                       <td class="text-xs-center">{{ props.item.codigo }}</td>
-                      <td class="text-xs-center">{{ props.item.fazenda.nome }}</td>
+                      <!-- <td class="text-xs-center">{{ props.item.fazenda.nome }}</td> -->
                       <td class="justify-center layout px-0">
                         <v-icon
                           small
@@ -60,7 +60,7 @@
                         </v-icon>
                         <v-icon
                           small
-                          @click="deletar(props.item.id)"
+                          @click="deletar(props.item)"
                         >
                           delete
                         </v-icon>
@@ -79,7 +79,24 @@
               </v-card-actions>
             </v-card>
           </v-flex>
+          <!--Componente de alerta-->
+          <v-snackbar
+             v-model="snackbar.estado"
+             :right="true"
+             :timeout="4000"
+             :multi-line="true"
 
+             :top="true"
+             :color="snackbar.color">
+             {{ snackbar.mensagem }}
+             <v-btn
+               color="black"
+               flat
+               @click="snackbar.mode = false"
+             >
+               Close
+             </v-btn>
+           </v-snackbar>
         </v-card>
       </v-flex>
     </v-layout>
@@ -98,6 +115,9 @@
           id: null,
           codigo: null,
           descricao: null,
+          fazenda: {
+            id: null
+          },
           params: {
             pagina: 1
           }
@@ -108,8 +128,12 @@
           {text: 'Código', value: 'codigo'},
           {text: 'Fazenda', value: 'fazenda'},
           {text: 'Ações', value: 'acoes'}
-
-        ]
+        ],
+        snackbar: {
+          color: 'success',
+          estado: false,
+          mensagem: ''
+        }
       }
     },
     async mounted() {
@@ -120,14 +144,14 @@
         let response = []
         if (this.buscaLote.id && !this.buscaLote.codigo) {
           response = await LotesService._getById(this.buscaLote)
-          this.items = response.data.lotes
+          this.items = response.data.lotes.data
         } else if (!this.buscaLote.id && this.buscaLote.codigo) {
           response = await LotesService._getByCodigo(this.buscaLote)
-          this.items = response.data.lotes
+          this.items = response.data.lotes.data
         } else {
           response = await LotesService._getAll(this.buscaLote)
-          this.items = response.data.lotes
-
+          this.items = response.data.lotes.data
+          console.log(this.items);
         }
         // console.log(response)
       },
@@ -137,15 +161,24 @@
           params: {id: id}
         })
       },
-      deletar(id) {
-        if(confirm('Deseja deletar este item?')){
-          LotesService._delete(id)
+      async deletar(item) {
+        if(confirm('Deseja realmente deletar este lote?')){
+            let response = await LotesService._delete(item.id).catch(exception => {
+              if(exception){
+                this.alerta
+              }
+            })
         }
         this.atualizarTabela()
       },
       atualizarTabela(){
         this.items = []
         this.getLotes()
+      },
+      alerta(color, estado, mensagem) {
+        this.snackbar.color = color
+        this.snackbar.estado = estado
+        this.snackbar.mensagem = mensagem
       }
     }
   }

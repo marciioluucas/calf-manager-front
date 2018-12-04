@@ -84,7 +84,6 @@
       }
     },
     methods: {
-
       async cadastrar() {
         if (this.validarFormulario()) {
           let response = await FazendasService._create(this.fazenda).catch(exception => {
@@ -94,14 +93,11 @@
           })
           if(response.status === 201){
             this.alerta(response.data.message.type, true, response.data.message.description)
+            this.clearFormFazenda()
           }
-          this.clear()
-        } else {
-          this.alerta('warning', true, 'Preencha todos os campos corretamente!')
-
         }
       },
-      clear() {
+      clear(){
         this.fazenda.nome = ''
       },
       alerta(color, estado, mensagem) {
@@ -115,7 +111,6 @@
       },
       async editar() {
         if (this.validarFormulario()) {
-
           let response = await FazendasService._update(this.fazenda).catch(exception => {
             if(exception){
               this.alerta('error', true, 'Erro ao alterar Fazenda!')
@@ -123,23 +118,20 @@
           })
           if(response.status === 201){
             this.alerta(response.status, true, response.data.message.description)
+            this.clearFormFazenda()
           }
-        } else {
-          this.alerta('warning', true, 'Preencha todos os campos corretamente')
         }
       },
       validarFormulario() {
         if (this.fazenda.nome !== '' && this.fazenda.nome !== undefined) {
           return true
         } else {
-          return false
+          if(!this.fazenda.nome){
+            this.alerta('warning', true, 'Preencha o nome da fazenda!')
+            return false
+          }
         }
       },
-      closeAlert(){
-        let n = this
-
-      }
-
     }
   }
 </script>

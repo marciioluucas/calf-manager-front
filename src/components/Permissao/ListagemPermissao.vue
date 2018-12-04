@@ -59,7 +59,7 @@
                         </v-icon>
                         <v-icon
                           small
-                          @click="deletar(props.item.id)"
+                          @click="deletar(props.item)"
                         >
                           delete
                         </v-icon>
@@ -78,7 +78,24 @@
               </v-card-actions>
             </v-card>
           </v-flex>
+          <!--Componente de alerta-->
+          <v-snackbar
+             v-model="snackbar.estado"
+             :right="true"
+             :timeout="4000"
+             :multi-line="true"
 
+             :top="true"
+             :color="snackbar.color">
+             {{ snackbar.mensagem }}
+             <v-btn
+               color="black"
+               flat
+               @click="snackbar.mode = false"
+             >
+               Close
+             </v-btn>
+           </v-snackbar>
         </v-card>
       </v-flex>
     </v-layout>
@@ -108,7 +125,12 @@
           // {text: 'Update', value: 'update'},
           // {text: 'Delete', value: 'delete'},
           {text: 'Ações', value: 'acoes'}
-        ]
+        ],
+        snackbar: {
+          color: 'success',
+          estado: false,
+          mensagem: ''
+        }
       }
     },
     mounted(){
@@ -125,11 +147,19 @@
           params: {id: id}
         })
       },
-      async deletar(id){
-        if(confirm('Deseja deletar este item?')){
-          await PermissoesService._delete(id)
+      async deletar(item){
+        if(confirm('Deseja realmente deletar esta permissão?')){
+          let response = await PermissoesService._delete(item.id).catch(exception => {
+            if(exception){
+              this.alerta('error', true, 'Erro ao deletar permissão!')
+            }
+          })
+          if(response.status === 202){
+            this.alerta('success', true, 'Permissão excluido com sucesso!')
+            let index = this.items.data.indexOf(item)
+            this.items.data.splice(index, 1)
+          }
         }
-        this.atualizarTabela()
       },
       clear(){
         this.buscaPermissao.id = null,
@@ -138,6 +168,11 @@
       atualizarTabela(){
         this.items = []
         this.getPermissoes()
+      },
+      alerta(color, estado, mensagem) {
+        this.snackbar.color = color
+        this.snackbar.estado = estado
+        this.snackbar.mensagem = mensagem
       }
     }
   }

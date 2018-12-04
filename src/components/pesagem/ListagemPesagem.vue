@@ -1,122 +1,116 @@
 
 <template>
-  <v-container grid-list-md text-center>
-    <v-layout row wrap>
-      <v-flex xs12>
-        <v-card>
+  <v-container grid-list-md>
+    <v-card>
+      <v-card-title primary-title>
+        <div>
+          <h2 class='title mb-0'>Pesagens dos animais</h2>
+          <span class='caption'>Pesquise pelo nome do animal para obter os resultados das pesagens.</span>
+        </div>
+      </v-card-title>
 
-          <!--Cabeçalho do componente-->
-          <v-card-title primary-title>
-            <div>
-              <h2 class="title mb-0">Pesquisa</h2>
-              <span class="caption">Faça uma pesquisa utilizando os filtros abaixo para um melhor resultado.</span>
-            </div>
-          </v-card-title>
+      <v-card-text>
+        <v-form>
+          <v-layout row wrap>
+            <v-flex xs12 sm6 md6 lg6>
 
-          <!--Sessão de formulário de pesquisa-->
-          <v-card-text>
-            <v-form>
-              <!-- <v-layout row wrap> -->
-
-                <!-- <v-flex xs12 md2 lg2>
-                  <v-text-field
-                    label="Buscar pelo Id"
-                    v-model="buscaFuncionario.id"
+                  <v-autocomplete
+                    label="Selecione o animal"
+                    :loading="selectAnimal.loading"
+                    required
+                    hide-no-data
+                    hide-selected
+                    item-value="id"
+                    cache-items
+                    :items="selectAnimal.items"
+                    item-text="nome"
+                    :search-input.sync="selectAnimal.search"
+                    v-model="selectAnimal.selected"
                   />
-                </v-flex>
-                 <v-flex xs12 md4 lg4>
-                   <v-text-field xs12 md3
-                     label="Buscar pelo nome"
-                     v-model="buscaFuncionario.pessoa.nome"
-                   />
-                 </v-flex>
-              </v-layout>
-             <v-btn color="success" v-on:click="getFuncionarios">Buscar!</v-btn>
-              <v-btn color="secondary" v-on:click="clear">Redefinir busca</v-btn> -->
-            </v-form>
-          </v-card-text>
-
-          <!--Tabela de apresentação de dados-->
-
-          <v-flex xs12>
-            <v-card>
+            </v-flex>
+            <v-flex xs12 v-if="this.selectAnimal.selected">
               <chart :options='graficoGanhoPeso' :auto-resize="true"/>
-
-              <!-- <v-card-text>
-                <v-data-table
-                  :headers="headers"
-                  :items="items.data"
-                  hide-actions
-                >
-                  <template slot="items" slot-scope="props">
-                    <tr>
-                      <td class="text-xs-center">{{ props.item.id }}</td>
-                      <td class="text-xs-center">{{ props.item.pessoa.nome }}</td>
-                      <td class="text-xs-center">{{ props.item.usuario.login }}</td>
-                      <td class="text-xs-center">{{ props.item.cargo.nome }}</td>
-                      <td class="text-xs-center">{{ props.item.endereco.logradouro }}</td>
-                      <td class="justify-center layout px-0">
-                        <v-icon
-                          small
-                          class="mr-2"
-                          @click="editar(props.item.id)"
-                        >
-                          edit
-                        </v-icon>
-                        <v-icon
-                          small
-                          @click="deletar(props.item.id)"
-                        >
-                          delete
-                        </v-icon>
-                      </td>
-                    </tr>
-                  </template>
-                </v-data-table>
-              </v-card-text>
-              <v-card-actions v-if="items.length !== 0" class="text-xs-center">
-                <v-layout>
-                  <v-flex xs12>
-                    <v-pagination :length="items.last_page" v-model="buscaFuncionario.params.pagina" @input="getFuncionarios"/>
-                  </v-flex>
-                </v-layout>
-
-              </v-card-actions> -->
-            </v-card>
-          </v-flex>
-
-        </v-card>
-      </v-flex>
-    </v-layout>
+            </v-flex>
+          </v-layout>
+        </v-form>
+      </v-card-text>
+    </v-card>
   </v-container>
 </template>
 
 <script>
+  import {AnimaisService} from '../../services/AnimaisService'
+  export default {
+    name: "listagem-pesagem",
+    data(){
+      return {
+        selectAnimal: {
+          loading: false,
+          items: [],
+          search: null,
+          selected: null
+        },
 
-export default {
-        name: "listagem-pesagem",
-        data(){
-          return {
-            
-            graficoGanhoPeso: {
-              xAxis: {
-                type: 'category',
-                boundaryGap: false,
-                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-              },
-              yAxis: {
-                type: 'value'
-              },
-              series: [{
-                data: [820, 932, 901, 934, 1290, 1330, 1320],
-                type: 'line',
-                  areaStyle: {}
-              }]
-            }
-          }
+        graficoGanhoPeso: {
+          xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: []
+          },
+          yAxis: {
+            type: 'value'
+          },
+          series: [{
+            data: [],
+            type: 'line',
+              areaStyle: {}
+          }]
         }
+      }
+    },
+    watch: {
+      'selectAnimal.search'(val) {
+        val && this.getAnimal(val)
+      }
+    },
+    methods: {
+      async getAnimal(val){
+        let busca = {
+          nome: val,
+          pagina: 1
+        }
+        this.selectAnimal.loading = true
+        let response = await AnimaisService._getAll(busca)
+        if (val){
+          response = await AnimaisService._getByNome(busca)
+        }
+        this.selectAnimal.items = response.data.animais.data
+        this.selectAnimal.loading = false
+        if(this.selectAnimal.selected){
+          this.getGraficoPesagem(this.selectAnimal.selected)
+        }
+      },
+      async getGraficoPesagem(val) {
 
+        let response = await AnimaisService._getGraficoGanhoDePeso(val)
+        let pesos = []
+        let data = []
+        console.log(response.data)
+        for (let i = 0; i < response.data[0].length; i++) {
+          let a = response.data[0][i].peso.split(' ')
+          pesos.push(a[0])
+          data.push(response.data[0][i].data_pesagem)
+        }
+        this.graficoGanhoPeso.xAxis.data = data
+        this.graficoGanhoPeso.series[0].data = pesos
+
+
+        // if (data.length > 0 && pesos.length > 0) {
+        //   this.hasValueToGraphDeGanhoDePeso = true
+        // }
+      }
     }
+  }
 </script>
 
 <style scoped>

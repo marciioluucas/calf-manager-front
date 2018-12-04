@@ -64,11 +64,13 @@
               @input="selecionaAnimal(props.item.id)"
             >
               <template slot="items" slot-scope="props">
-                <tr @click.stop="selecionaAnimal(props.item.id)">
+                <!-- <tr @click.stop="selecionaAnimal(props.item.id)"> -->
                   <td class="text-xs-center">{{ props.item.id }}</td>
                   <td class="text-xs-center">{{ props.item.nome }}</td>
+                  <td class="text-xs-center">{{ props.item.fase_vida }}</td>
                   <td class="text-xs-center">{{ props.item.lote.codigo }}</td>
                   <td class="text-xs-center">{{ props.item.codigo_brinco }}</td>
+                    <td class="text-xs-center">{{ props.item.codigo_raca }}</td>
                   <td class="justify-center layout px-0">
                     <v-icon
                       small
@@ -79,7 +81,7 @@
                     </v-icon>
                     <v-icon
                       small
-                      @click="deletarAnimal(props.item.id)"
+                      @click="deletarAnimal(props.item)"
                     >
                       delete
                     </v-icon>
@@ -96,6 +98,24 @@
             </v-layout>
 
           </v-card-actions>
+         <!-- Componente de alerta -->
+         <v-snackbar
+            v-model="snackbar.estado"
+            :right="true"
+            :timeout="4000"
+            :multi-line="true"
+
+            :top="true"
+            :color="snackbar.color">
+            {{ snackbar.mensagem }}
+            <v-btn
+              color="black"
+              flat
+              @click="snackbar.mode = false"
+            >
+              Close
+            </v-btn>
+          </v-snackbar>
         </v-card>
       </v-flex>
 
@@ -131,10 +151,22 @@
         headers: [
           {text: 'ID', value: 'id'},
           {text: 'Nome', value: 'nome'},
+          {text: 'Fase de vida', value: 'fase_vida'},
           {text: 'Lote', value: 'lote'},
           {text: 'Código do brinco', value: 'codigo_brinco'},
+          {text: 'Código da Raça', value: 'codigo_raca'},
           { text: 'Actions', value: 'name', sortable: false }
-        ]
+        ],
+        dialog:{
+          janela: false,
+          confirm: false,
+          cancel: false
+        },
+        snackbar: {
+          color: 'success',
+          estado: false,
+          mensagem: ''
+        }
       }
     },
     watch: {
@@ -173,6 +205,7 @@
           let response = await AnimaisService._getAll(this.buscaAnimal)
           await this.$Progress.finish()
           this.items = response.data.animais
+          console.log(this.items);
         }
       },
       getLotesByCodigo(codigo) {
@@ -195,11 +228,23 @@
           params: {id: id}
         })
       },
-      async deletarAnimal (id) {
-        let response = await AnimaisService._delete(id).catch(e => {
-          console.log(e.response.data)
-        })
-        console.log(response.data)
+      async deletarAnimal (item) {
+          if(confirm('Deseja realmente deletar este animal?') && item){
+            let response = await AnimaisService._delete(item.id).catch(exception => {
+              this.alerta('error', true, 'Erro ao excluir animal!')
+            })
+            if(response.status === 202){
+              this.alerta('success', true, 'Animal excluido com sucesso')
+              let index = this.items.data.indexOf(item)
+              this.items.data.splice(index, 1)
+            }
+
+          }
+      },
+      alerta(color, estado, mensagem) {
+        this.snackbar.color = color
+        this.snackbar.estado = estado
+        this.snackbar.mensagem = mensagem
       }
     }
   }

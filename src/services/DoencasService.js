@@ -10,12 +10,12 @@ export default {
     const params = Params.map(busca.params)
     return Service.get(`/doenca/${parseInt(busca.id)}${params}`)
   },
-  _getByNome: (busca) => {
-    let continuacaoUrl = ''
-    if (busca.params.pagina) {
-      continuacaoUrl = `&pagina=${busca.params.pagina}`
+  _getByNome: async (busca) => {
+    if (typeof busca === 'string') {
+      return Service.get(`/doenca?nome=${busca}`)
     }
-    return Service.get(`/doenca?nome=${busca.nome}${continuacaoUrl}`)
+    const params = Params.map(busca.params)
+    return Service.get(`/doenca${params}`)
   },
   _create: (form) => {
     return Service.post(`/doenca`, form)

@@ -18,7 +18,9 @@
             <v-flex xs12 sm6 md6 lg6>
               <v-text-field
                 v-model="animal.nome"
-                label='Nome'
+                label='Primeiro nome'
+                mask='Aaaaaaaaaaaaaaaa'
+                autofocus
               ></v-text-field>
             </v-flex>
 <!-- text Codigo_brinco             -->
@@ -26,6 +28,7 @@
               <v-text-field
                 v-model="animal.codigo_brinco"
                 label='Código do Brinco'
+                mask='############'
               ></v-text-field>
             </v-flex>
 <!-- text Codigo_raca             -->
@@ -33,6 +36,7 @@
               <v-text-field
                 v-model="animal.codigo_raca"
                 label='Código da raça'
+                mask='NNNNNNNNNNNN'
               ></v-text-field>
             </v-flex>
 <!-- text Data_nascimento -->
@@ -41,6 +45,7 @@
                 v-model="animal.data_nascimento"
                 mask="##/##/####"
                 label='Nascimento'
+                :return-masked-value='true'
               ></v-text-field>
             </v-flex>
 <!-- Select Sexo -->
@@ -151,7 +156,7 @@
                 :items="selectedFazenda.lote"
                 v-model="animal.lote"
                 item-text="codigo"
-                label="Sexo"
+                label="Lote"
                 return-object
               ></v-select>
             </v-flex>
@@ -187,13 +192,15 @@
                   <v-text-field
                     v-model="animal.pesagem.peso"
                     label='Peso em @ da primeira pesagem'
+                    mask="###,#"
                   ></v-text-field>
                 </v-flex>
                 <v-flex xs12>
                   <v-text-field
                     mask="##/##/####"
-                    v-model="animal.pesagem.data"
-                    label='Data'
+                    v-model="animal.pesagem.data_pesagem"
+                    label='Data da pesagem'
+                    :return-masked-value='true'
                   ></v-text-field>
                 </v-flex>
               </v-layout>
@@ -208,19 +215,22 @@
                   <v-text-field
                     v-model="animal.hemograma.ppt"
                     label='Primeiro teste de proteína plasmática'
+                    mask="##,#"
                   ></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md6 lg6>
                   <v-text-field
                     v-model="animal.hemograma.hematocrito"
                     label='Primeiro teste de hematocrito'
+                    mask="##,#"
                   ></v-text-field>
                 </v-flex>
                 <v-flex xs12>
                   <v-text-field
                     mask="##/##/####"
                     v-model="animal.hemograma.data"
-                    label='Data'
+                    label='Data do exame'
+                    :return-masked-value='true'
                   ></v-text-field>
                 </v-flex>
               </v-layout>
@@ -327,6 +337,7 @@
         animal: {
           id: null,
           nome: '',
+          fase_vida: '',
           is_vivo: true,
           is_primogenito: false,
           sexo: '',
@@ -338,10 +349,10 @@
           doencas: [],
           pesagem: {
             peso: '',
-            data: ''
+            data_pesagem: ''
           },
-          mae: {},
-          pai: {},
+          mae: null,
+          pai: null,
           hemograma:{
             ppt: '',
             hematocrito: '',
@@ -390,7 +401,35 @@
         },
         switchJaTeveDoenca: false,
         switchJaFoiPesado: false,
-        nomeTitulo: 'Cadastro de Animal'
+        nomeTitulo: 'Cadastro de Animal',
+        error: {
+          nome: false,
+          codigo_brinco: false,
+          data_nascimento: false,
+          sexo: false,
+          fase_vida: false,
+          pai: false,
+          mae: false,
+          fazenda: false,
+          lote: false,
+          peso: false,
+          data_pesagem: false,
+          ppt: false,
+          hematocrito: false,
+          data_exame: false
+        },
+        focus: {
+          nome: false,
+          codigo_brinco: false,
+          data_nascimento: false,
+          pai: false,
+          mae: false,
+          peso: false,
+          data_pesagem: false,
+          ppt: false,
+          hematocrito: false,
+          data_exame: false
+        }
       }
     },
     watch: {
@@ -412,7 +451,8 @@
       this.getDoencas()
       this.animal.id = this.$route.params.id
       if(this.animal.id){
-        nomeTitulo = 'Editar Animal'
+        this.nomeTitulo = 'Editar Animal'
+        this.getAnimal()
       }
     },
     methods: {
@@ -429,17 +469,22 @@
         }
         this.animal.doencas.push(doenca);
       },
-
+      async getAnimal(){
+        let response = await AnimaisService._getById(this.animal).catch(exception => {
+          if(exception){
+            this.alerta('error', true, 'Erro ao buscar dados do animal')
+          }
+        })
+        this.animal = response.data.animais
+        console.log(this.animal);
+      },
       async getDoencas(val) {
         let busca = {
           nome: val
         }
         this.selectDoenca.loading = true
-        let res = await DoencasService._getAll({pagina: 1})
-        if (val) {
-          res = await DoencasService._getByNome(busca)
-        }
-        this.selectDoenca.items = res.data.doencas.data
+        let response = await DoencasService._getByNome(busca)
+        this.selectDoenca.items = response.data.doencas.data
         this.selectDoenca.loading = false
       },
       async getFazendas(val){
@@ -447,14 +492,10 @@
           nome: val
         }
         this.selectFazenda.loading = true
-        let response = await FazendasService._getAll({pagina: 1})
-        if (busca){
-          let response = await FazendasService._getByNome(busca)
-        }
+        let response = await FazendasService._getByNome(busca)
         this.selectFazenda.items = response.data.fazendas.data
         this.selectFazenda.loading = false
       },
-
       async getMaes(val) {
         const busca = {
           nome: val,
@@ -465,7 +506,6 @@
         this.selectMae.items = res.data.animais.data
         this.selectMae.loading = false
       },
-
       async getPais(val) {
         const busca = {
           nome: val,
@@ -478,20 +518,16 @@
       },
       async cadastrar() {
         if(this.validaFormAnimal()){
-          let res = await AnimaisService._create(this.animal).catch(e => {
+          let response = await AnimaisService._create(this.animal).catch(exception => {
             if(exception){
               this.alerta('error', true, 'Erro ao cadastrar animal!')
             }
           })
-          if(response.status === 201){
-            this.alerta(response.data.message.type ,true, response.data.message.description)
+          if(response){
+            this.alerta('success',true, 'Animal cadastrado com sucesso!')
             this.clearFormAnimal()
           }
         }
-        else {
-          this.alerta('warning', true, 'Preencha todos os campos corretamente!')
-        }
-
       },
       async editar() {
         if(this.validaFormAnimal()){
@@ -500,8 +536,8 @@
               this.alerta('error', true, 'Erro ao cadastrar animal!')
             }
           })
-          if(response.status === 201){
-            this.alerta(response.data.message.type ,true, response.data.message.description)
+          if(response){
+            this.alerta('success',true, 'Animal alterado com sucesso!')
             this.clearFormAnimal()
           }
         }
@@ -510,25 +546,109 @@
         }
       },
       validaFormAnimal(){
-        if(this.animal.nome !== '' && this.animal.nome !== null &&
-          this.animal.sexo !== '' && this.animal.sexo !== null &&
-          this.animal.lote.codigo !== '' && this.animal.lote.codigo !== null &&
-          this.animal.pesagem.peso !== '' && this.animal.pesagem.peso !== null &&
-          this.animal.doencas !== [] && this.animal.pai !== {} && this.animal.mae !== {}){
+        if(this.animal.nome &&
+          this.animal.codigo_brinco &&
+          this.animal.data_nascimento  &&
+          this.animal.sexo &&
+          this.animal.fase_vida &&
+          this.animal.lote.id &&
+          this.animal.pesagem.peso &&
+          this.animal.pesagem.data &&
+          this.animal.hemograma.ppt &&
+          this.animal.hemograma.hematocrito &&
+          this.animal.hemograma.data){
+            if(this.animal.is_primogenito == false){
+              if(this.animal.mae && this.animal.pai){
+                return true
+              }
+              else {
+                return false
+              }
+            }else {
+              return true
+            }
             return true
           }
-          else{
+          else {
+            if(!this.animal.nome){
+                this.alerta('warning', true, 'Preencha o nome do animal!')
+                return false
+            } else if (!this.animal.codigo_brinco){
+              this.alerta('warning', true, 'Preencha o código do brinco do animal!')
+              return false
+            }
+            else if(!this.animal.codigo_raca){
+              this.alerta('warning', true, 'Preencha o código do registro da raça')
+            }
+            else if(!this.animal.data_nascimento){
+              this.alerta('warning', true, 'Preencha a data de nascimento do animal!')
+              return false
+            }
+            else if(!this.animal.sexo){
+              this.alerta('warning', true, 'Selecione o sexo do animal!')
+              return false
+            }
+            else if(!this.animal.fase_vida){
+              this.alerta('warning', true, 'Selecione a fase de vida do animal!')
+              return false
+            }
+            else if(!this.animal.lote.id){
+              console.log('aqui 02')
+              this.alerta('warning', true, 'Selecione a fazenda e o lote de alocação do animal!')
+              return false
+            } else if (!this.animal.pesagem.peso){
+              this.alerta('warning', true, 'Preencha o peso do animal!')
+              return false
+            }
+            else if (!this.animal.pesagem.data){
+              this.alerta('warning', true, 'Preencha data da pesagem do animal!')
+              return false
+            }
+            if(!this.animal.hemograma.ppt){
+              this.alerta('warning', true, 'Preencha o PPT do animal!')
+              return false
+            } else if(!this.animal.hemograma.hematocrito){
+              this.alerta('warning', true, 'Preencha o Hematócrico do animal!')
+              return false
+            } else if(!this.animal.hemograma.data){
+              this.alerta('warning', true, 'Preencha a data do exame!')
+              return false
+            }
+            else if(this.animal.is_primogenito == false){
+              if(!this.animal.mae){
+                this.alerta('warning', true, 'Selecione o animal mãe!')
+                return false
+              }
+               if(!this.animal.pai){
+                this.alerta('warning', true, 'Selecione o animal pai!')
+                return false
+              }
+              return false
+            }
+
+           else {
+            this.alerta('warning', true, 'Preencha todos os campos corretamente!')
             return false
           }
+        }
       },
       clearFormAnimal(){
         this.animal.nome = ''
         this.animal.sexo = ''
+        this.animal.codigo_brinco = ''
+        this.animal.codigo_raca = ''
+        this.animal.data_nascimento = ''
+        this.animal.fase_vida = ''
         this.animal.lote.codigo = ''
         this.animal.doencas = []
         this.animal.pesagem.peso = ''
+        this.animal.pesagem.data = ''
+        this.animal.hemograma.ppt = ''
+        this.animal.hemograma.hematocrito = ''
+        this.animal.hemograma.data = ''
         this.animal.pai = {}
         this.animal.mae = {}
+        this.selectedFazenda = {}
       },
       alerta(color, estado, mensagem) {
         this.snackbar.color = color

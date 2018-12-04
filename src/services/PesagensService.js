@@ -4,19 +4,19 @@ import Params from '../util/mapParams'
 export default {
   _getAll: (busca) => {
     const params = Params.map(busca.params)
-    return Service.get(`/hemograma${params}`)
+    return Service.get(`/pesagem${params}`)
   },
   _getById: (busca) => {
     const params = Params.map(busca.params)
-    return Service.get(`/hemograma/${parseInt(busca.id)}${params}`)
+    return Service.get(`/pesagem/${parseInt(busca.id)}${params}`)
   },
   _create: (form) => {
-    return Service.post(`/hemograma`, form)
+    return Service.post(`/pesagem`, form)
   },
   _update: (form) => {
-    return Service.put(`/hemograma/${form.id}`, form)
+    return Service.put(`/pesagem/${form.id}`, form)
   },
   _delete: (id) => {
-    return Service.delete(`/hemograma/${id}`)
+    return Service.delete(`/pesagem/${id}`)
   }
 }

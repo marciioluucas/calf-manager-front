@@ -1,20 +1,13 @@
 <template>
   <v-container grid-list-md>
     <v-card>
-      <!--Componente de alerta-->
-      <v-alert
-        v-if="alerter.estado"
-        :value="true"
-        :type="alerter.tipo"
-      >
-        {{alerter.mensagem}}
-      </v-alert>
+
 
       <!--Cabeçalho da pagina-->
       <v-card-title primary-title>
         <div>
           <h2 class='title mb-0'>{{nomeTitulo}}</h2>
-          <span class='caption'></span>
+          <span class='caption'> Preencha o formulário para cadastrar novas permissões</span>
         </div>
       </v-card-title>
 
@@ -77,10 +70,28 @@
             <v-btn v-if="!permissao.id" @click="cadastrar">Enviar</v-btn>
             <v-btn v-if="permissao.id" @click="editar">Editar</v-btn>
 
-            <v-btn @click="clear">Limpar formulário</v-btn>
+            <v-btn @click="clearFormPermissao">Limpar formulário</v-btn>
           </v-flex>
         </v-form>
       </v-card-text>
+      <!--Componente de alerta-->
+      <v-snackbar
+         v-model="snackbar.estado"
+         :right="true"
+         :timeout="4000"
+         :multi-line="true"
+
+         :top="true"
+         :color="snackbar.color">
+         {{ snackbar.mensagem }}
+         <v-btn
+           color="black"
+           flat
+           @click="snackbar.mode = false"
+         >
+           Close
+         </v-btn>
+       </v-snackbar>
     </v-card>
   </v-container>
 </template>
@@ -94,8 +105,8 @@
         permissao: {
           id: null,
           nome_modulo: '',
-          create: 0,
-          read: 0,
+          create: 1,
+          read: 1,
           update: 0,
           delete: 0
         },
@@ -129,7 +140,7 @@
           else {
             console.log(response);
           }
-          this.clear()
+          this.clearFormPermissao()
         }
       },
       async editar(){
@@ -147,15 +158,15 @@
             return false
           }
       },
-      alerta(tipo, estado, mensagem){
-        this.alerter.tipo = tipo
-        this.alerter.estado = estado
-        this.alerter.mensagem = mensagem
+      alerta(color, estado, mensagem){
+        this.snackbar.color = color
+        this.snackbar.estado = estado
+        this.snackbar.mensagem = mensagem
       },
-      clear(){
+      clearFormPermissao(){
         this.permissao.nome_modulo = ''
         this.permissao.create = 0
-        this.permissao.Read = 0
+        this.permissao.read = 0
         this.permissao.update = 0
         this.permissao.delete = 0
 

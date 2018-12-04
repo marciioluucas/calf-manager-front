@@ -34,7 +34,7 @@
             <!--Adicionar Permissao-->
             <v-flex xs12 sm4 md4 lg4>
               <v-autocomplete
-                v-model="grupo.permissao"
+                v-model="grupo.permissao_id"
                 :items="selectPermissao.items"
                 :search-input.sync="selectPermissao.search"
                 hide-no-data
@@ -43,7 +43,6 @@
                 item-value="id"
                 label="Permissões"
                 placeholder="Pesquisar por permissão"
-                return-object
               />
             </v-flex>
 
@@ -66,7 +65,7 @@
                         <v-layout wrap>
                           <v-flex xs12 sm12 md12>
                             <v-text-field
-                              v-model="grupo.permissao.nome_modulo"
+                              v-model="permissao.nome_modulo"
                               label="Nome"
                               required
                             >
@@ -74,7 +73,7 @@
                           </v-flex>
                           <v-flex xs12 sm4 md4>
                             <v-switch
-                              v-model="grupo.permissao.create"
+                              v-model="permissao.create"
                               label="Create"
                               color="primary"
                               value='1'
@@ -84,7 +83,7 @@
 
                           <v-flex xs12 sm4 md4>
                             <v-switch
-                              v-model="grupo.permissao.read"
+                              v-model="permissao.read"
                               label="Read"
                               color="primary"
                               value='1'
@@ -93,7 +92,7 @@
                           </v-flex>
                           <v-flex xs12 sm4 md4>
                             <v-switch
-                              v-model="grupo.permissao.update"
+                              v-model="permissao.update"
                               label="Update"
                               color="primary"
                               value='1'
@@ -102,7 +101,7 @@
                           </v-flex>
                           <v-flex xs12 sm4 md4>
                             <v-switch
-                              v-model="grupo.permissao.delete"
+                              v-model="permissao.delete"
                               label="Delete"
                               color="primary"
                               value='1'
@@ -168,14 +167,15 @@
           id: null,
           nome: '',
           descricao: '',
-          permissao: {
-            id: null,
-            nome_modulo: '',
-            create: 0,
-            read: 0,
-            update: 0,
-            delete: 0
-          }
+          permissao_id: null
+        },
+        permissao: {
+          id: null,
+          nome_modulo: '',
+          create: 0,
+          read: 0,
+          update: 0,
+          delete: 0
         },
         selectPermissao: {
           loading: false,
@@ -206,18 +206,17 @@
     },
     methods: {
       async getGrupo() {
-        let response = await GrupoService._getById(this.grupo.id)
-        this.grupo = response.data.grupos[0]
+        let response = await GrupoService._getById(this.grupo)
+        this.grupo = response.data.grupos
       },
       async getPermissoes(val) {
         let busca = {
           nome: val
         }
-        let response  = await PermissaoService._getAll(this.grupo.permissao)
-        if(val){
-          response = await PermissaoService._getByNome(busca)
-        }
+        this.selectPermissao.loading = true
+        let response = await PermissaoService._getByNome(busca)
         this.selectPermissao.items = response.data.permissoes.data
+        this.selectPermissao.loading = false
       },
       async cadastrarPermissao() {
         if (this.validarFormPermissao()) {
@@ -232,9 +231,7 @@
             this.clearFormPermissao()
             this.getPermissoes()
           }
-        } else {
-          this.alerta('warning', true, 'Preencha os campos corretamente!')
-        }
+        } 
       },
       async cadastrar() {
         if (this.validarFormGrupo()) {
@@ -248,8 +245,6 @@
             this.clearFormGrupo()
             this.getPermissoes()
           }
-        } else {
-          this.alerta('warning', true, 'Preencha os campos corretamente!')
         }
       },
       async editar() {
@@ -263,8 +258,6 @@
             this.alerta(response.data.message.type, true, response.data.message.description)
             this.clearFormGrupo()
           }
-        } else {
-          this.alerta('warning', true, 'Preencha os campos corretamente!')
         }
       },
       alerta(color, estado, mensagem) {
@@ -273,29 +266,41 @@
         this.snackbar.mensagem = mensagem
       },
       validarFormGrupo() {
-        if (this.grupo.nome !== '' && this.grupo.nome !== null &&
-            this.grupo.descricao !== '' && this.grupo.descricao !== null &&
-            this.grupo.permissao.id !== '' && this.grupo.permissao.id !== null) {
+        if (this.grupo.nome && this.grupo.descricao && this.grupo.permissao_id) {
           return true
         } else {
-          return false
+          if(!this.grupo.nome){
+            this.alerta('warning', true, 'Preencha o nome do grupo!')
+            return false
+          }
+          else if(!this.grupo.descricao){
+            this.alerta('warning', true, 'Preencha a descrição do grupo!')
+            return false
+          }
+          else if(!this.grupo.descricao){
+            this.alerta('warning', true, 'Selecione a permissão do grupo!')
+            return false
+          }
         }
       },
       validarFormPermissao() {
-        if (this.grupo.permissao.nome_modulo !== '' && this.grupo.permissao.nome_modulo !== null &&
-          this.grupo.permissao.create !== '' && this.grupo.permissao.create !== null &&
-          this.grupo.permissao.read !== '' && this.grupo.permissao.read !== null &&
-          this.grupo.permissao.update !== '' && this.grupo.permissao.update !== null &&
-          this.grupo.permissao.delete !== '' && this.grupo.permissao.delete !== null) {
+        if (this.permissao.nome_modulo !== '' && this.permissao.nome_modulo !== null &&
+          this.permissao.create !== '' && this.permissao.create !== null &&
+          this.permissao.read !== '' && this.permissao.read !== null &&
+          this.permissao.update !== '' && this.permissao.update !== null &&
+          this.permissao.delete !== '' && this.permissao.delete !== null) {
           return true
         } else {
-          return false
+          if(!this.permissao.nome_modulo){
+            this.alerta('warning', true, 'Preencha do nome do módulo')
+            return false
+          }
         }
       },
       clearFormGrupo() {
         this.grupo.nome = ''
         this.grupo.descricao = ''
-        this.selectPermissao = []
+        this.grupo.permissao_id = null
       },
       clearFormPermissao() {
         this.grupo.permissao.nomeModulo = '',

@@ -33,7 +33,7 @@
             </v-flex>
           </v-layout>
           <v-flex>
-            <v-btn v-if="!cargo.id" @click="cadastrar">Enviar</v-btn>
+            <v-btn color="success" v-if="!cargo.id" @click="cadastrar">Enviar</v-btn>
             <v-btn v-if="cargo.id" @click="editar">Editar</v-btn>
 
             <v-btn @click="clearFormCargo">Limpar formulário</v-btn>

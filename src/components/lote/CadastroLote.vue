@@ -1,14 +1,7 @@
 <template>
   <v-container grid-list-md>
     <v-card>
-      <!--Componente de alertas-->
-      <v-alert
-        v-if="alerter.estado"
-        :value="true"
-        :type="alerter.tipo"
-      >
-        {{alerter.mensagem}}
-      </v-alert>
+
       <!--Cabeçalho da pagina-->
       <v-card-title primary-title>
         <div>
@@ -29,6 +22,7 @@
               <v-text-field
                 label='Código do Lote'
                 v-model="lote.codigo"
+                mask="##############"
               />
             </v-flex>
             <v-flex xs12 sm4 md4 lg4>
@@ -43,15 +37,33 @@
                 :items="selectFazenda.items"
                 item-text="nome"
                 :search-input.sync="selectFazenda.search"
-                v-model="lote.fazenda.id"
+                v-model="lote.fazenda_id"
               />
             </v-flex>
           </v-layout>
           <v-btn v-if="!this.lote.id" @click="cadastrar" >Enviar</v-btn>
           <v-btn v-if="this.lote.id" @click="editar" >Editar</v-btn>
-          <v-btn @click="clear" >Limpar Formulário</v-btn>
+          <v-btn @click="clearFormLote" >Limpar Formulário</v-btn>
         </v-form>
       </v-card-text>
+      <!--Componente de alerta-->
+      <v-snackbar
+         v-model="snackbar.estado"
+         :right="true"
+         :timeout="4000"
+         :multi-line="true"
+
+         :top="true"
+         :color="snackbar.color">
+         {{ snackbar.mensagem }}
+         <v-btn
+           color="black"
+           flat
+           @click="snackbar.mode = false"
+         >
+           Close
+         </v-btn>
+       </v-snackbar>
     </v-card>
   </v-container>
 </template>
@@ -65,18 +77,16 @@
       return {
         lote: {
           id: null,
-          codigo: null,
-          fazenda: {
-            id: null
-          },
+          codigo: '',
+          fazenda_id: null
         },
         selectFazenda: {
           items: [],
           loading: false,
           search: ''
         },
-        alerter: {
-          tipo: '',
+        snackbar: {
+          color: 'success',
           estado: false,
           mensagem: ''
         },
@@ -84,71 +94,80 @@
       }
     },
     async mounted() {
-      this.getFazendas()
       this.lote.id = this.$route.params.id
       if (this.lote.id) {
         this.nomeTitulo = 'Editar Lote'
         this.getLote()
       }
     },
+    watch:{
+      'selectFazenda.search'(val){
+        val && this.getFazendas(val)
+      }
+    },
     methods: {
-      async getFazendas(){
-        let response = await FazendasService._getAll(this.lote.fazenda)
+      async getFazendas(val){
+        let busca = {
+          nome: val
+        }
+        this.selectFazenda.loading = true
+        let response = await FazendasService._getByNome(busca)
         this.selectFazenda.items = response.data.fazendas.data
+        this.selectFazenda.loading = false
+
       },
       async cadastrar() {
         if (this.validarFormulario()) {
-          let response = await LotesService._create(this.lote)
+          let response = await LotesService._create(this.lote).catch(exception => {
+            if(exception){
+              this.alerta('error', true, 'Erro ao validar formulário')
+            }
+          })
           if(response.status === 201){
             this.alerta('success', true, response.data.message.description)
-            this.clear()
+            this.clearFormLote()
           }
-          else if(response.status === 400){
-            this.alerta('error', true, 'Erro ao validar formulário')
-          }
-          else if(response.status === 500) {
-            this.alerta('error', true, 'Erro ao cadastrar lote. Entre em contato com o suporte técnico!')
-          }
-        } else {
-          this.alerta('warning', true, 'Preencha os campos corretamente!')
         }
       },
       async editar() {
         if (this.validarFormulario()) {
-          let response = await LotesService._update(this.lote)
-          if(response.status === 202){
+          let response = await LotesService._update(this.lote).catch(exception => {
+            if(exception){
+              this.alerta('error', true, 'Erro ao validar formulário')
+            }
+          })
+          if(response.status === 201){
             this.alerta('success', true, response.data.message.description)
-            this.clear()
+            this.clearFormLote()
           }
-          else if(response.status === 400){
-            this.alerta('error', true, 'Erro ao validar formulário')
-          }
-          else if(response.status === 500) {
-            this.alerta('error', true, 'Erro ao cadastrar lote. Entre em contato com o suporte técnico!')
-          }
-        } else {
-          this.alerta('warning', true, 'Preencha os campos corretamente!')
         }
       },
       async getLote() {
-        let response = await LotesService._getById(this.lote.id)
+        let response = await LotesService._getById(this.lote)
         this.lote = response.data.lotes[0]
         console.log(this.lote);
       },
-      clear() {
+      clearFormLote() {
         this.lote.codigo = null
-        this.lote.fazenda = {}
+        this.lote.fazenda_id = null
       },
-      alerta(tipo, estado, mensagem) {
-        this.alerter.tipo = tipo
-        this.alerter.estado = estado
-        this.alerter.mensagem = mensagem
+      alerta(color, estado, mensagem){
+        this.snackbar.color = color
+        this.snackbar.estado = estado
+        this.snackbar.mensagem = mensagem
       },
       validarFormulario() {
-        if (this.lote.codigo !== '' && this.lote.codigo !== null) {
+        if (this.lote.codigo && this.lote.fazenda_id ) {
           return true
         } else {
-          return false
+          if(!this.lote.codigo){
+            this.alerta('warning', true, 'Preecha o código!')
+            return false
+          }
+          else if(!this.lote.fazenda_id){
+            this.alerta('warning', true, 'Selecione a fazenda!')
+            return false
+          }
         }
       }
     }

@@ -3,14 +3,7 @@
     <v-layout row wrap>
       <v-flex xs12>
         <v-card>
-          <!--Componente de alerta-->
-          <v-alert
-            v-if="alerter.estado"
-            :value="true"
-            :type="alerter.tipo"
-          >
-            {{alerter.mensagem}}
-          </v-alert>
+
           <v-card-title primary-title>
             <div>
               <h2 class="title mb-0">Pesagem</h2>
@@ -33,13 +26,14 @@
                     cache-items
                     item-value="id"
                     :search-input.sync="selectAnimal.search"
-                    v-model="pesagem.animal_id"
+                    v-model="pesagem.animais_id"
                   />
                 </v-flex>
                 <v-flex xs6 md3 lg3>
                   <v-text-field
                     label="Peso"
                     v-model="pesagem.peso"
+                    mask="####"
                     required
                   />
                 </v-flex>
@@ -52,10 +46,31 @@
                   />
                 </v-flex>
               </v-layout>
-              <v-btn color="success" @click="cadastrar" >Cadastrar!</v-btn>
+              <v-btn color="success" v-if="!pesagem.id" @click="cadastrar">Enviar</v-btn>
+              <v-btn v-if="pesagem.id" @click="editar">Editar</v-btn>
+
+              <v-btn @click="clearFormPesagem">Limpar formulário</v-btn>
 
             </v-form>
           </v-card-text>
+          <!--Componente de alerta-->
+          <v-snackbar
+             v-model="snackbar.estado"
+             :right="true"
+             :timeout="4000"
+             :multi-line="true"
+
+             :top="true"
+             :color="snackbar.color">
+             {{ snackbar.mensagem }}
+             <v-btn
+               color="black"
+               flat
+               @click="snackbar.mode = false"
+             >
+               Close
+             </v-btn>
+           </v-snackbar>
         </v-card>
       </v-flex>
     </v-layout>
@@ -64,26 +79,31 @@
 
 <script>
 import {AnimaisService} from '../../services/AnimaisService'
+import PesagensService from '../../services/PesagensService'
 
 export default {
   data() {
     return {
       pesagem: {
-        animal_id: '',
-        peso: 0,
-        data_pesagem: ''
+        id: null,
+        peso: '',
+        data_pesagem: '',
+        animais_id: null
       },
       selectAnimal: {
         loading: false,
         items: [],
         search: null
       },
-      alerter: {
-        tipo: 'success',
+      snackbar: {
+        color: 'success',
         estado: false,
         mensagem: ''
       }
     }
+  },
+  mounted(){
+    this.pesagem.id = this.$route.params.id
   },
   watch: {
     'selectAnimal.search'(val) {
@@ -97,32 +117,60 @@ export default {
         params: {vivo: true}
       }
       this.selectAnimal.loading = true
-      let res = await AnimaisService._getByNome(busca)
-      this.selectAnimal.items = res.data.animais.data
+      let response = await AnimaisService._getByNome(busca)
+      this.selectAnimal.items = response.data.animais.data
       this.selectAnimal.loading = false
     },
     async cadastrar() {
       if(this.validarForm()){
-        let response = await AnimaisService._createPesagem(this.pesagem)
-        console.log(response.data)
+        let response = await PesagensService._create(this.pesagem).catch(exception => {
+          if(exception){
+            this.alerta('error', true, 'Erro ao cadastrar pesagem!')
+          }
+        })
+        if(response.status === 201){
+          this.alerta(response.data.message.type, true, response.data.message.description)
+          this.clearFormPesagem()
+        }
+
       } else {
-        this.alerta('warning', true, 'Preencha os campos corretamente!')
+        this.alerta('warning', true, 'Preencha todos os campos corretamente!')
+      }
+    },
+    async editar(){
+      if(this.validarForm()){
+        let response = await PesagensService._update(this.pesagem).catch(exception => {
+          if(exception){
+            this.alerta('error', true, 'Erro ao cadastrar pesagem!')
+          }
+        })
+        if(response.status === 201){
+          this.alerta(response.data.message.type, true, response.data.message.description)
+          this.clearFormPesagem()
+        }
+
+      } else {
+        this.alerta('warning', true, 'Preencha todos os campos corretamente!')
       }
     },
     validarForm(){
-      if(this.pesagem.animal_id !== null && this.pesagem.animal_id !== '' &&
-        this.pesagem.data_pesagem !== null && this.pesagem.data_pesagem !== '' &&
+      if(this.pesagem.animal.id !== null && this.pesagem.animal.id !== '' &&
+        this.pesagem.data !== null && this.pesagem.data !== '' &&
         this.pesagem.peso !== null && this.pesagem.peso !== ''){
           return true
         } else {
           return false
         }
     },
-    alerta(tipo, estado, mensagem){
-      this.alerter.tipo = tipo
-      this.alerter.estado = estado
-      this.alerter.mensagem = mensagem
-
+    clearFormPesagem(){
+      this.pesagem.animal.id = null
+      this.pesagem.peso = '',
+      this.pesagem.data = ''
+    },
+    alerta(color, estado, mensagem){
+      this.snackbar.color = color
+      this.snackbar.estado = estado
+      this.snackbar.mensagem = mensagem
     }
   }
 }

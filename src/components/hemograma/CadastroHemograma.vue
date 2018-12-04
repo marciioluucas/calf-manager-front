@@ -30,7 +30,7 @@
                 cache-items
                 item-value="id"
                 :search-input.sync="selectAnimais.search"
-                v-model="hemograma.animal"
+                v-model="hemograma.animal.id"
               />
             </v-flex>
 
@@ -52,6 +52,7 @@
                 v-model="hemograma.data"
                 label='Data do exame'
                 mask="##/##/####"
+                :return-masked-value="true"
               ></v-text-field>
             </v-flex>
           </v-layout>
@@ -99,7 +100,9 @@
             ppt: null,
             hematocrito: null,
             data: '',
-            animal: {}
+            animal: {
+             id: null
+           }
           },
           selectAnimais: {
             loading: false,
@@ -176,13 +179,14 @@
           this.selectAnimais.loading = false
         },
         clearFormHemograma(){
-          this.animal = {}
+          this.animal.id = null
           this.hemograma.ppt = ''
           this.hemograma.hematocrito = ''
           this.hemograma.data = ''
         },
         validarForm(){
-          if(this.animal !== null && this.hemograma.ppt !== null && this.hemograma.ppt !== '' &&
+          if(this.animal.id !== '' && this.animal.id !== null &&
+            this.hemograma.ppt !== null && this.hemograma.ppt !== '' &&
              this.hemograma.hematocrito !== null && this.hemograma.hematocrito !== '' &&
               this.hemograma.data !== '' && this.hemograma.data !== null){
             return true
