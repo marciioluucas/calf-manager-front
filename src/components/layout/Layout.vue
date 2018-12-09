@@ -11,9 +11,29 @@
         <v-icon v-html="miniVariant ? 'chevron_right' : 'chevron_left'" class="white--text"/>
       </v-btn>
       <v-toolbar-title v-text="title" class="white--text"/>
-
-
-      <v-spacer/>
+        <v-spacer/>
+        <v-menu
+        transition="slide-y-transition"
+        bottom
+        >
+          <v-btn
+            slot="activator"
+            class="purple"
+            color="primary"
+            dark
+          >
+            {{user.login}}
+          </v-btn>
+          <v-list>
+            <v-list-tile>
+              <v-list-tile-title @click="">Perfil</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile>
+              <v-list-tile-title @click="logout">Logout</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
+        
     </v-toolbar>
     <v-content class="grey lighten-2">
       <router-view/>
@@ -21,7 +41,7 @@
 
     <v-footer :fixed="fixed" app class="elevation-2">
       <v-container fluid grid-list-md>
-        <span>Marcin MIL GRAU &copy; 2018</span>
+        <span>Calf Manager Corporation &copy; 2018</span>
       </v-container>
     </v-footer>
   </v-app>
@@ -30,6 +50,8 @@
 <script>
   import LeftNavigation from './LeftNavigation'
   import Bus from '../../util/bus'
+  import UsuarioService from '../../services/UsuariosService'
+  import jwtDecode from 'jwt-decode'
 
   export default {
     name: 'Layout',
@@ -42,8 +64,12 @@
         miniVariant: false,
         right: true,
         rightDrawer: false,
-        title: 'Calf Manager'
+        title: 'Calf Manager',
+        user: {}
       }
+    },
+    mounted(){
+      this.buscarUsuarioLogado()
     },
     methods: {
       voltarPagina: function () {
@@ -52,6 +78,17 @@
       enviarDrawer: function () {
         this.drawer = !this.drawer
         Bus.$emit('shareDrawer', this.drawer)
+      },
+      async buscarUsuarioLogado(){
+
+        let res = jwtDecode(localStorage.getItem('token'))
+        let response = await UsuarioService._getById({id: res.id})
+        this.user = response.data.usuarios
+        console.log(this.user)
+      },
+      logout: function (){
+        localStorage.clear('token')
+        this.$router.push('/login?q=unauthenticated')
       }
     }
   }

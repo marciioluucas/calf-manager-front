@@ -28,7 +28,7 @@
                                                         required
                                                 ></v-text-field>
                                                 <v-text-field
-                                                        v-model="password"
+                                                        v-model="senha"
                                                         :rules="[v => !!v || 'A senha é requirida']"
                                                         label="Senha"
                                                         type="password"
@@ -91,7 +91,7 @@ export default {
       },
       valid: false,
       login: '',
-      password: ''
+      senha: ''
     }
   },
   created() {
@@ -114,14 +114,15 @@ export default {
 
     async signin() {
       try {
-        const res = await UsuariosService._login({user: this.login, pass: this.password});
+        const res = await UsuariosService._login({login: this.login, senha: this.senha});
         if (res.status === 200) {
           localStorage.setItem('token', JSON.stringify(res.data.token))
           this.$router.push('Dashboard')
+
         }
       } catch (e) {
         this.snackbar.visible = true
-        this.snackbar.text = e.response.data.message
+        this.snackbar.text = e.response.data.message.description
       }
     }
   }
