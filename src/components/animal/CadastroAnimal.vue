@@ -15,7 +15,7 @@
               <span class='title'>Informações gerais</span>
             </v-flex>
 <!-- text Nome             -->
-            <v-flex xs12 sm6 md6 lg6>
+            <v-flex xs12 sm3 md3 lg3>
               <v-text-field
                 v-model="animal.nome"
                 label='Primeiro nome'
@@ -24,7 +24,7 @@
               ></v-text-field>
             </v-flex>
 <!-- text Codigo_brinco             -->
-            <v-flex xs12 sm6 md6 lg6>
+            <v-flex xs12 sm3 md3 lg3>
               <v-text-field
                 v-model="animal.codigo_brinco"
                 label='Código do Brinco'
@@ -32,7 +32,7 @@
               ></v-text-field>
             </v-flex>
 <!-- text Codigo_raca             -->
-            <v-flex xs12 sm6 md6 lg6>
+            <v-flex xs12 sm3 md3 lg3>
               <v-text-field
                 v-model="animal.codigo_raca"
                 label='Código da raça'
@@ -40,7 +40,7 @@
               ></v-text-field>
             </v-flex>
 <!-- text Data_nascimento -->
-            <v-flex xs12 sm6 md6 lg6>
+            <v-flex xs12 sm3 md3 lg3>
               <v-text-field
                 v-model="animal.data_nascimento"
                 mask="##/##/####"
@@ -49,7 +49,7 @@
               ></v-text-field>
             </v-flex>
 <!-- Select Sexo -->
-            <v-flex xs12 sm6 md6 lg6>
+            <v-flex xs12 sm6 md6> 
               <v-select
                 :items="selectSexo"
                 v-model="animal.sexo"
@@ -60,7 +60,7 @@
               ></v-select>
             </v-flex>
 <!-- Select Fase Vida -->
-            <v-flex xs12 sm6 md6 lg6>
+            <v-flex xs12 sm6 md6 >
               <v-select
                 :items="selectFaseVida"
                 v-model="animal.fase_vida"
@@ -70,18 +70,8 @@
                 required
               ></v-select>
             </v-flex>
-
-            <v-flex xs12>
-              <br/>
-              <v-divider/>
-              <br/>
-            </v-flex>
-            <v-flex xs12>
-              <span class='title'>Família</span>
-            </v-flex>
 <!-- Switch is_primogenito -->
-            <v-flex xs12 sm2 md2 lg2 >
-              <v-container px-0>
+            <v-flex xs12 sm3 md3 lg3 >
                 <v-tooltip bottom>
                   <v-switch label="É primogênito?"
                             slot="activator"
@@ -93,7 +83,6 @@
                   </span>
                 </v-tooltip>
 
-              </v-container>
             </v-flex>
 <!-- autocomplete Mae -->
             <v-flex xs12 sm4 md4 lg4 v-if="!animal.is_primogenito">
@@ -136,9 +125,9 @@
               <span class='title'>Fazenda de locação do animal</span>
             </v-flex>
 <!-- autocomplete Fazenda -->
-            <v-flex xs12 sm6 md6 lg6>
+            <v-flex xs12 sm4 md4 lg4>
               <v-autocomplete
-                v-model="selectedFazenda"
+                v-model="animal.fazendas_id"
                 :items="selectFazenda.items"
                 :search-input.sync="selectFazenda.search"
                 hide-no-data
@@ -151,19 +140,19 @@
               />
             </v-flex>
 <!-- Select Lote -->
-            <v-flex xs12 sm6 md6 lg6>
+            <!-- <v-flex xs12 sm4 md4 lg4>
               <v-select
-                :items="selectedFazenda.lote"
-                v-model="animal.lote"
+                :items="selectFazenda.items[0].lote[0]"
+                v-model="animal.lotes_id"
                 item-text="codigo"
                 label="Lote"
-                return-object
+                item-value="id"
               ></v-select>
-            </v-flex>
+            </v-flex> -->
 <!-- text quantidade_animais -->
-            <v-flex xs6 sm3 md3 lg3>
+            <v-flex xs6 sm4 md4 lg4>
               <v-text-field
-                :value="animal.lote.quantidade_animais"
+                :value="animal.quantidade_animais"
                 disabled
                 label='Quantidade de animais'
               ></v-text-field>
@@ -183,19 +172,21 @@
                 slot="activator"
               />
             </v-flex>
+            <!-- Pesagem -->
             <v-flex v-if="animal.is_vivo == true" xs12 sm6 md6 lg6>
               <v-layout wrap>
                 <v-flex xs12>
                   <span class='caption'>Primeira Pesagem.</span>
                 </v-flex>
-                <v-flex xs12>
+                <v-flex xs12 sm6>
                   <v-text-field
                     v-model="animal.pesagem.peso"
                     label='Peso em @ da primeira pesagem'
                     mask="###,#"
                   ></v-text-field>
                 </v-flex>
-                <v-flex xs12>
+
+                <v-flex xs12 sm6>
                   <v-text-field
                     mask="##/##/####"
                     v-model="animal.pesagem.data_pesagem"
@@ -206,26 +197,27 @@
               </v-layout>
 
             </v-flex>
+            <!-- Hemogramas -->
             <v-flex v-if="animal.is_vivo == true" xs12 sm6 md6 lg6>
               <v-layout wrap>
                 <v-flex xs12>
                   <span class='caption'>Primeiro Hemograma.</span>
                 </v-flex>
-                <v-flex xs12 sm6 md6 lg6>
+                <v-flex xs12 sm4>
                   <v-text-field
                     v-model="animal.hemograma.ppt"
                     label='Primeiro teste de proteína plasmática'
                     mask="##,#"
                   ></v-text-field>
                 </v-flex>
-                <v-flex xs12 sm6 md6 lg6>
+                <v-flex xs12 sm4>
                   <v-text-field
                     v-model="animal.hemograma.hematocrito"
                     label='Primeiro teste de hematocrito'
                     mask="##,#"
                   ></v-text-field>
                 </v-flex>
-                <v-flex xs12>
+                <v-flex xs12 sm4>
                   <v-text-field
                     mask="##/##/####"
                     v-model="animal.hemograma.data"
@@ -236,7 +228,7 @@
               </v-layout>
 
             </v-flex>
-            <v-flex  xs12 sm6 md6 lg6>
+            <v-flex  xs12>
               <v-layout wrap>
                 <v-flex xs12 sm7 md7 lg7>
                   <v-autocomplete
@@ -341,11 +333,9 @@
           is_vivo: true,
           is_primogenito: false,
           sexo: '',
-          lote: {
-            id: null,
-            codigo: '',
-            quantidade_animais: 0
-          },
+          quantidade_animais: 0,
+          fazendas_id: null,
+          lotes_id: null,
           doencas: [],
           pesagem: {
             peso: '',
@@ -369,12 +359,14 @@
           search: null,
           selected: {}
         },
+        selectLote: {
+          items: []
+        },
         selectFazenda: {
           loading: false,
           items: [],
           search: null
         },
-        selectedFazenda: {},
         selectFaseVida: [
           {text: 'Recém-nascido', value: 'RECEM_NASCIDO'},
           {text: 'Bezerro', value: 'BEZERRO'},
@@ -495,6 +487,12 @@
         let response = await FazendasService._getByNome(busca)
         this.selectFazenda.items = response.data.fazendas.data
         this.selectFazenda.loading = false
+        console.log(response.data.fazendas.data)
+      },
+      async getLotes(){
+        let response = await FazendasService._getById({id: fazendas_id})
+        console.log(response.data)
+        // this.selectLote = response.data.fazendas.lote
       },
       async getMaes(val) {
         const busca = {
@@ -517,17 +515,18 @@
         this.selectPai.loading = false
       },
       async cadastrar() {
-        if(this.validaFormAnimal()){
-          let response = await AnimaisService._create(this.animal).catch(exception => {
-            if(exception){
-              this.alerta('error', true, 'Erro ao cadastrar animal!')
-            }
-          })
-          if(response){
-            this.alerta('success',true, 'Animal cadastrado com sucesso!')
-            this.clearFormAnimal()
-          }
-        }
+        console.log(this.animal)
+        // if(this.validaFormAnimal()){
+        //   let response = await AnimaisService._create(this.animal).catch(exception => {
+        //     if(exception){
+        //       this.alerta('error', true, 'Erro ao cadastrar animal!')
+        //     }
+        //   })
+        //   if(response){
+        //     this.alerta('success',true, 'Animal cadastrado com sucesso!')
+        //     this.clearFormAnimal()
+        //   }
+        // }
       },
       async editar() {
         if(this.validaFormAnimal()){

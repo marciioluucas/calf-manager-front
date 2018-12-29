@@ -10,6 +10,9 @@ export default {
     const params = Params.map(busca.params)
     return Service.get(`/hemograma/${parseInt(busca.id)}${params}`)
   },
+  _getGraficoMonitorDeSaude: (id) => {
+    return Service.get(`/graph?module=hemograma&chart=monitor-de-saude&animal=${id}`)
+  },
   _create: (form) => {
     return Service.post(`/hemograma`, form)
   },

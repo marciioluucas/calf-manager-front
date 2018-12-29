@@ -5,6 +5,9 @@ export default {
 	_login: (params) => {
 		return Service.post('/login', params);
 	},
+	_getAuth: (params) => {
+		return Service.get(`/login?auth=${params}`);
+	},
 	_getAll: (busca) => {
 		const params = Params.map(busca.params)
 		return Service.get(`/usuario${params}`)

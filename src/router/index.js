@@ -39,13 +39,15 @@ import ListagemPermissao from '@/components/permissao/ListagemPermissao'
 import CadastroDoenca from '@/components/doenca/CadastroDoenca'
 import ListagemDoenca from '@/components/doenca/ListagemDoenca'
 
-import CadastroUsuario from '@/components/usuario/CadastroUsuario'
+import PerfilUsuario from '@/components/usuario/PerfilUsuario'
 // Dose
 import CadastroDose from '@/components/dose/CadastroDose'
 import CadastroHemograma from '@/components/hemograma/CadastroHemograma'
 import ListagemHemograma from '@/components/hemograma/ListagemHemograma'
+import UsuariosService from '../services/UsuariosService';
 
 Vue.use(Router)
+
 
 const router = new Router({
 	routes: [
@@ -137,9 +139,9 @@ const router = new Router({
 				},
 				// Usuario
 				{
-					name: 'CadastroUsuario',
-					path: 'usuario/novo',
-					component: CadastroUsuario
+					name: 'PerfilUsuario',
+					path: 'usuario/perfil',
+					component: PerfilUsuario
 				},
 				// Medicamento
 				{
@@ -236,7 +238,10 @@ router.beforeEach((to, from, next) => {
 
 	!isDelegated && next();
 
+	
+	
 	const lsToken = localStorage.getItem('token');
+	
 	if (lsToken && to.fullPath === '/login') {
 		next('/auth/dashboard');
 	}
@@ -250,5 +255,7 @@ router.beforeEach((to, from, next) => {
 		next();
 	}
 });
+
+
 
 export default router;

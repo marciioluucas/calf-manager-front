@@ -24,7 +24,7 @@ import ListagemFazenda from '@/components/fazenda/ListagemFazenda'
 import CadastroDoenca from '@/components/doenca/CadastroDoenca'
 import ListagemDoenca from '@/components/doenca/ListagemDoenca'
 // Usuario
-import CadastroUsuario from '@/components/usuario/CadastroUsuario'
+import PerfilUsuario from '@/components/usuario/PerfilUsuario'
 // medicamento
 import CadastroMedicamento from '@/components/medicamento/CadastroMedicamento'
 import ListagemMedicamento from '@/components/medicamento/ListagemMedicamento'
@@ -73,7 +73,7 @@ export default {
   CadastroMedicamento,
   ListagemMedicamento,
   // Usuario
-  CadastroUsuario,
+  PerfilUsuario,
   // Grupo
   CadastroGrupo,
   ListagemGrupo,

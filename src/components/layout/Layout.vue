@@ -22,11 +22,11 @@
             color="primary"
             dark
           >
-            {{user.login}}
+            {{user.funcionario.pessoa.nome}}
           </v-btn>
           <v-list>
             <v-list-tile>
-              <v-list-tile-title @click="">Perfil</v-list-tile-title>
+              <v-list-tile-title @click="perfilUsuario">Perfil</v-list-tile-title>
             </v-list-tile>
             <v-list-tile>
               <v-list-tile-title @click="logout">Logout</v-list-tile-title>
@@ -65,7 +65,13 @@
         right: true,
         rightDrawer: false,
         title: 'Calf Manager',
-        user: {}
+        user: {
+          funcionario: {
+            pessoa: {
+              nome: ''
+            }
+          }
+        }
       }
     },
     mounted(){
@@ -79,16 +85,30 @@
         this.drawer = !this.drawer
         Bus.$emit('shareDrawer', this.drawer)
       },
+      
       async buscarUsuarioLogado(){
 
         let res = jwtDecode(localStorage.getItem('token'))
         let response = await UsuarioService._getById({id: res.id})
-        this.user = response.data.usuarios
-        console.log(this.user)
+        .catch((exception) => {
+          if(exception){
+            this.logout()
+          }
+        })
+        if(response.status === 200){
+          this.user = response.data.usuarios
+        }
+        
       },
       logout: function (){
         localStorage.clear('token')
         this.$router.push('/login?q=unauthenticated')
+      },
+      perfilUsuario(){
+        this.$router.push({
+          name: 'PerfilUsuario',
+          params: {id: this.user.id}
+        })
       }
     }
   }

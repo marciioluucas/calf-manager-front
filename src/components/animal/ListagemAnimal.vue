@@ -64,7 +64,7 @@
               @input="selecionaAnimal(props.item.id)"
             >
               <template slot="items" slot-scope="props">
-                <!-- <tr @click.stop="selecionaAnimal(props.item.id)"> -->
+                <tr @click.stop="selecionaAnimal(props.item.id)">
                   <td class="text-xs-center">{{ props.item.id }}</td>
                   <td class="text-xs-center">{{ props.item.nome }}</td>
                   <td class="text-xs-center">{{ props.item.fase_vida }}</td>
@@ -86,6 +86,18 @@
                       delete
                     </v-icon>
                   </td>
+                  <v-menu
+                    v-model="showMenu"
+                    absolute
+                    offset-y
+                     @contextmenu="show"
+                  >
+                    <v-list>
+                      <v-list-tile>
+                        <v-list-tile-title >Prontuário</v-list-tile-title>
+                      </v-list-tile>
+                    </v-list>
+                  </v-menu>
                 </tr>
               </template>
             </v-data-table>
@@ -166,7 +178,8 @@
           color: 'success',
           estado: false,
           mensagem: ''
-        }
+        },
+        showMenu: false
       }
     },
     watch: {
@@ -178,6 +191,9 @@
       this.getAnimais()
     },
     methods: {
+      show(){
+        this.$nextTick(() => {this.showMenu = true})
+      }, 
       async getAnimais() {
         this.$Progress.start()
         if (this.buscaAnimal.id && !this.buscaAnimal.nome && !this.buscaAnimal.lote.id) {
@@ -205,7 +221,6 @@
           let response = await AnimaisService._getAll(this.buscaAnimal)
           await this.$Progress.finish()
           this.items = response.data.animais
-          console.log(this.items);
         }
       },
       getLotesByCodigo(codigo) {
