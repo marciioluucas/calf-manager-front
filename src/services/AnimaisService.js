@@ -28,6 +28,10 @@ export const AnimaisService = {
   _getByIdLoteAndName: (busca) => {
     return Service.get(`/animal/${busca.nome}?id-lote=${busca.lote.id}&vivo=${busca.vivo}&pagina=${busca.page}`)
   },
+  
+  _getByAnimalDoente: (busca) => {
+    return Service.get(`/animal?doente=${busca.params.doente}`)
+  },
 
   _getGraficoGanhoDePeso: (id) => {
     return Service.get(`/graph?module=pesagem&chart=ganho-de-peso&animal=${id}`)

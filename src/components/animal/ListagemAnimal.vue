@@ -12,43 +12,80 @@
           <v-card-text>
             <v-form>
               <v-layout row wrap>
+                <v-expansion-panel>
+                  <v-expansion-panel-content>
+                    <div slot="header">Pesquisas avançadas</div>
+                    <v-card>
+                      <v-flex xs12>
+                        <v-layout>
+                          <v-flex xs1/>
+                        
+                          <v-flex xs4>
+                            <v-text-field
+                              label="Buscar pelo Id"
+                              v-model="buscaAnimal.id"
+                            />
+                          </v-flex>
+                          <v-flex xs4>
+                            <v-text-field xs12 md3
+                              label="Buscar pelo nome"
+                              v-model="buscaAnimal.nome"
+                            />
+                          </v-flex>
+                          <v-flex xs4>
+                            <v-autocomplete
+                              label="Buscar pelo lote"
+                              autocomplete
+                              :loading="loading"
+                              :items="lotes.data"
+                              item-text="codigo"
+                              item-value="id"
+                              cache-items
+                              :search-input.sync="search"
+                              v-model="buscaAnimal.lote.id"
 
-                <v-flex xs12 md2 lg2>
-                  <v-text-field
-                    label="Buscar pelo Id"
-                    v-model="buscaAnimal.id"
-                  />
-                </v-flex>
-                <v-flex xs12 md4 lg4>
-                  <v-text-field xs12 md3
-                    label="Buscar pelo nome"
-                    v-model="buscaAnimal.nome"
-                  />
-                </v-flex>
+                            />
+                          </v-flex>
+                          <v-flex xs4>
+                            <v-autocomplete
+                              label="Buscar pelo sexo"
+                              :loading="loading"
+                              :items="sexo"
+                              item-text="text"
+                              item-value="value"
+                              cache-items
+                              v-model="buscaAnimal.params.sexo"
+                            />
+                          </v-flex>
+                          <v-flex xs1/>
+                         </v-layout>
+                        </v-flex>
 
-                <v-flex xs12 md3 lg3>
-                  <v-select
-                    label="Buscar pelo lote"
-                    autocomplete
-                    :loading="loading"
-                    :items="lotes.data"
-                    item-text="codigo"
-                    item-value="id"
-                    cache-items
-                    :search-input.sync="search"
-                    v-model="buscaAnimal.lote.id"
-                  />
-                </v-flex>
-                <v-flex xs12 md3 lg3 class="mx-auto">
-                  <v-switch
-                    :label="`Buscar pelos vivos`"
-                    v-model="buscaAnimal.params.vivo"
-                  />
-                </v-flex>
-
+                        <v-flex xs12>
+                          <v-layout>
+                            <v-flex xs1 />
+                            <v-flex xs6 class="mx-auto">
+                              <v-switch
+                                :label="`Buscar pelos vivos`"
+                                v-model="buscaAnimal.params.vivo"
+                              />
+                            </v-flex>
+                            <v-flex xs6>
+                              <v-switch
+                                :label="`Buscar pelos doentes`"
+                                v-model="buscaAnimal.params.doente"
+                              />
+                            </v-flex>
+                          </v-layout>
+                        </v-flex>
+                     
+                      
+                    </v-card>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+                        <v-btn color="success" v-on:click="getAnimais">Buscar!</v-btn>
+                        <v-btn color="secondary" v-on:click="">Redefinir busca</v-btn>
               </v-layout>
-              <v-btn color="success" v-on:click="getAnimais">Buscar!</v-btn>
-              <v-btn color="secondary" v-on:click="">Redefinir busca</v-btn>
             </v-form>
           </v-card-text>
         </v-card>
@@ -153,11 +190,17 @@
             id: undefined
           },
           params: {
+            sexo: null,
             vivo: true,
+            doente: false,
             pagina: 1,
           }
 
         },
+        sexo: [
+          {text: 'Macho', value: 'm'},
+          {text: 'Femea', value: 'f'}
+        ],
         search: null,
         lotes: [],
         headers: [
@@ -196,29 +239,35 @@
       }, 
       async getAnimais() {
         this.$Progress.start()
+        let response = null
         if (this.buscaAnimal.id && !this.buscaAnimal.nome && !this.buscaAnimal.lote.id) {
-          let response = await AnimaisService._getById(this.buscaAnimal)
+           response = await AnimaisService._getById(this.buscaAnimal)
           await this.$Progress.finish()
           this.items = response.data.animais
         } else if (this.buscaAnimal.id && this.buscaAnimal.nome && this.buscaAnimal.lote.id) {
-          let response = await AnimaisService._getById(this.buscaAnimal)
+           response = await AnimaisService._getById(this.buscaAnimal)
           await this.$Progress.finish()
           this.items = response.data.animais
         } else if (!this.buscaAnimal.id && this.buscaAnimal.nome && !this.buscaAnimal.lote.id) {
-          let response = await AnimaisService._getByNome(this.buscaAnimal)
+           response = await AnimaisService._getByNome(this.buscaAnimal)
           await this.$Progress.finish()
           this.items = response.data.animais
         } else if (!this.buscaAnimal.id && !this.buscaAnimal.nome && this.buscaAnimal.lote.id) {
-          let response = await AnimaisService._getByIdLote(this.buscaAnimal)
+           response = await AnimaisService._getByIdLote(this.buscaAnimal)
           await this.$Progress.finish()
           this.items = response.data.animais
         } else if (!this.buscaAnimal.id && this.buscaAnimal.nome && this.buscaAnimal.lote.id) {
-          let response = await AnimaisService._getByIdLoteAndName(this.buscaAnimal)
+           response = await AnimaisService._getByIdLoteAndName(this.buscaAnimal)
           await this.$Progress.finish()
           this.items = response.data.animais
-        } else {
+        } else if(this.buscaAnimal.params.doente){
+           response = await AnimaisService._getByAnimalDoente(this.buscaAnimal)
+           this.items = response.data.animais
+          this.$Progress.finish()
+        }
+         else {
           this.$Progress.start()
-          let response = await AnimaisService._getAll(this.buscaAnimal)
+           response = await AnimaisService._getAll(this.buscaAnimal)
           await this.$Progress.finish()
           this.items = response.data.animais
         }
