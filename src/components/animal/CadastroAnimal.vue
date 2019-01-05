@@ -487,11 +487,11 @@
         let response = await FazendasService._getByNome(busca)
         this.selectFazenda.items = response.data.fazendas.data
         this.selectFazenda.loading = false
-        console.log(response.data.fazendas.data)
+        // console.log(response.data.fazendas.data)
       },
       async getLotes(){
         let response = await FazendasService._getById({id: fazendas_id})
-        console.log(response.data)
+        // console.log(response.data)
         // this.selectLote = response.data.fazendas.lote
       },
       async getMaes(val) {

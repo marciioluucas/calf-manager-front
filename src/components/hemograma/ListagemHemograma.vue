@@ -146,9 +146,8 @@ import HemogramasService from '../../services/HemogramasService'
                 type: 'value'
               },
               series: [{
-                data: [],
+                name: 'Hematócrito',
                 type: 'line',
-                  areaStyle: {}
               }]
             },
             graficoPPT: {
@@ -177,9 +176,8 @@ import HemogramasService from '../../services/HemogramasService'
                 type: 'value'
               },
               series: [{
-                data: [],
+                name: 'PPT',
                 type: 'line',
-                  areaStyle: {}
               }]
             },
             view: false

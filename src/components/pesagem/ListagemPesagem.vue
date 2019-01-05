@@ -109,7 +109,7 @@
           },
           grid: {
             width: 300,
-            heigth: 100
+            heigth: 300
           },
           xAxis: {
             type: 'category',
@@ -120,9 +120,8 @@
             type: 'value'
           },
           series: [{
-            data: [],
+            name: 'Arroba',
             type: 'line',
-              areaStyle: {}
           }]
         }, 
         view: false,
