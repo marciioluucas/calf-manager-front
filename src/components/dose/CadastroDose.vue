@@ -12,16 +12,21 @@
 
       <!--Formulário de cadastro-->
       <v-card-text>
-        <v-form>
+        <v-form
+          ref="form"
+          lazy-validation
+        >
+ 
           <v-layout row wrap>
             <v-flex xs12>
               <span class='title'>Informações gerais</span>
             </v-flex>
 
             <!--Adicionar Animal-->
-            <v-flex xs12 sm6 md6 lg6>
+            <v-flex xs12 sm4 md4 lg4>
               <v-autocomplete
-                v-model="dose.animal"
+                :rules="[v => !!v || 'Animal é requirido']"
+                v-model="dose.animal_id"
                 :items="selectAnimal.items"
                 :search-input.sync="selectAnimal.search"
                 hide-no-data
@@ -30,14 +35,15 @@
                 item-value="id"
                 label="Animais"
                 placeholder="Pesquisar pelo Animal"
-                return-object
+                required
               />
             </v-flex>
 
             <!--Adicionar Medicamento-->
-            <v-flex xs12 sm4 md4 lg4>
+            <v-flex xs12 sm3 md3 lg3>
               <v-autocomplete
-                v-model="dose.medicamento"
+                :rules="[v => !!v || 'Login é requirido']"
+                v-model="dose.medicamento_id"
                 :items="selectMedicamento.items"
                 :search-input.sync="selectMedicamento.search"
                 hide-no-data
@@ -46,12 +52,12 @@
                 item-value="id"
                 label="Medicamentos"
                 placeholder="Pesquisar pelo Medicamento"
-                return-object
+                required
               />
             </v-flex>
 
             <!--Cadastrar Medicamento-->
-            <v-flex xs12 sm2 md2 lg2>
+            <v-flex xs1>
               <v-layout row justify-center>
                 <v-dialog v-model="dialog" persistent max-width="500px">
                   <v-btn fab slot="activator" color="indigo" dark><v-icon dark>add</v-icon></v-btn>
@@ -67,6 +73,7 @@
                     <v-card-text>
                       <v-container grid-list-md>
                         <v-layout wrap>
+                          
                           <v-flex xs12>
                             <v-text-field
                               v-model="dose.medicamento.nome"
@@ -98,17 +105,18 @@
               </v-layout>
             </v-flex>
 
-            <v-flex xs12 sm6 md6 lg6>
+            <v-flex xs12 sm4 md4 lg4>
               <v-text-field
-                v-model="dose.quantidadeMg"
+                v-model="dose.quantidade_mg"
                 label='Dose'
                 placeholder="Medida em miligramas"
+                required
               ></v-text-field>
             </v-flex>
           </v-layout>
           <v-flex>
-            <v-btn v-if="!dose.id" @click="cadastrar">Enviar</v-btn>
-            <v-btn v-if="dose.id" @click="editar">Editar</v-btn>
+            <v-btn v-if="!dose.id"  @click="cadastrar">Enviar</v-btn>
+            <v-btn v-if="dose.id"  @click="editar">Editar</v-btn>
 
             <v-btn @click="clearFormDose">Limpar formulário</v-btn>
           </v-flex>
@@ -139,17 +147,19 @@
   import DosesService from '../../services/DosesService'
   import {AnimaisService} from '../../services/AnimaisService'
   import MedicamentosService from '../../services/MedicamentosService'
+  import UsuariosService from '../../services/UsuariosService'
+  import jwtDecode from 'jwt-decode'
+
   export default {
     name: 'cadastro-dose',
     data() {
       return {
         dose: {
           id: null,
-          quantidadeMg: '',
-          animal: {
-            id: null,
-            nome: ''
-          },
+          quantidade_mg: '',
+          animal_id: null,
+          medicamento_id: null,
+          funcionario_id: null,
           medicamento: {
             id: null,
             nome: '',
@@ -172,7 +182,7 @@
           mensagem: ''
         },
         nomeTitulo: 'Vacinar Animal',
-        dialog: false
+        dialog: false,
       }
     },
     mounted() {
@@ -191,6 +201,11 @@
       }
     },
     methods: {
+      async getUsuarioId(){
+        let res = jwtDecode(localStorage.getItem('token'))
+        let response = await UsuariosService._getById({id: res.id})
+        this.dose.funcionario_id = response.data.usuarios.funcionario_id
+      },
       async getDose() {
         let response = await DosesService._getById(this.dose.id)
         this.dose = response.data.doses
@@ -199,7 +214,7 @@
         let busca = {
           nome: val
         }
-        let response = await AnimaisService._getAll(this.dose.animal)
+        let response = await AnimaisService._getAll(busca)
         if(val){
           response = await AnimaisService._getByNome(busca)
         }
@@ -225,22 +240,26 @@
           if(response.status === 201){
             this.alerta(response.data.message.type, true, response.data.message.description)
           }
-          this.clear()
+          this.clearFormMedicamento()
         } else {
           this.alerta('warning', true, 'Preencha todos os campos corretamente!')
         }
       },
       async cadastrar() {
+        
         if (this.validarFormDose()) {
+          this.getUsuarioId()
           let response = await DosesService._create(this.dose).catch(exception => {
             if(exception){
               this.alerta('error', true, 'Erro ao cadastrar Vacina!')
             }
           })
+          console.log(response)
           if(response.status === 201){
             this.alerta(response.data.message.type, true, response.data.message.description)
+            this.clearFormDose()
           }
-          this.clear()
+          
         } else {
           this.alerta('warning', true, 'Preencha todos os campos corretamente!')
         }
@@ -255,15 +274,14 @@
           if(response.status === 201){
             this.alerta(response.data.message.type, true, response.data.message.description)
           }
-          this.clear()
+          this.clearFormDose()
         } else {
           this.alerta('warning', true, 'Preencha todos os campos corretamente!')
 
         }
       },
       validarFormDose() {
-        if (this.dose.animal !== [] && this.dose.medicamento.id !== '' && this.dose.medicamento.id !== null &&
-            this.dose.quantidadeMg !== '' && this.dose.quantidadeMg !== null) {
+        if (this.dose.animal_id !== null && this.dose.medicamento_id !== null && this.dose.quantidade_mg !== null) {
           return true
         } else {
           return false
@@ -277,9 +295,9 @@
         return false
       },
       clearFormDose() {
-        this.dose.animal.id = ''
-        this.dose.animal.nome = ''
-        this.dose.quantidadeMg = ''
+        this.dose.animal_id = null
+        this.dose.medicamento_id = null
+        this.dose.quantidade_mg = null
         this.clearFormMedicamento()
 
       },

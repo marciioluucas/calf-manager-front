@@ -97,11 +97,13 @@
         })
         if(response.status === 200){
           this.user = response.data.usuarios
+          localStorage.setItem('usr_id', JSON.stringify(this.user.funcionario_id))
         }
         
       },
       logout: function (){
         localStorage.clear('token')
+        localStorage.clear('usr_id')
         this.$router.push('/login?q=unauthenticated')
       },
       perfilUsuario(){
