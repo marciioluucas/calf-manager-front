@@ -54,6 +54,20 @@ const ModulosService = {
         },
         filhos: [
           {
+            nome: 'Cadastro de Usuários',
+            icone: '',
+            link: {
+              name: 'CadastroUsuario'
+            }
+          },
+          {
+            nome: 'Lista de Usuários',
+            icone: '',
+            link: {
+              name: 'ListagemUsuario'
+            }
+          },
+          {
             nome: 'Cadastro de Grupos',
             icone: '',
             link: {

@@ -49,9 +49,8 @@
                   <tr>
                     <td class="text-xs-center">{{ props.item.id }}</td>
                     <td class="text-xs-center">{{ props.item.pessoa.nome }}</td>
-                    <td class="text-xs-center">{{ props.item.usuario.login }}</td>
+                    <td class="text-xs-center">{{ props.item.fazenda.nome }}</td>
                     <td class="text-xs-center">{{ props.item.cargo.nome }}</td>
-                    <!-- <td class="text-xs-center">{{ props.item.endereco.logradouro }}</td> -->
                     <td class="justify-center layout px-0">
                       <v-icon
                         small
@@ -129,9 +128,8 @@
         headers: [
           {text: 'ID', value: 'id'},
           {text: 'Pessoa', value: 'id'},
-          {text: 'Usuario', value: 'usuario'},
+          {text: 'Fazenda', value: 'fazenda'},
           {text: 'Cargo', value: 'cargo'},
-          // {text: 'Endereço', value: 'endereco'},
           {text: 'Ações', value: 'acoes'}
         ]
       }

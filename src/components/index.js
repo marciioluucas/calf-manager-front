@@ -25,12 +25,14 @@ import CadastroDoenca from '@/components/doenca/CadastroDoenca'
 import ListagemDoenca from '@/components/doenca/ListagemDoenca'
 // Usuario
 import PerfilUsuario from '@/components/usuario/PerfilUsuario'
+import CadastroUsuario from '@/components/usuario/CadastroUsuario'
+import ListagemUsuario from '@/components/usuario/ListagemUsuario'
 // medicamento
 import CadastroMedicamento from '@/components/medicamento/CadastroMedicamento'
 import ListagemMedicamento from '@/components/medicamento/ListagemMedicamento'
 
 // funcionario
-import CadastroFuncionario from '@/components/funcionario/CadastroFuncionario'
+import CadastroFuncionario from '@/components/funcionario/CadastroFuncionario02'
 import ListagemFuncionario from '@/components/funcionario/ListagemFuncionario'
 // cargo
 import CadastroCargo from '@/components/cargo/CadastroCargo'
@@ -74,6 +76,8 @@ export default {
   ListagemMedicamento,
   // Usuario
   PerfilUsuario,
+  CadastroUsuario,
+  ListagemUsuario,
   // Grupo
   CadastroGrupo,
   ListagemGrupo,

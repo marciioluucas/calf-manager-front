@@ -10,18 +10,23 @@ export default {
     const params = Params.map(busca.params)
     return Service.get(`/funcionario/${parseInt(busca.id)}${params}`)
   },
-  // _getByIdCargo: (busca) => {
-  //   return Service.get(`/funcionario?id-cargo=${busca.cargo.id}&pagina=${busca.page}`)
-  // },
-  // _getByIdUsuario: (busca) => {
-  //   return Service.get(`/funcionario?id-usuariolote=${busca.usuario.id}&pagina=${busca.page}`)
-  // },
-  // _getByIdFazenda: (busca) => {
-  //   return Service.get(`/funcionario?id-fazenda=${busca.fazenda.id}&pagina=${busca.page}`)
-  // },
-  // _getByIdPessoa: (busca) => {
-  //   return Service.get(`/funcionario?id-pessoa=${busca.pessoa.id}&pagina=${busca.page}`)
-  // },
+  _getByNome: (busca) =>{
+    if(typeof busca === 'string'){
+      return Service.get(`/funcionario?nome=${busca}`)
+    }
+  },
+  _getByIdCargo: (busca) => {
+    return Service.get(`/funcionario?cargo_id=${busca.cargo.id}&pagina=${busca.page}`)
+  },
+  _getByIdUsuario: (busca) => {
+    return Service.get(`/funcionario?usuario_id=${busca.usuario.id}&pagina=${busca.page}`)
+  },
+  _getByIdFazenda: (busca) => {
+    return Service.get(`/funcionario?fazenda_id=${busca.fazenda.id}&pagina=${busca.page}`)
+  },
+  _getByIdPessoa: (busca) => {
+    return Service.get(`/funcionario?pessoa_id=${busca.pessoa.id}&pagina=${busca.page}`)
+  },
   _create: (form) => {
     return Service.post(`/funcionario`, form)
   },

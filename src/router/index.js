@@ -27,7 +27,7 @@ import ListagemMedicamento from '@/components/medicamento/ListagemMedicamento'
 import CadastroCargo from '@/components/cargo/CadastroCargo'
 import ListagemCargo from '@/components/cargo/ListagemCargo'
 // funcionario
-import CadastroFuncionario from '@/components/funcionario/CadastroFuncionario'
+import CadastroFuncionario from '@/components/funcionario/CadastroFuncionario02'
 import ListagemFuncionario from '@/components/funcionario/ListagemFuncionario'
 // Grupo
 import CadastroGrupo from '@/components/grupo/CadastroGrupo'
@@ -38,8 +38,11 @@ import ListagemPermissao from '@/components/permissao/ListagemPermissao'
 // Doencas
 import CadastroDoenca from '@/components/doenca/CadastroDoenca'
 import ListagemDoenca from '@/components/doenca/ListagemDoenca'
-
+// Usuario
 import PerfilUsuario from '@/components/usuario/PerfilUsuario'
+import CadastroUsuario from '@/components/usuario/CadastroUsuario'
+import ListagemUsuario from '@/components/usuario/ListagemUsuario'
+
 // Dose
 import CadastroDose from '@/components/dose/CadastroDose'
 import CadastroHemograma from '@/components/hemograma/CadastroHemograma'
@@ -142,6 +145,16 @@ const router = new Router({
 					name: 'PerfilUsuario',
 					path: 'usuario/perfil',
 					component: PerfilUsuario
+				},
+				{
+					name: 'CadastroUsuario',
+					path: 'usuario/novo',
+					component: CadastroUsuario
+				},
+				{
+					name: 'ListagemUsuario',
+					path: 'usuario/listagem',
+					component: ListagemUsuario
 				},
 				// Medicamento
 				{
