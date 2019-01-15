@@ -28,50 +28,17 @@
               </v-text-field>
             </v-flex>
             <v-flex xs12 sm2 md2>
-
-                  <v-checkbox 'Create' v-model="permissao.create"></v-checkbox>
-
-              <!-- <v-switch
-                v-model="permissao.create"
-                label="Create"
-                color="primary"
-                value='1'
-                hide-details
-              ></v-switch> -->
+                  <v-checkbox label="Create" v-model="permissao.create"></v-checkbox>
             </v-flex>
 
             <v-flex xs12 sm2 md2>
-                  <v-checkbox label="read" v-model="permissao.read"></v-checkbox>
-
-              <!-- <v-switch
-                v-model="permissao.read"
-                label="Read"
-                color="primary"
-                value='1'
-                hide-details
-              ></v-switch> -->
+                  <v-checkbox label="Read" v-model="permissao.read"></v-checkbox>
             </v-flex>
             <v-flex xs12 sm2 md2>
                   <v-checkbox label='Update' v-model="permissao.update"></v-checkbox>
-
-              <!-- <v-switch
-                v-model="permissao.update"
-                label="Update"
-                color="primary"
-                value='1'
-                hide-details
-              ></v-switch> -->
             </v-flex>
             <v-flex xs12 sm2 md2>
                   <v-checkbox label="Delete" v-model="permissao.deletee"></v-checkbox>
-
-              <!-- <v-switch
-                v-model="permissao.delete"
-                label="Delete"
-                color="primary"
-                value='1'
-                hide-details
-              ></v-switch> -->
             </v-flex>
 
           </v-layout>
@@ -84,7 +51,7 @@
         </v-form>
       </v-card-text>
       <!--Componente de alerta-->
-      <!-- <v-snackbar
+      <v-snackbar
          v-model="snackbar.estado"
          :right="true"
          :timeout="4000"
@@ -100,7 +67,7 @@
          >
            Close
          </v-btn>
-       </v-snackbar> -->
+       </v-snackbar>
     </v-card>
   </v-container>
 </template>

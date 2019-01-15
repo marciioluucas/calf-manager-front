@@ -49,7 +49,6 @@
                     <tr>
                       <td class="text-xs-center">{{ props.item.id }}</td>
                       <td class="text-xs-center">{{ props.item.nome }}</td>
-                      <td class="text-xs-center">{{ props.item.permissao.nome_modulo }}</td>
                       <td class="justify-center layout px-0">
 
                         <!--Icone de editar-->
@@ -125,7 +124,6 @@
         headers: [
           {text:'ID', value: 'id'},
           {text:'Nome', value: 'nome'},
-          {text:'Permissão', value: 'permissao'},
           {text:'Ações', value: 'acoes'}
         ],
         snackbar: {

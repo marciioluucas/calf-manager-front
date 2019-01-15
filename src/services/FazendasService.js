@@ -11,11 +11,9 @@ export default {
     return Service.get(`/fazenda/${parseInt(busca.id)}${params}`)
   },
   _getByNome: (busca) => {
-    let continuacaoUrl = ''
-    if (busca.page) {
-      continuacaoUrl = `&pagina=${busca.page}`
+    if (typeof busca === 'string') {
+      return Service.get(`/fazenda?nome=${busca}`)
     }
-    return Service.get(`/fazenda?nome=${busca.nome}${continuacaoUrl}`)
   },
   _create: (form) => {
     return Service.post('/fazenda', form)

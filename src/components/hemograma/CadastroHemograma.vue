@@ -248,19 +248,22 @@
 
 			// Editar cadastro de animal.
 			async editar() {
-				if(this.validarForm()){
-					let response = await HemogramaService._update(this.hemograma).catch(exception => {
-						if(exception){
-							this.alerta('error', true, 'Erro ao alterar exame!')
+				try{
+					if(this.validarForm()){
+						let response = await HemogramaService._update(this.hemograma).catch(exception => {
+							if(exception !== null){
+								this.alerta('error', true, 'Erro ao alterar exame!')
+							}
+						})
+						if(response.status !== 400 || response.status !== 500){
+							this.alerta(response.data.message.type, true, response.data.message.description)
+							this.clearFormHemograma()
 						}
-					})
-					if(response.status === 201){
-						this.alerta(response.data.message.type, true, response.data.message.description)
-						this.clearFormHemograma()
 					}
 				}
-				else {
-					this.alerta('success', true, 'Preencha todos os campos corretamente!')
+				catch(exception){
+					this.alerta('error', true, 'Erro ao editar hemograma!')
+
 				}
 			},
 			async getHemograma() {
@@ -270,29 +273,42 @@
 
 			// Pesquisar Animais pelo nome.
 			async getAnimais(val) {
-				let busca = {
-					nome: val
+				try{
+					this.selectAnimais.loading = true
+					if (val !== null){
+						let response = await AnimaisService._getByNome(val).catch(exception => {
+							if(exception !== null){
+								this.alerta('error', true, 'Erro ao pesquisar todos animais!')
+							}
+						})
+						if(response.status !== 400 || response.status !== 500){
+							this.selectAnimais.items = response.data.animais.data
+						}
+						this.selectAnimais.loading = false
+					}
 				}
-				this.selectAnimais.loading = true
-				if(val){
-					let response = await AnimaisService._getByNome(busca)
-					this.selectAnimais.items = response.data.animais.data
+				catch (exception){
+					this.alerta('error', true, 'Erro ao pesquisar todos animais!')
 				}
-				this.selectAnimais.loading = false
 			},
 
 			// Pesquisar doença pelo nome.
 			async getDoencas(val){
-				let busca = {
-					nome: val
+				try{
+					this.selectDoencas.loading = true
+					if(val){
+						let response = await DoencasService._getByNome(val).catch(exception => {
+							if(exception !== null) {
+								this.alerta('error', true, 'Erro ao pesquisar todos animais!')
+							}
+						})
+						this.selectDoencas.items = response.data.doencas.data
+					}
+					this.selectDoencas.loading = false
 				}
-				this.selectDoencas.loading = true
-				if(val){
-					let response = await DoencasService._getByNome(busca)
-					// console.log(response)
-					this.selectDoencas.items = response.data.doencas.data
+				catch(exception){
+					this.alerta('error', true, 'Erro ao pesquisar todos animais!')
 				}
-				this.selectDoencas.loading = false
 			},
 			
 			//  Limpar formulário.
