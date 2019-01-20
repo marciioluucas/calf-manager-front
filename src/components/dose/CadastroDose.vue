@@ -35,7 +35,6 @@
                 item-value="id"
                 label="Animais"
                 placeholder="Pesquisar pelo Animal"
-                required
               />
             </v-flex>
 
@@ -52,7 +51,6 @@
                 item-value="id"
                 label="Medicamentos"
                 placeholder="Pesquisar pelo Medicamento"
-                required
               />
             </v-flex>
 
@@ -110,7 +108,6 @@
                 v-model="dose.quantidade_mg"
                 label='Dose'
                 placeholder="Medida em miligramas"
-                required
               ></v-text-field>
             </v-flex>
           </v-layout>
@@ -216,7 +213,7 @@
         }
         let response = await AnimaisService._getAll(busca)
         if(val){
-          response = await AnimaisService._getByNome(busca)
+          response = await AnimaisService._getByNome(val)
         }
         this.selectAnimal.items = response.data.animais.data
       },
@@ -226,7 +223,7 @@
         }
         let response = await MedicamentosService._getAll(this.dose.medicamento)
         if(val){
-          response = await MedicamentosService._getByNome(busca)
+          response = await MedicamentosService._getByNome(val)
         }
         this.selectMedicamento.items = response.data.medicamentos.data
       },
@@ -239,8 +236,10 @@
           })
           if(response.status === 201){
             this.alerta(response.data.message.type, true, response.data.message.description)
+            this.dialog = false
+            this.clearFormMedicamento()
           }
-          this.clearFormMedicamento()
+          
         } else {
           this.alerta('warning', true, 'Preencha todos os campos corretamente!')
         }
@@ -248,13 +247,8 @@
       async cadastrar() {
         
         if (this.validarFormDose()) {
-          this.getUsuarioId()
-          let response = await DosesService._create(this.dose).catch(exception => {
-            if(exception){
-              this.alerta('error', true, 'Erro ao cadastrar Vacina!')
-            }
-          })
-          console.log(response)
+          this.dose.funcionario_id = localStorage.getItem('usr_id')
+          let response = await DosesService._create(this.dose)
           if(response.status === 201){
             this.alerta(response.data.message.type, true, response.data.message.description)
             this.clearFormDose()

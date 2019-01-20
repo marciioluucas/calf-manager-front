@@ -42,14 +42,13 @@
               <v-card-text>
                 <v-data-table
                   :headers="headers"
-                  :items="items.data"
+                  :items="items"
                   hide-actions
                 >
                   <template slot="items" slot-scope="props">
                     <tr>
                       <td class="text-xs-center">{{ props.item.id }}</td>
                       <td class="text-xs-center">{{ props.item.codigo }}</td>
-                      <!-- <td class="text-xs-center">{{ props.item.fazenda.nome }}</td> -->
                       <td class="justify-center layout px-0">
                         <v-icon
                           small
@@ -126,7 +125,7 @@
         headers: [
           {text: 'ID', value: 'id'},
           {text: 'Código', value: 'codigo'},
-          {text: 'Fazenda', value: 'fazenda'},
+          // {text: 'Fazenda', value: 'fazenda'},
           {text: 'Ações', value: 'acoes'}
         ],
         snackbar: {

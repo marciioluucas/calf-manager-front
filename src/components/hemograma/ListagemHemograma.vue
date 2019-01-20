@@ -193,11 +193,12 @@ import HemogramasService from '../../services/HemogramasService'
         },
         methods: {
           async getAnimais(val){
+            if(val !== null){
             let busca = {
               nome: val
             }
             this.selectAnimal.loading = true
-            let response = await AnimaisService._getByNome(busca)
+            let response = await AnimaisService._getByNome(val)
 
             this.selectAnimal.items = response.data.animais.data
             this.selectAnimal.loading = false
@@ -206,6 +207,7 @@ import HemogramasService from '../../services/HemogramasService'
               if(this.selectAnimal.selected.id){
                 this.view = true
               }
+            }
             }
           },
           async getGraficoHemograma(val){

@@ -111,7 +111,7 @@
           nome: val
         }
         this.selectFazenda.loading = true
-        let response = await FazendasService._getByNome(busca)
+        let response = await FazendasService._getByNome(val)
         this.selectFazenda.items = response.data.fazendas.data
         this.selectFazenda.loading = false
 

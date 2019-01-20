@@ -117,7 +117,7 @@ export default {
         params: {vivo: true}
       }
       this.selectAnimal.loading = true
-      let response = await AnimaisService._getByNome(busca)
+      let response = await AnimaisService._getByNome(val)
       this.selectAnimal.items = response.data.animais.data
       this.selectAnimal.loading = false
     },
@@ -154,8 +154,8 @@ export default {
       }
     },
     validarForm(){
-      if(this.pesagem.animal.id !== null && this.pesagem.animal.id !== '' &&
-        this.pesagem.data !== null && this.pesagem.data !== '' &&
+      if(this.pesagem.animais_id !== null && this.pesagem.animais_id !== '' &&
+        this.pesagem.data_pesagem !== null && this.pesagem.data_pesagem !== '' &&
         this.pesagem.peso !== null && this.pesagem.peso !== ''){
           return true
         } else {
@@ -163,9 +163,9 @@ export default {
         }
     },
     clearFormPesagem(){
-      this.pesagem.animal.id = null
+      this.pesagem.animais_id = null
       this.pesagem.peso = '',
-      this.pesagem.data = ''
+      this.pesagem.data_pesagem = ''
     },
     alerta(color, estado, mensagem){
       this.snackbar.color = color

@@ -19,13 +19,28 @@
               <span class='title'>Informações gerais</span>
             </v-flex>
 
-            <v-flex xs12 sm12 md12>
+            <v-flex xs12 sm6 md6>
               <v-text-field
                 v-model="permissao.nome_modulo"
                 label="Nome"
                 required
               >
               </v-text-field>
+            </v-flex>
+            <v-flex xs12 sm6 md6>
+              <v-autocomplete
+                  label="Pesquise o Grupo"
+                  :loading="selectGrupo.loading"
+                  :items="selectGrupo.items"
+                  hide-no-data
+                  hide-selected
+                  item-text="nome"
+                  required
+                  cache-items
+                  item-value="id"
+                  :search-input.sync="selectGrupo.search"
+                  v-model="permissao.grupo_id"
+                  />
             </v-flex>
             <v-flex xs12 sm2 md2>
                   <v-checkbox label="Create" v-model="permissao.create"></v-checkbox>
@@ -74,6 +89,7 @@
 
 <script>
   import PermissoesService from '../../services/PermissoesService'
+  import GruposService from '../../services/GruposService'
   export default {
     name: "cadastro-permissao",
     data(){
@@ -84,7 +100,13 @@
           create: 1,
           read: 1,
           update: 0,
-          delete: 0
+          delete: 0,
+          grupo_id: null
+        },
+        selectGrupo: {
+          item: [],
+          search: null,
+          loading: false
         },
         snackbar: {
           color: 'success',
@@ -94,6 +116,11 @@
         nomeTitulo: 'Cadastro de Permissão'
       }
     },
+    watch: {
+        'selectGrupo.search'(val) {
+        val && this.getGrupos(val)
+        },
+    },
     mounted() {
       if(this.permissao.id = this.$route.params.id){
         this.nomeTitulo = 'Editar Permissão'
@@ -101,34 +128,71 @@
       }
     },
     methods: {
+      // Pesquisar fazenda por nome
+      async getGrupos(val) {
+          try{
+              this.selectGrupo.loading = true
+              if (val !== null){
+                  let response = await GruposService._getByNome(val)
+                  if(response.status !== 400 || response.status !== 500){
+                    console.log(response)
+                      this.selectGrupo.items = response.data.grupos.data
+                  }
+                  this.selectGrupo.loading = false
+              }
+          }
+          catch (exception){
+            this.alerta('error', true, 'Erro ao pesquisar grupo!')
+          }
+      },
       async getPermissao(){
+        try{
         let response = await PermissoesService._getById(this.permissao)
         this.permissao = response.data.permissoes
         console.log(this.permissao);
+        }
+        catch(e){
+          this.alerta('error', true, 'Erro ao pesquisar permissao por id!')
+          return false
+        }
       },
       async cadastrar(){
-        if (this.validarForm()){
-          let response = await PermissoesService._create(this.permissao)
-          if (response.status === 201){
-            this.alerta(response.data.message.type, true, response.data.message.description)
-          }
+        try{
+          if (this.validarForm()){
+            let response = await PermissoesService._create(this.permissao)
+            if (response.status !== 400 || response.status !== 500){
+              this.alerta(response.data.message.type, true, response.data.message.description)
+              this.clearFormPermissao()
+            }
 
-          else {
-            console.log(response);
+            else {
+              console.log(response);
+            }
+            
           }
-          this.clearFormPermissao()
+        }
+        catch(e){
+            this.alerta('error', true, 'Erro ao cadastrar permissão!')
+            return false
         }
       },
       async editar(){
-        if (this.validarForm()){
-          let response = await PermissoesService._update(this.permissao)
-          if (response.status === 201){
-            this.alerta(response.data.message.type, true, response.data.message.description)
-          }
-        }      },
+        try{
+          if (this.validarForm()){
+            let response = await PermissoesService._update(this.permissao)
+            if (response.status !== 400 || response.status !== 500){
+              this.alerta(response.data.message.type, true, response.data.message.description)
+              this.clearFormPermissao()
+            }
+          }   
+        }
+        catch(e){
+            this.alerta('error', true, 'Erro ao alterar permissão!')
+            return false
+        }
+      },
       validarForm(){
-      if(this.permissao.nome_modulo !== '' && this.permissao.nome_modulo !== null && this.permissao.create !== null &&
-         this.permissao.read !== null && this.permissao.update !== null&& this.permissao.delete !== null) {
+      if(this.permissao.nome_modulo !== '' && this.permissao.nome_modulo) {
             return true
           } else {
             return false
@@ -145,7 +209,8 @@
         this.permissao.read = 0
         this.permissao.update = 0
         this.permissao.delete = 0
-
+        this.selectGrupo.items = null
+        this.permissao.grupo_id = null
       }
     }
   }

@@ -100,10 +100,11 @@
                 this.alerta('error', true, 'Erro ao cadastrar Fazenda!')
               }
             })
-            if(response.status === 201){
+            if(response.status !== 400 || response.status || 500){
               this.alerta(response.data.message.type, true, response.data.message.description)
-            }
             this.clearFormCargo()
+
+            }
           }
           else {
             this.alerta('warning', true, 'Preencha os campos corretamente!')
@@ -111,15 +112,16 @@
         },
         async editar() {
           if (this.validarForm()) {
-            let response = await CargosService._create(this.cargo).catch(exception => {
+            let response = await CargosService._update(this.cargo).catch(exception => {
               if(exception){
                 this.alerta('error', true, 'Erro ao cadastrar Fazenda!')
               }
             })
-            if(response.status === 201){
+            if(response.status !== 400 || response.status || 500){
               this.alerta(response.data.message.type, true, response.data.message.description)
+              this.clearFormCargo()
             }
-            this.clearFormCargo()
+            
           } else {
             this.alerta('warning', true, 'Preencha os campos corretamente!')
           }

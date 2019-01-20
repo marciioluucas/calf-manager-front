@@ -101,9 +101,10 @@
               @input="selecionaAnimal(props.item.id)"
             >
               <template slot="items" slot-scope="props">
-                <tr @click.stop="selecionaAnimal(props.item.id)">
                   <td class="text-xs-center">{{ props.item.id }}</td>
-                  <td class="text-xs-center">{{ props.item.nome }}</td>
+                  <tr @click.stop="selecionaAnimal(props.item.id)">
+                    <td class="text-xs-center">{{ props.item.nome }}</td>
+                  </tr>
                   <td class="text-xs-center">{{ props.item.fase_vida }}</td>
                   <td class="text-xs-center">{{ props.item.lote.codigo }}</td>
                   <td class="text-xs-center">{{ props.item.codigo_brinco }}</td>
@@ -135,7 +136,6 @@
                       </v-list-tile>
                     </v-list>
                   </v-menu>
-                </tr>
               </template>
             </v-data-table>
           </v-card-text>

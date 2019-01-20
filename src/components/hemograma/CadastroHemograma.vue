@@ -85,21 +85,6 @@
 									<v-flex xs12 v-if="hemograma.doente"> 
 										<v-flex xs12>
 											<v-autocomplete
-											label="Pesquise o Animal"
-											:loading="selectAnimais.loading"
-											:items="selectAnimais.items"
-											hide-no-data
-											hide-selected
-											item-text="nome"
-											required
-											cache-items
-											item-value="id"
-											:search-input.sync="selectAnimais.search"
-											v-model="hemograma.animais_id"
-											/>
-										</v-flex>
-										<v-flex xs12>
-											<v-autocomplete
 												label="Pesquise a Doença"
 												:loading="selectAnimais.loading"
 												:items="selectDoencas.items"
@@ -180,6 +165,7 @@
 					curado: false,
 					animais_id: null,
 					doencas_id: null,
+					doenca_id: null,
 					viewModal: false
 				},
 				selectAnimais: {
@@ -224,24 +210,29 @@
 		methods: {
 			// Cadastrar novo animal
 			async cadastrar() {
+				try{
 				if(this.validarForm()){
 					
-					console.log(this.hemograma)
-					let response = await HemogramaService._create(this.hemograma).catch(exception => {
-					  if(exception){
-					    this.alerta('error', true, 'Erro ao cadastrar exame!')
-					  }
-					})
+					// console.log(this.hemograma)
+					let response = await HemogramaService._create(this.hemograma)
 					if(response.status === 201){
 					  this.alerta(response.data.message.type, true, response.data.message.description)
+						if(this.hemograma.doente){
+							this.hemograma.doenca_id = this.hemograma.doencas_id
+							response = await DoencasService._create(this.hemograma)
+					  		this.alerta(response.data.message.type, true, response.data.message.description)
+						}
 					  this.clearFormHemograma()
 					}
-					console.log(response)
-
+					// console.log(response)
 
 					// Fechar modal e limpar formulário
 					this.hemograma.viewModal = false
 					this.clearFormHemograma()
+				}
+				}
+				catch(e){
+
 				}
 			},
 		
@@ -250,19 +241,23 @@
 			async editar() {
 				try{
 					if(this.validarForm()){
-						let response = await HemogramaService._update(this.hemograma).catch(exception => {
-							if(exception !== null){
-								this.alerta('error', true, 'Erro ao alterar exame!')
-							}
-						})
+						let response = await HemogramaService._update(this.hemograma)
 						if(response.status !== 400 || response.status !== 500){
 							this.alerta(response.data.message.type, true, response.data.message.description)
+							if(this.hemograma.doente){
+								this.hemograma.doenca_id = this.hemograma.doencas_id
+
+								console.log('doente')
+								response = await DoencasService._create(this.hemograma)
+								this.alerta(response.data.message.type, true, response.data.message.description)
+							}
 							this.clearFormHemograma()
 						}
 					}
 				}
 				catch(exception){
-					this.alerta('error', true, 'Erro ao editar hemograma!')
+					this.alerta('error', true, 'Erro ao pesquisar todos animais!')
+					return false
 
 				}
 			},
@@ -276,11 +271,7 @@
 				try{
 					this.selectAnimais.loading = true
 					if (val !== null){
-						let response = await AnimaisService._getByNome(val).catch(exception => {
-							if(exception !== null){
-								this.alerta('error', true, 'Erro ao pesquisar todos animais!')
-							}
-						})
+						let response = await AnimaisService._getByNome(val)
 						if(response.status !== 400 || response.status !== 500){
 							this.selectAnimais.items = response.data.animais.data
 						}
@@ -289,6 +280,7 @@
 				}
 				catch (exception){
 					this.alerta('error', true, 'Erro ao pesquisar todos animais!')
+					return false
 				}
 			},
 
@@ -297,11 +289,7 @@
 				try{
 					this.selectDoencas.loading = true
 					if(val){
-						let response = await DoencasService._getByNome(val).catch(exception => {
-							if(exception !== null) {
-								this.alerta('error', true, 'Erro ao pesquisar todos animais!')
-							}
-						})
+						let response = await DoencasService._getByNome(val)
 						this.selectDoencas.items = response.data.doencas.data
 					}
 					this.selectDoencas.loading = false

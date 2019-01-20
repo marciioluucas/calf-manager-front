@@ -35,7 +35,7 @@
             <v-btn v-if="!doenca.id" @click="cadastrar">Enviar</v-btn>
             <v-btn v-if="doenca.id" @click="editar">Editar</v-btn>
 
-            <v-btn @click="clear">Limpar formulário</v-btn>
+            <v-btn @click="clearForm">Limpar formulário</v-btn>
           </v-flex>
         </v-form>
       </v-card-text>
@@ -91,14 +91,14 @@
     methods: {
       async cadastrar() {
         if(this.validarFormDoenca()){
-          let res = await DoencasService._create(this.doenca).catch(e => {
+          let response = await DoencasService._create(this.doenca).catch(e => {
             if(exception){
               this.alerta('error', true, 'Erro ao cadastrar doença!')
             }
           })
-          if(response.status === 201){
+          if(response.status !== 400 || response.status !== 500){
             this.alerta(response.data.message.type ,true, response.data.message.description)
-            this.clearFormAnimal()
+            this.clearForm()
           }
         }
         else {
@@ -107,21 +107,21 @@
       },
       async editar() {
         if(this.validarFormDoenca()){
-          let res = await DoencasService._update(this.doenca).catch(e => {
+          let response = await DoencasService._update(this.doenca).catch(e => {
             if(exception){
               this.alerta('error', true, 'Erro ao cadastrar doença!')
             }
           })
-          if(response.status === 201){
+          if(response.status !== 400 || response.status !== 500){
             this.alerta(response.data.message.type ,true, response.data.message.description)
-            this.clearFormAnimal()
+            this.clearForm()
           }
         }
         else {
           this.alerta('warning', true, 'Preencha todos os campos corretamente!')
         }
       },
-      clear() {
+      clearForm() {
         this.doenca.nome = ''
         this.doenca.descricao = ''
       },

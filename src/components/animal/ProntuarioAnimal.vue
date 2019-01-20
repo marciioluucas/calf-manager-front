@@ -173,20 +173,20 @@
 
                         <!-- Gráficos de ganho de peso e hereditariedade -->
                         <v-flex xs12 v-if='hasValueToGraphDeGanhoDePeso'>
-                            <v-layout>
-                                <v-flex xs12 sm6 md6 lg6 >
+
+                                <v-flex xs12>
                                     <v-flex xs12>
                                         <span class='title'>Gráficos de ganho de peso</span>
                                     </v-flex>
                                     <chart :options='graficoGanhoPeso' :auto-resize="true"/>
                                 </v-flex>
-                                <v-flex xs12 sm6 md6 lg6>
+                                <v-flex xs12>
                                     <v-flex xs12>
                                         <span class='title'>Grafico de hereditariedade</span>
                                     </v-flex>
                                     <chart class="graficoH" :options='option = graficoHereditariedade' :auto-resize="true"/>
                                 </v-flex>
-                            </v-layout>
+
                         </v-flex>
                     </v-layout>
 
@@ -397,8 +397,8 @@
 				],
 				graficoGanhoPeso: {
 					grid: {
-						height: 250,
-						width: 300
+						height: 500,
+						width: 500
 					},
 					tooltip: {
 						trigger: 'axis'
@@ -419,8 +419,8 @@
 				graficoHereditariedade: {
 					layout: 'orthogonal',
 					grid: {
-						height: 100,
-						width: 100
+						height: 500,
+						width: 500
 					},
 					// tooltip: {
 					// 	trigger: 'item',
