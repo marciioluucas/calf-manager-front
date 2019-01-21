@@ -64,7 +64,7 @@
                       <!--Icone de deletar-->
                       <v-icon
                         small
-                        @click="deletar(props.item.id)"
+                        @click="deletar(props.item)"
                       >
                         delete
                       </v-icon>
@@ -83,6 +83,24 @@
             </v-card-actions>
           </v-card>
         </v-flex>
+<!--Componente de alerta-->
+          <v-snackbar
+             v-model="snackbar.estado"
+             :right="true"
+             :timeout="4000"
+             :multi-line="true"
+
+             :top="true"
+             :color="snackbar.color">
+             {{ snackbar.mensagem }}
+             <v-btn
+               color="black"
+               flat
+               @click="snackbar.mode = false"
+             >
+               Close
+             </v-btn>
+           </v-snackbar>
 
       </v-card>
     </v-flex>
@@ -112,7 +130,12 @@
           {text: 'Nome', value: 'nome'},
           {text: 'Prescrição', value: 'prescricao'},
           {text: 'Ações', value: 'acoes'}
-        ]
+        ],
+         snackbar: {
+          color: 'success',
+          estado: false,
+          mensagem: ''
+        }
       }
     },
     mounted() {
@@ -129,19 +152,29 @@
           params: {id: id}
         })
       },
-      async deletar(id) {
-        if(confirm('Deseja deletar este item?')){
-          await MedicamentosService._delete(id)
+      async deletar(item){
+        try{
+          if(confirm('Deseja realmente deletar este medicamento?')){
+            let response = await MedicamentosService._delete(item.id)
+            if(response.status !== 500){
+              this.alerta('success', true, 'Medicamento excluído com sucesso!')
+              let index = this.items.data.indexOf(item)
+              this.items.data.splice(index, 1)
+            }
+          }
         }
-        this.atualizarTabela()
+        catch(e){
+          this.alerta('error', true, 'Erro ao deletar medicamento!') 
+        }
       },
       clear(){
         this.buscaMedicamento.id = null
         this.buscaMedicamento.nome = ''
       },
-      atualizarTabela(){
-        this.items = []
-        this.getMedicamentos()
+      alerta(color, estado, mensagem) {
+        this.snackbar.color = color
+        this.snackbar.estado = estado
+        this.snackbar.mensagem = mensagem
       }
     }
   }

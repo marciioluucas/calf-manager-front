@@ -17,6 +17,9 @@ export default {
     const params = Params.map(busca.params)
     return Service.get(`/lote${params}`)
   },
+  _getQuantidadeLotes: async () => {
+    return Service.get(`/lote?contagem=true`)
+  },
   _create: (form) => {
     return Service.post(`/lote`, form)
   },

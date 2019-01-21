@@ -133,8 +133,8 @@ import HemogramasService from '../../services/HemogramasService'
               },
               
              grid: {
-                  width: '300',
-                  heigth: '200',
+                  width: 'auto',
+                  heigth: 'auto',
                   containLabel: true
               },
               xAxis: {
@@ -162,8 +162,8 @@ import HemogramasService from '../../services/HemogramasService'
               },
              
                grid: {
-                  width: '300',
-                  heigth: '200',
+                  width: 'auto',
+                  heigth: 'auto',
                   containLabel: true
 
               },

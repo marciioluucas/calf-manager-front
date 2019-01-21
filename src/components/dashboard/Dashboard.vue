@@ -4,11 +4,11 @@
       <v-flex xs12 md4 lg4 >
         <animais-cadastrados></animais-cadastrados>
       </v-flex>
-      <v-flex xs12 md4 lg4 >
-        <animais-cadastrados></animais-cadastrados>
-      </v-flex>
       <v-flex xs12 md4 lg4>
         <lotes-cadastrados></lotes-cadastrados>
+      </v-flex>
+       <v-flex xs12 md4 lg4>
+        <animais-doentes></animais-doentes>
       </v-flex>
     </v-layout>
   </v-container>
@@ -18,9 +18,10 @@
 <script>
   import AnimaisCadastrados from './AnimaisCadastrados'
   import LotesCadastrados from './LotesCadastrados'
+  import AnimaisDoentes from './AnimaisDoentes'
   export default {
     name: 'dashboard',
-    components: {AnimaisCadastrados, LotesCadastrados}
+    components: {AnimaisCadastrados, LotesCadastrados, AnimaisDoentes}
   }
 </script>
 

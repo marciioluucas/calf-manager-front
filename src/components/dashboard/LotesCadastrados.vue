@@ -4,7 +4,7 @@
       <v-card-title primary-title>
         <v-layout column wrap>
           <v-flex xs4>
-            <h3 class="headline mb-0">80</h3>
+            <h3 class="headline mb-0">{{quantidadeLotes}}</h3>
           </v-flex>
           <v-flex xs8>
             <h1>Lotes</h1>
@@ -17,8 +17,23 @@
 </template>
 
 <script>
+import LotesService from '../../services/LotesService'
   export default {
-    name: 'lotes-cadastrados'
+    name: 'lotes-cadastrados',
+    data() {
+      return {
+        quantidadeLotes: null
+      }
+    },
+    mounted(){
+      this.getQuantidadeLotes()
+    },
+    methods: {
+      async getQuantidadeLotes() {
+        let response = await LotesService._getQuantidadeLotes()
+        this.quantidadeLotes = response.data.lotes
+      }
+    }
   }
 </script>
 

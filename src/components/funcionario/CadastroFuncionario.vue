@@ -195,6 +195,7 @@
                 }
             },
 
+
             // Alerta
             alerta(color, estado, mensagem) {
                 this.snackbar.color = color

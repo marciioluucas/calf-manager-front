@@ -148,19 +148,19 @@
         })
       },
       async deletar(item){
-        if(confirm('Deseja realmente deletar este grupo?')){
-          let response = await GruposService._delete(item.id).catch(exception => {
-            if(exception){
-              this.alerta('error', true, 'Erro ao deletar grupo!')
+        try{
+          if(confirm('Deseja realmente deletar este grupo?')){
+            let response = await GruposService._delete(item.id)
+            if(response.status !== 500){
+              this.alerta('success', true, 'Grupo excluído com sucesso!')
+              let index = this.items.data.indexOf(item)
+              this.items.data.splice(index, 1)
             }
-          })
-          if(response.status === 202){
-            this.alerta('success', true, 'Grupo excluido com sucesso!')
-            let index = this.items.data.indexOf(item)
-            this.items.data.splice(index, 1)
           }
         }
-
+        catch(e){
+          this.alerta('error', true, 'Erro ao deletar grupo!') 
+        }
       },
       clear(){
         this.buscaGrupo.id = null

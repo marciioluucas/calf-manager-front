@@ -61,7 +61,7 @@
                       </v-icon>
                       <v-icon
                         small
-                        @click="deletar(props.item.id)"
+                        @click="deletar(props.item)"
                       >
                         delete
                       </v-icon>
@@ -80,7 +80,24 @@
             </v-card-actions>
           </v-card>
         </v-flex>
+<!--Componente de alerta-->
+          <v-snackbar
+             v-model="snackbar.estado"
+             :right="true"
+             :timeout="4000"
+             :multi-line="true"
 
+             :top="true"
+             :color="snackbar.color">
+             {{ snackbar.mensagem }}
+             <v-btn
+               color="black"
+               flat
+               @click="snackbar.mode = false"
+             >
+               Close
+             </v-btn>
+           </v-snackbar>
       </v-card>
     </v-flex>
   </v-layout>
@@ -131,7 +148,12 @@
           {text: 'Fazenda', value: 'fazenda'},
           {text: 'Cargo', value: 'cargo'},
           {text: 'Ações', value: 'acoes'}
-        ]
+        ],
+         snackbar: {
+          color: 'success',
+          estado: false,
+          mensagem: ''
+        }
       }
     },
     mounted() {
@@ -153,9 +175,20 @@
         }
         // console.log(this.items);
       },
-      async deletar(id) {
-        let response = FuncionariosService._delete(id)
-        console.log(response);
+      async deletar(item){
+        try{
+          if(confirm('Deseja realmente deletar este Funcionário?')){
+            let response = await FuncionariosService._delete(item.id)
+            if(response.status === 202){
+              this.alerta('success', true, 'Funcionário excluído com sucesso!')
+              let index = this.items.data.indexOf(item)
+              this.items.data.splice(index, 1)
+            }
+          }
+        }
+        catch(e){
+          this.alerta('error', true, 'Erro ao deletar grupo!') 
+        }
       },
       async editar(id) {
         this.$router.push({
@@ -166,6 +199,11 @@
       clear(){
         this.buscaFuncionario.id = null
         this.buscaFuncionario.pessoa.nome = ''
+      },
+      alerta(color, estado, mensagem) {
+        this.snackbar.color = color
+        this.snackbar.estado = estado
+        this.snackbar.mensagem = mensagem
       }
     }
   }

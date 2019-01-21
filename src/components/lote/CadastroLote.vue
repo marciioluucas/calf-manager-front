@@ -37,7 +37,7 @@
                 :items="selectFazenda.items"
                 item-text="nome"
                 :search-input.sync="selectFazenda.search"
-                v-model="lote.fazenda_id"
+                v-model="this.lote.fazenda_id"
               />
             </v-flex>
           </v-layout>
@@ -116,36 +116,52 @@
         this.selectFazenda.loading = false
 
       },
+      async getFazendaById(id){
+        try{
+          let response = await FazendasService._getById({id: id})
+          this.selectFazenda.items = response.data.fazendas
+        }catch(e){
+            this.alerta('error', true, 'Erro ao listar todas fazendas')
+
+        }
+      },
       async cadastrar() {
         if (this.validarFormulario()) {
-          let response = await LotesService._create(this.lote).catch(exception => {
-            if(exception){
-              this.alerta('error', true, 'Erro ao validar formulário')
+          try{
+            let response = await LotesService._create(this.lote).catch(exception => {
+              if(exception){
+                this.alerta('error', true, 'Erro ao validar formulário')
+              }
+            })
+            if(response.status === 201){
+              this.alerta('success', true, response.data.message.description)
+              this.clearFormLote()
             }
-          })
-          if(response.status === 201){
-            this.alerta('success', true, response.data.message.description)
-            this.clearFormLote()
+          }
+          catch(e){
+              this.alerta('error', true, 'Erro ao cadastrar lote!')
           }
         }
       },
       async editar() {
         if (this.validarFormulario()) {
-          let response = await LotesService._update(this.lote).catch(exception => {
-            if(exception){
-              this.alerta('error', true, 'Erro ao validar formulário')
+          try{
+            let response = await LotesService._update(this.lote)
+            if(response.status !== 400 || response.status !== 500){
+              this.alerta('success', true, response.data.message.description)
+              this.clearFormLote()
             }
-          })
-          if(response.status === 201){
-            this.alerta('success', true, response.data.message.description)
-            this.clearFormLote()
+          }
+          catch(e){
+              this.alerta('error', true, 'Erro ao alterar lote!')
+
           }
         }
       },
       async getLote() {
         let response = await LotesService._getById(this.lote)
         this.lote = response.data.lotes[0]
-        console.log(this.lote);
+        this.getFazendaById(this.lote.fazenda_id)
       },
       clearFormLote() {
         this.lote.codigo = null

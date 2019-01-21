@@ -161,6 +161,7 @@
                 }
             },
 
+
             async getGrupo(val){
                 try{
                     if(val !== null){
@@ -175,17 +176,27 @@
                     return false
                 }
             },
+            async getGrupoId(id){
+                try{
+                    let response = await GruposService._getById({id: id})
+                    if(response.status !== 400 && response.status!== 500){
+                        this.selectGrupo.items = response.data.grupos
+                    }
+                }catch(e){
+                    this.alerta('error', true, 'Erro ao pesquisar grupo por id!')                    
+                }
+            },
 
             // Pesquisar usuario por ID
             async getUsuarioId(id){
                 try{
                     if(id !== null){
                         let response = await UsuariosService._getById({id: id})
-                        if(response.status === 400 || response.status === 500){
-                            this.alerta('error', true, 'Erro ao pesquisar usuário por id!')
-                            return false
+                        if(response.status !== 400 || response.status !== 500){
+                            this.usuario = response.data.usuarios
+                            this.usuario.reSenha = this.usuario.senha
+                            this.getGrupoId(this.usuario.grupo_id)                        
                         }
-                        this.usuario = response.data.usuarios
                     }
                 }catch(e){
                     this.alerta('error', true, 'Erro ao pesquisar usuário por id!')

@@ -14,7 +14,7 @@
 
       <v-flex lg12>
         <v-container class="text-xs-center">
-          <img src="static/logo-calf.jpg" alt="logo" style="width: 200px">
+          <img src="static/logo-calf.jpg" @click="abrirDashborad" alt="logo" style="width: 200px">
         </v-container>
         <modulos/>
       </v-flex>
@@ -49,7 +49,15 @@
       Bus.$on('shareDrawer', (drawer) => {
         this.drawer = drawer
       })
+    },
+    methods: {
+      abrirDashborad(){
+        this.$router.push({
+          name: 'Dashboard'
+        })
+      }
     }
+
   }
 </script>
 

@@ -108,8 +108,8 @@
               }
           },
           grid: {
-            width: 300,
-            heigth: 300
+            width: 'auto',
+            heigth: 'auto'
           },
           xAxis: {
             type: 'category',

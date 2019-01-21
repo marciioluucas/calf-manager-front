@@ -60,7 +60,7 @@
                         </v-icon>
                         <v-icon
                           small
-                          @click="deletarDoença(props.item.id)"
+                          @click="deletarDoença(props.item)"
                         >
                           delete
                         </v-icon>
@@ -79,7 +79,24 @@
               </v-card-actions>
             </v-card>
           </v-flex>
+<!--Componente de alerta-->
+          <v-snackbar
+             v-model="snackbar.estado"
+             :right="true"
+             :timeout="4000"
+             :multi-line="true"
 
+             :top="true"
+             :color="snackbar.color">
+             {{ snackbar.mensagem }}
+             <v-btn
+               color="black"
+               flat
+               @click="snackbar.mode = false"
+             >
+               Close
+             </v-btn>
+           </v-snackbar>
         </v-card>
       </v-flex>
     </v-layout>
@@ -109,7 +126,12 @@
           {text: 'Nome', value: 'nome'},
           {text: 'Descrição', value: 'descricao'},
           { text: 'Actions', value: 'name', sortable: false }
-        ]
+        ],
+        snackbar: {
+          color: 'success',
+          estado: false,
+          mensagem: ''
+        }
       }
     },
     mounted() {
@@ -143,9 +165,20 @@
         this.buscaDoenca.nome = ''
         this.buscaDoenca.descricao = ''
       },
-      deletarDoença (id) {
-        if(confirm('Deseja deletar este item?')){
-          DoencasService._delete(id)
+      
+      async deletarDoença(item){
+        try{
+          if(confirm('Deseja realmente deletar esta doença?')){
+            let response = await DoencasService._delete(item.id)
+            if(response.status !== 500){
+              this.alerta('success', true, 'Doença excluído com sucesso!')
+              let index = this.items.data.indexOf(item)
+              this.items.data.splice(index, 1)
+            }
+          }
+        }
+        catch(e){
+          this.alerta('error', true, 'Erro ao deletar doença!') 
         }
       },
       editarDoenca(id) {
@@ -153,6 +186,11 @@
           name: 'CadastroDoenca',
           params: {id: id}
         })
+      },
+       alerta(color, estado, mensagem) {
+        this.snackbar.color = color
+        this.snackbar.estado = estado
+        this.snackbar.mensagem = mensagem
       }
     }
   }

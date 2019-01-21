@@ -1,13 +1,13 @@
 <template>
   <v-app>
-    <v-card flat color="green" class="white--text">
+    <v-card flat color="red" class="white--text">
       <v-card-title primary-title>
         <v-layout column>
           <v-flex xs4>
             <h3 class="headline mb-0">{{quantidadeAnimais}}</h3>
           </v-flex>
           <v-flex xs8>
-            <h1>Animais</h1>
+            <h1>Animais doentes</h1>
           </v-flex>
 
         </v-layout>
@@ -30,7 +30,7 @@
       },
       methods:{
       async getQuantidadeAnimais(){
-        let response = await AnimaisService._getContagemAnimais()
+        let response = await AnimaisService._getContagemDoentes()
         this.quantidadeAnimais = response.data.animais
       }
     }

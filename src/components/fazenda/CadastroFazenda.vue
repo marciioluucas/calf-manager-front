@@ -29,7 +29,7 @@
                 <v-btn v-if="!this.fazenda.id" @click="cadastrar">Enviar</v-btn>
                 <v-btn v-if="this.fazenda.id" @click="editar">Editar</v-btn>
 
-                <v-btn @click="clear">Limpar formulário</v-btn>
+                <v-btn @click="clearFormFazenda">Limpar formulário</v-btn>
 
               </form>
             </v-form>
@@ -85,19 +85,20 @@
     },
     methods: {
       async cadastrar() {
-        if (this.validarFormulario()) {
-          let response = await FazendasService._create(this.fazenda).catch(exception => {
-            if(exception){
-              this.alerta('error', true, 'Erro ao cadastrar Fazenda!')
+        try{
+          if (this.validarFormulario()) {
+            let response = await FazendasService._create(this.fazenda)
+            if(response.status === 201){
+              this.alerta(response.data.message.type, true, response.data.message.description)
+              this.clearFormFazenda()
             }
-          })
-          if(response.status === 201){
-            this.alerta(response.data.message.type, true, response.data.message.description)
-            this.clearFormFazenda()
           }
         }
+        catch(e){
+            this.alerta('error', true, 'Erro ao cadastrar fazenda')
+        }
       },
-      clear(){
+      clearFormFazenda(){
         this.fazenda.nome = ''
       },
       alerta(color, estado, mensagem) {
@@ -111,13 +112,9 @@
       },
       async editar() {
         if (this.validarFormulario()) {
-          let response = await FazendasService._update(this.fazenda).catch(exception => {
-            if(exception){
-              this.alerta('error', true, 'Erro ao alterar Fazenda!')
-            }
-          })
-          if(response.status === 201){
-            this.alerta(response.status, true, response.data.message.description)
+          let response = await FazendasService._update(this.fazenda)
+          if(response.status === 202){
+            this.alerta(response.data.message.type, true, response.data.message.description)
             this.clearFormFazenda()
           }
         }

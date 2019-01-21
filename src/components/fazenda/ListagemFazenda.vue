@@ -60,7 +60,7 @@
                       </v-icon>
                       <v-icon
                         small
-                        @click="deletarFazenda(props.item.id)"
+                        @click="deletarFazenda(props.item)"
                       >
                         delete
                       </v-icon>
@@ -81,7 +81,24 @@
 
             </v-card>
           </v-flex>
+<!--Componente de alerta-->
+          <v-snackbar
+             v-model="snackbar.estado"
+             :right="true"
+             :timeout="4000"
+             :multi-line="true"
 
+             :top="true"
+             :color="snackbar.color">
+             {{ snackbar.mensagem }}
+             <v-btn
+               color="black"
+               flat
+               @click="snackbar.mode = false"
+             >
+               Close
+             </v-btn>
+           </v-snackbar>
         </v-card>
       </v-flex>
     </v-layout>
@@ -110,7 +127,12 @@ export default {
         {text: 'ID', value: 'id'},
         {text: 'Nome', value: 'nome'},
         { text: 'Actions', value: 'name', sortable: false }
-      ]
+      ],
+      snackbar: {
+          color: 'success',
+          estado: false,
+          mensagem: ''
+        }
     }
   },
   mounted() {
@@ -143,22 +165,32 @@ export default {
       this.buscaFazenda.id = '',
       this.buscaFazenda.nome = ''
     },
-    deletarFazenda(id) {
-      if(confirm('Deseja deletar este item?')){
-        FazendasService._delete(id)
-      }
-      this.atualizarTabela()
-    },
+    async deletarFazenda(item){
+        try{
+          if(confirm('Deseja realmente deletar esta fazenda?')){
+            let response = await FazendasService._delete(item.id)
+            if(response.status !== 500){
+              this.alerta('success', true, 'Fazenda excluído com sucesso!')
+              let index = this.items.data.indexOf(item)
+              this.items.data.splice(index, 1)
+            }
+          }
+        }
+        catch(e){
+          this.alerta('error', true, 'Erro ao deletar fazenda!') 
+        }
+      },
     editarFazenda(id) {
       this.$router.push({
         name: 'CadastroFazenda',
         params: {id: id}
       })
     },
-    atualizarTabela(){
-      this.items = []
-      this.getFazendas()
-    }
+    alerta(color, estado, mensagem) {
+        this.snackbar.color = color
+        this.snackbar.estado = estado
+        this.snackbar.mensagem = mensagem
+      }
   }
 }
 </script>

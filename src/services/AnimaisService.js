@@ -33,6 +33,13 @@ export const AnimaisService = {
     return Service.get(`/animal?doente=${busca.params.doente}`)
   },
 
+  _getContagemAnimais: () =>{
+    return Service.get(`/animal?contagem=true`)
+  },
+  _getContagemDoentes: () => {
+    return Service.get(`/animal?contagemDoente=true`)
+  },
+ 
   _getGraficoGanhoDePeso: (id) => {
     return Service.get(`/graph?module=pesagem&chart=ganho-de-peso&animal=${id}`)
   },

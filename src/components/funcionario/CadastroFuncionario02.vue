@@ -482,6 +482,8 @@
                         if(this.pessoa.endereco_id !== null){
                             this.getEnderecoId(this.pessoa.endereco_id)
                         }
+                        this.getFazendaId(this.funcionario.fazenda_id)
+                        this.getCargoId(this.funcionario.cargo_id)
                     }
                 }
                 catch (e){
@@ -525,6 +527,24 @@
                 catch (exception){
                     this.alerta('error', true, 'Erro ao pesquisar todos os Cargos!')
                     return false
+                }
+            },
+
+            async getCargoId(id){
+                try{
+                    let response = await CargosService._getById({id: id})
+                    this.selectCargo.items = response.data.cargos
+                }catch(e){
+                    this.alerta('error', true, 'Erro ao pesquisar o cargo por id!')
+                }
+            },
+
+            async getFazendaId(id){
+                try{
+                    let response = await FazendasService._getById({id: id})
+                    this.selectFazenda.items = response.data.fazendas
+                }catch(e){
+                    this.alerta('error', true, 'Erro ao pesquisar todos a fazenda por id!')
                 }
             },
 

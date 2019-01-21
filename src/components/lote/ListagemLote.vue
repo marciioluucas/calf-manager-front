@@ -25,8 +25,8 @@
                 </v-flex>
                 <v-flex xs12 md4 lg4>
                   <v-text-field xs12 md3
-                    label="Buscar pelo nome"
-                    v-model="buscaLote.nome"
+                    label="Buscar pelo código"
+                    v-model="buscaLote.codigo"
                   />
                 </v-flex>
               </v-layout>
@@ -142,17 +142,16 @@
       async getLotes() {
         let response = []
         if (this.buscaLote.id && !this.buscaLote.codigo) {
-          response = await LotesService._getById(this.buscaLote)
-          this.items = response.data.lotes.data
-        } else if (!this.buscaLote.id && this.buscaLote.codigo) {
+          response = await LotesService._getById({id: this.buscaLote.id})
+          this.items = response.data.lotes
+        }
+        else if (!this.buscaLote.id && this.buscaLote.codigo) {
           response = await LotesService._getByCodigo(this.buscaLote)
           this.items = response.data.lotes.data
         } else {
           response = await LotesService._getAll(this.buscaLote)
           this.items = response.data.lotes.data
-          console.log(this.items);
         }
-        // console.log(response)
       },
       editar(id) {
         this.$router.push({
@@ -161,14 +160,19 @@
         })
       },
       async deletar(item) {
-        if(confirm('Deseja realmente deletar este lote?')){
-            let response = await LotesService._delete(item.id).catch(exception => {
-              if(exception){
-                this.alerta
+        try{
+          if(confirm('Deseja realmente deletar este lote?')){
+              let response = await LotesService._delete(item.id)
+              if(response.status !== 500){
+                this.alerta('success', true, 'Lote excluído com sucesso!')
+                let index = this.items.indexOf(item)
+                this.items.splice(index, 1)
               }
-            })
+          }
         }
-        this.atualizarTabela()
+        catch(e){
+          this.alerta('error', true, 'Erro ao deletar lote!')
+        }
       },
       atualizarTabela(){
         this.items = []

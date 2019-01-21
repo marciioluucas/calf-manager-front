@@ -173,20 +173,20 @@
 
                         <!-- Gráficos de ganho de peso e hereditariedade -->
                         <v-flex xs12 v-if='hasValueToGraphDeGanhoDePeso'>
-
-                                <v-flex xs12>
+                            <v-layout>
+                                <v-flex xs12 sm6 md6>
                                     <v-flex xs12>
                                         <span class='title'>Gráficos de ganho de peso</span>
                                     </v-flex>
                                     <chart :options='graficoGanhoPeso' :auto-resize="true"/>
                                 </v-flex>
-                                <v-flex xs12>
+                                <v-flex xs12 sm6 md6>
                                     <v-flex xs12>
                                         <span class='title'>Grafico de hereditariedade</span>
                                     </v-flex>
                                     <chart class="graficoH" :options='option = graficoHereditariedade' :auto-resize="true"/>
                                 </v-flex>
-
+                            </v-layout>
                         </v-flex>
                     </v-layout>
 
@@ -397,12 +397,13 @@
 				],
 				graficoGanhoPeso: {
 					grid: {
-						height: 500,
-						width: 500
+						height: 'auto',
+						width: 'auto'
 					},
 					tooltip: {
 						trigger: 'axis'
-					},
+                    },
+                    
 					legend: {
 						data: ['Peso em @']
 					},
@@ -419,23 +420,21 @@
 				graficoHereditariedade: {
 					layout: 'orthogonal',
 					grid: {
-						height: 500,
-						width: 500
-					},
-					// tooltip: {
-					// 	trigger: 'item',
-					// 	triggerOn: 'mousemove'
-					// },
+						height: 'auto',
+						width: 'auto'
+                    },
+                    
 					series: [
 						{
+                            symbolSize: 7,
 							type: 'tree',
 							data: [],
 							left: '2%',
 							right: '2%',
 							top: '8%',
 							bottom: '20%',
-							symbol: 'diamond',
-							orient: 'vertical',
+							symbol: 'emptyCircle',
+                            orient: 'vertical',
 							label: {
 									position: 'bottom',
 									verticalAlign: 'middle',
