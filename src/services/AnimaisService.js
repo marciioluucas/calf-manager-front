@@ -18,11 +18,10 @@ export const AnimaisService = {
     }
     const params = Params.map(busca.params)
     return Service.get(`/animal${params}`)
-    
   },
 
   _getByIdLote: (busca) => {
-    return Service.get(`/animal?id-lote=${busca.lote.id}&vivo=${busca.vivo}&pagina=${busca.page}`)
+    return Service.get(`/animal?lotes_id=${busca.lotes_id}&vivo=${busca.params.vivo}`)
   },
 
   _getByIdLoteAndName: (busca) => {

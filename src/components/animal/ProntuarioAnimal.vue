@@ -591,7 +591,7 @@
             async aplicarMedicamento(){
                 try{
                    
-                this.doses.funcionario_id = localStorage.getItem('usr_id')
+                this.doses.funcionario_id = localStorage.getItem('func_id')
                 this.doses.animal_id = this.animal.id
                 if(this.doses.animal_id !== null && this.doses.quantidate_mg !== null && this.doses.medicamento_id !== null){
                      console.log(this.doses)

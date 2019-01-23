@@ -12,7 +12,7 @@ export default {
   },
   _getByCodigo: async (busca) => {
     if(typeof busca === 'string'){
-      return Service.get(`/lote?codigo=${codigo}`)
+      return Service.get(`/lote?codigo=${busca}`)
     }
     const params = Params.map(busca.params)
     return Service.get(`/lote${params}`)

@@ -17,12 +17,12 @@
             <v-form>
               <v-layout row wrap>
 
-                <v-flex xs12 md2 lg2>
+                <!-- <v-flex xs12 md2 lg2>
                   <v-text-field
                     label="Buscar pelo Id"
                     v-model="buscaFazenda.id"
                   />
-                </v-flex>
+                </v-flex> -->
                 <v-flex xs12 md4 lg4>
                   <v-text-field xs12 md3
                                 label="Buscar pelo nome"
@@ -140,24 +140,23 @@ export default {
   },
   methods: {
     async getFazendas() {
-      if (this.buscaFazenda.id && !this.buscaFazenda.nome) {
+      if (this.buscaFazenda.id) {
         this.$Progress.start()
-        console.log(this.buscaFazenda.id)
-        let response = await FazendasService._getById(this.buscaFazenda)
-        await this.$Progress.finish()
+        let response = await FazendasService._getById({id: this.buscaFazenda.id})
         this.items = response.data.fazendas
+        await this.$Progress.finish()
         this.clear()
-      } else if (!this.buscaFazenda.id && this.buscaFazenda.nome) {
+      } else if (this.buscaFazenda.nome) {
         this.$Progress.start()
-        let response = await FazendasService._getByNome(this.buscaFazenda)
-        await this.$Progress.finish()
+        let response = await FazendasService._getByNome(this.buscaFazenda.nome)
         this.items = response.data.fazendas
+        await this.$Progress.finish()
         this.clear()
       } else {
         this.$Progress.start()
         let response = await FazendasService._getAll(this.buscaFazenda)
-        await this.$Progress.finish()
         this.items = response.data.fazendas
+        await this.$Progress.finish()
         this.clear()
       }
     },

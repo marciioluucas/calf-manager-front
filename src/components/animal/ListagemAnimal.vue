@@ -20,12 +20,12 @@
                         <v-layout>
                           <v-flex xs1/>
                         
-                          <v-flex xs4>
+                          <!-- <v-flex xs4>
                             <v-text-field
                               label="Buscar pelo Id"
                               v-model="buscaAnimal.id"
                             />
-                          </v-flex>
+                          </v-flex> -->
                           <v-flex xs4>
                             <v-text-field xs12 md3
                               label="Buscar pelo nome"
@@ -36,14 +36,13 @@
                             <v-autocomplete
                               label="Buscar pelo lote"
                               autocomplete
-                              :loading="loading"
-                              :items="lotes.data"
+                              :loading="selectLote.loading"
+                              :items="selectLote.items"
                               item-text="codigo"
                               item-value="id"
                               cache-items
-                              :search-input.sync="search"
-                              v-model="buscaAnimal.lote.id"
-
+                              :search-input.sync="selectLote.search"
+                              v-model="buscaAnimal.lotes_id"
                             />
                           </v-flex>
                           <v-flex xs4>
@@ -84,7 +83,7 @@
                   </v-expansion-panel-content>
                 </v-expansion-panel>
                         <v-btn color="success" v-on:click="getAnimais">Buscar!</v-btn>
-                        <v-btn color="secondary" v-on:click="">Redefinir busca</v-btn>
+                        <v-btn color="secondary" v-on:click="clearFilters">Redefinir busca</v-btn>
               </v-layout>
             </v-form>
           </v-card-text>
@@ -96,7 +95,7 @@
           <v-card-text>
             <v-data-table
               :headers="headers"
-              :items="items.data"
+              :items="items"
               hide-actions
               @input="selecionaAnimal(props.item.id)"
             >
@@ -186,9 +185,7 @@
         buscaAnimal: {
           id: undefined,
           nome: undefined,
-          lote: {
-            id: undefined
-          },
+          lotes_id: null,
           params: {
             sexo: null,
             vivo: true,
@@ -201,6 +198,11 @@
           {text: 'Macho', value: 'm'},
           {text: 'Femea', value: 'f'}
         ],
+        selectLote: {
+          items: [],
+          loading: false,
+          search: null
+        },
         search: null,
         lotes: [],
         headers: [
@@ -226,8 +228,8 @@
       }
     },
     watch: {
-      search(val) {
-        val && this.getLotesByCodigo(val)
+      'selectLote.search'(codigo){
+        codigo && this.getLotesByCodigo(codigo)
       }
     },
     async mounted() {
@@ -240,45 +242,48 @@
       async getAnimais() {
         this.$Progress.start()
         let response = null
-        if (this.buscaAnimal.id && !this.buscaAnimal.nome && !this.buscaAnimal.lote.id) {
-           response = await AnimaisService._getById(this.buscaAnimal)
+        if (this.buscaAnimal.id) {
+           response = await AnimaisService._getById({id: this.buscaAnimal.id})
           await this.$Progress.finish()
           this.items = response.data.animais
-        } else if (this.buscaAnimal.id && this.buscaAnimal.nome && this.buscaAnimal.lote.id) {
-           response = await AnimaisService._getById(this.buscaAnimal)
+          this.clearFilters()
+        } 
+        else if (this.buscaAnimal.nome) {
+          response = await AnimaisService._getByNome(this.buscaAnimal.nome)
+          this.items = response.data.animais.data
           await this.$Progress.finish()
-          this.items = response.data.animais
-        } else if (!this.buscaAnimal.id && this.buscaAnimal.nome && !this.buscaAnimal.lote.id) {
-           response = await AnimaisService._getByNome(this.buscaAnimal)
-          await this.$Progress.finish()
-          this.items = response.data.animais
-        } else if (!this.buscaAnimal.id && !this.buscaAnimal.nome && this.buscaAnimal.lote.id) {
+          this.clearFilters()
+        } else 
+        if (this.buscaAnimal.lotes_id) {
            response = await AnimaisService._getByIdLote(this.buscaAnimal)
+          this.items = response.data.animais.data
           await this.$Progress.finish()
-          this.items = response.data.animais
-        } else if (!this.buscaAnimal.id && this.buscaAnimal.nome && this.buscaAnimal.lote.id) {
-           response = await AnimaisService._getByIdLoteAndName(this.buscaAnimal)
-          await this.$Progress.finish()
-          this.items = response.data.animais
-        } else if(this.buscaAnimal.params.doente){
-           response = await AnimaisService._getByAnimalDoente(this.buscaAnimal)
-           this.items = response.data.animais
-          this.$Progress.finish()
+          this.clearFilters()
+        } 
+        else if(this.buscaAnimal.params.doente){
+            response = await AnimaisService._getByAnimalDoente(this.buscaAnimal)
+            this.items = response.data.animais.data
+            this.$Progress.finish()
+            this.clearFilters()
         }
-         else {
+        else {
           this.$Progress.start()
-           response = await AnimaisService._getAll(this.buscaAnimal)
+          response = await AnimaisService._getAll(this.buscaAnimal)
+          this.items = response.data.animais.data
           await this.$Progress.finish()
-          this.items = response.data.animais
         }
       },
-      getLotesByCodigo(codigo) {
-        this.loading = true
-        LotesService._getByCodigo(codigo)
-          .then(res => {
-            this.lotes = res.data.lotes
-          })
-        this.loading = false
+      async getLotesByCodigo(codigo) {
+        try{
+          this.selectLote.loading = true
+          let response = await LotesService._getByCodigo(codigo)
+          this.selectLote.items = response.data.lotes.data
+          
+          this.selectLote.loading = false
+        }
+        catch(e){
+
+        }
       },
       selecionaAnimal(id) {
         this.$router.push({
@@ -299,11 +304,18 @@
             })
             if(response.status === 202){
               this.alerta('success', true, 'Animal excluido com sucesso')
-              let index = this.items.data.indexOf(item)
-              this.items.data.splice(index, 1)
+              let index = this.items.indexOf(item)
+              this.items.splice(index, 1)
             }
 
           }
+      },
+      clearFilters(){
+        this.buscaAnimal.id = null
+        this.buscaAnimal.nome= null
+        this.buscaAnimal.lotes_id = null
+        this.buscaAnimal.params.sexo = null
+        this.buscaAnimal.params.doente = null
       },
       alerta(color, estado, mensagem) {
         this.snackbar.color = color

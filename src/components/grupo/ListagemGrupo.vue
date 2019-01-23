@@ -17,12 +17,12 @@
             <v-form>
               <v-layout row wrap>
 
-                <v-flex xs12 md2 lg2>
+                <!-- <v-flex xs12 md2 lg2>
                   <v-text-field
                     label="Buscar pelo Id"
                     v-model="buscaGrupo.id"
                   />
-                </v-flex>
+                </v-flex> -->
                 <v-flex xs12 md4 lg4>
                   <v-text-field xs12 md3
                     label="Buscar pelo nome"
@@ -138,8 +138,20 @@
     },
     methods: {
       async getGrupos(){
-        let response = await GruposService._getAll(this.buscaGrupo)
-        this.items = response.data.grupos
+        let response = null
+        if(this.buscaGrupo.nome){
+          this.$Progress.start()
+          response = await GruposService._getByNome(this.buscaGrupo.nome)
+          this.items = response.data.grupos
+          this.$Progress.start()
+          this.clear()
+        }else {
+          this.$Progress.start()
+          response = await GruposService._getAll(this.buscaGrupo)
+          this.items = response.data.grupos
+          this.$Progress.start()
+          this.clear()
+        }
       },
       async editar(id){
         this.$router.push({

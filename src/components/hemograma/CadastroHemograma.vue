@@ -147,6 +147,7 @@
 	import {AnimaisService} from '../../services/AnimaisService';
 	import HemogramaService from '../../services/HemogramasService';
 	import DoencasService from '../../services/DoencasService';
+	import UsuariosService from '../../services/GruposService';
 
 	export default {
 		name: 'cadastro-hemograma',
@@ -161,6 +162,7 @@
 					hematocrito: null,
 					data: '',
 					animal_id: null,
+					funcionario_id: null,
 					doente: false,
 					curado: false,
 					animais_id: null,
@@ -208,46 +210,42 @@
 			}
 		},
 		methods: {
-			// Cadastrar novo animal
+			// Cadastrar novo hemograma
 			async cadastrar() {
 				try{
-				if(this.validarForm()){
-					
-					// console.log(this.hemograma)
-					let response = await HemogramaService._create(this.hemograma)
-					if(response.status === 201){
-					  this.alerta(response.data.message.type, true, response.data.message.description)
+					if(this.validarForm()){
+						this.hemograma.funcionario_id = localStorage.getItem('func_id')						
+						let response = await HemogramaService._create(this.hemograma)
+						if(response.status === 201){
+						this.alerta(response.data.message.type, true, response.data.message.description)
 						if(this.hemograma.doente){
 							this.hemograma.doenca_id = this.hemograma.doencas_id
 							response = await DoencasService._create(this.hemograma)
-					  		this.alerta(response.data.message.type, true, response.data.message.description)
+							this.alerta(response.data.message.type, true, response.data.message.description)
 						}
-					  this.clearFormHemograma()
-					}
-					// console.log(response)
+						this.clearFormHemograma()
+						}
 
-					// Fechar modal e limpar formulário
-					this.hemograma.viewModal = false
-					this.clearFormHemograma()
-				}
+						// Fechar modal e limpar formulário
+						this.hemograma.viewModal = false
+						this.clearFormHemograma()
+					}
 				}
 				catch(e){
-
+					this.alerta('error', true, 'Erro ao cadastrar hemograma!')
 				}
 			},
-		
 
 			// Editar cadastro de animal.
 			async editar() {
 				try{
 					if(this.validarForm()){
+						this.hemograma.funcionario_id = localStorage.getItem('func_id')
 						let response = await HemogramaService._update(this.hemograma)
 						if(response.status !== 400 || response.status !== 500){
 							this.alerta(response.data.message.type, true, response.data.message.description)
 							if(this.hemograma.doente){
 								this.hemograma.doenca_id = this.hemograma.doencas_id
-
-								console.log('doente')
 								response = await DoencasService._create(this.hemograma)
 								this.alerta(response.data.message.type, true, response.data.message.description)
 							}
@@ -256,7 +254,7 @@
 					}
 				}
 				catch(exception){
-					this.alerta('error', true, 'Erro ao pesquisar todos animais!')
+					this.alerta('error', true, 'Erro ao alterar hemograma!')
 					return false
 
 				}
@@ -325,6 +323,7 @@
 				}
 			},
 
+			// verificar a saude do animal
 			validarSaude(){
 				if(this.hemograma.ppt <= 4){
 						console.log('aqui dentro')

@@ -25,7 +25,6 @@
             <!--Adicionar Animal-->
             <v-flex xs12 sm4 md4 lg4>
               <v-autocomplete
-                :rules="[v => !!v || 'Animal é requirido']"
                 v-model="dose.animal_id"
                 :items="selectAnimal.items"
                 :search-input.sync="selectAnimal.search"
@@ -41,7 +40,6 @@
             <!--Adicionar Medicamento-->
             <v-flex xs12 sm3 md3 lg3>
               <v-autocomplete
-                :rules="[v => !!v || 'Login é requirido']"
                 v-model="dose.medicamento_id"
                 :items="selectMedicamento.items"
                 :search-input.sync="selectMedicamento.search"
@@ -247,7 +245,7 @@
       async cadastrar() {
         
         if (this.validarFormDose()) {
-          this.dose.funcionario_id = localStorage.getItem('usr_id')
+          this.dose.funcionario_id = localStorage.getItem('func_id')
           let response = await DosesService._create(this.dose)
           if(response.status === 201){
             this.alerta(response.data.message.type, true, response.data.message.description)

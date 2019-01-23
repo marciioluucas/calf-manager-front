@@ -45,8 +45,10 @@ import ListagemUsuario from '@/components/usuario/ListagemUsuario'
 
 // Dose
 import CadastroDose from '@/components/dose/CadastroDose'
+// Hemograma
 import CadastroHemograma from '@/components/hemograma/CadastroHemograma'
 import ListagemHemograma from '@/components/hemograma/ListagemHemograma'
+import ListaHemograma from '@/components/hemograma/ListaHemograma'
 import UsuariosService from '../services/UsuariosService';
 
 Vue.use(Router)
@@ -228,6 +230,11 @@ const router = new Router({
 					name: 'ListagemHemograma',
 					path: 'hemograma/listagem',
 					component: ListagemHemograma
+				},
+				{
+					name: 'ListaHemograma',
+					path: 'hemograma/lista',
+					component: ListaHemograma
 				}
 			],
 		},

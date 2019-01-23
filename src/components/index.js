@@ -46,8 +46,11 @@ import ListagemPermissao from '@/components/permissao/ListagemPermissao'
 
 // Dose
 import CadastroDose from '@/components/dose/CadastroDose'
+
+// Hemograma
 import CadastroHemograma from '@/components/hemograma/CadastroHemograma'
 import ListagemHemograma from '@/components/hemograma/ListagemHemograma'
+import ListaHemograma from '@/components/hemograma/ListaHemograma'
 
 export default {
   App,
@@ -94,5 +97,6 @@ export default {
   CadastroDose,
   // Hemograma
   CadastroHemograma,
-  ListagemHemograma
+  ListagemHemograma,
+  ListaHemograma
 }
