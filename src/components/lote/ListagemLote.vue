@@ -17,18 +17,33 @@
             <v-form>
               <v-layout row wrap>
 
-                <v-flex xs12 md2 lg2>
+                <!-- <v-flex xs12 md2 lg2>
                   <v-text-field
                     label="Buscar pelo Id"
                     v-model="buscaLote.id"
                   />
-                </v-flex>
+                </v-flex> -->
                 <v-flex xs12 md4 lg4>
                   <v-text-field xs12 md3
                     label="Buscar pelo código"
                     v-model="buscaLote.codigo"
                   />
                 </v-flex>
+                 <v-flex xs12 sm3 md3 lg3>
+							<v-autocomplete
+								label="Pesquise a fazenda"
+								:loading="selectFazenda.loading"
+								:items="selectFazenda.items"
+								hide-no-data
+								hide-selected
+								item-text="nome"
+								required
+								cache-items
+								item-value="id"
+								:search-input.sync="selectFazenda.search"
+								v-model="buscaLote.fazenda_id"
+								/>
+						</v-flex>
               </v-layout>
               <v-btn color="success" v-on:click="getLotes">Buscar!</v-btn>
               <v-btn color="secondary" v-on:click="">Redefinir busca</v-btn>
@@ -103,7 +118,8 @@
 </template>
 
 <script>
-  import LotesService from "../../services/LotesService";
+  import LotesService from '../../services/LotesService'
+  import FazendasService from '../../services/FazendasService'
 
   export default {
     name: 'ListagemLote',
@@ -114,9 +130,7 @@
           id: null,
           codigo: null,
           descricao: null,
-          fazenda: {
-            id: null
-          },
+          fazenda_id: null,
           params: {
             pagina: 1
           }
@@ -128,6 +142,11 @@
           // {text: 'Fazenda', value: 'fazenda'},
           {text: 'Ações', value: 'acoes'}
         ],
+        selectFazenda: {
+          items: [],
+          loading: false,
+          search: null
+        },
         snackbar: {
           color: 'success',
           estado: false,
@@ -135,24 +154,57 @@
         }
       }
     },
+    watch:{
+      'selectFazenda.search'(val){
+        val && this.getFazendaByNome(val)
+      }
+    },
     async mounted() {
       this.getLotes()
     },
     methods: {
       async getLotes() {
-        let response = []
-        if (this.buscaLote.id && !this.buscaLote.codigo) {
-          response = await LotesService._getById({id: this.buscaLote.id})
-          this.items = response.data.lotes
+        
+        let response = null
+        if (this.buscaLote.codigo) {
+          try{
+            response = await LotesService._getByCodigo(this.buscaLote.codigo)
+          }
+          catch(e){
+            this.alerta('error', true, 'Erro ao pesquisar lote por código')
+          }
         }
-        else if (!this.buscaLote.id && this.buscaLote.codigo) {
-          response = await LotesService._getByCodigo(this.buscaLote)
-          this.items = response.data.lotes.data
-        } else {
-          response = await LotesService._getAll(this.buscaLote)
-          this.items = response.data.lotes.data
+        else if(this.buscaLote.fazenda_id){
+          try{
+           response = await LotesService._getByFazenda(this.buscaLote.fazenda_id)
+          }
+          catch(e){
+            this.alerta('error', true, 'Erro ao pesquisar lote por fazenda')
+          }
+        } 
+        else {
+          try{
+            response = await LotesService._getAll(this.buscaLote)
+          }
+          catch(e){
+            this.alerta('error', true, 'Erro ao pesquisar todos os lotes')
+          }
+        }
+        if(response.status !== 400 || response.status !== 500){
+          this.items = response.data.lotes.data          
+        }
+        
+      },
+
+      async getFazendaByNome(nome){
+        try{
+          let response = await FazendasService._getByNome(nome)
+          this.selectFazenda.items = response.data.fazendas.data
+        }catch(e){
+            this.alerta('error', true, 'Erro ao pesquisar fazenda')          
         }
       },
+
       editar(id) {
         this.$router.push({
           name: 'CadastroLote',
@@ -174,10 +226,7 @@
           this.alerta('error', true, 'Erro ao deletar lote!')
         }
       },
-      atualizarTabela(){
-        this.items = []
-        this.getLotes()
-      },
+      
       alerta(color, estado, mensagem) {
         this.snackbar.color = color
         this.snackbar.estado = estado

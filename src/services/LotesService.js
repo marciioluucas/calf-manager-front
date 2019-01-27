@@ -17,6 +17,9 @@ export default {
     const params = Params.map(busca.params)
     return Service.get(`/lote${params}`)
   },
+  _getByFazenda: async (busca) =>{
+    return Service.get(`/lote?fazenda_id=${busca}`)
+  },
   _getQuantidadeLotes: async () => {
     return Service.get(`/lote?contagem=true`)
   },

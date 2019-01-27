@@ -17,12 +17,12 @@
             <v-form>
               <v-layout row wrap>
 
-                <v-flex xs12 md2 lg2>
+                <!-- <v-flex xs12 md2 lg2>
                   <v-text-field
                     label="Buscar pelo Id"
                     v-model="buscaHemograma.id"
                   />
-                </v-flex>
+                </v-flex> -->
                 <v-flex xs12 sm4 md4 lg4>
                     <v-autocomplete
                         label="Selecione o animal"

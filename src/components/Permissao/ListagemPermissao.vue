@@ -17,16 +17,16 @@
             <v-form>
               <v-layout row wrap>
 
-                <v-flex xs12 md2 lg2>
+                <!-- <v-flex xs12 md2 lg2>
                   <v-text-field
                     label="Buscar pelo Id"
                     v-model="buscaPermissao.id"
                   />
-                </v-flex>
+                </v-flex> -->
                 <v-flex xs12 md4 lg4>
                   <v-text-field xs12 md3
                     label="Buscar pelo nome"
-                    v-model="buscaPermissao.nome"
+                    v-model="buscaPermissao.nome_modulo"
                   />
                 </v-flex>
               </v-layout>
@@ -138,8 +138,15 @@
     },
     methods: {
       async getPermissoes(){
-        let response = await PermissoesService._getAll(this.buscaPermissao)
-        this.items = response.data.permissoes
+        let response = null
+        if(this.buscaPermissao.nome_modulo){
+          response = await PermissoesService._getByNome(this.buscaPermissao.nome_modulo)
+        }else{
+          response = await PermissoesService._getAll(this.buscaPermissao)
+        }
+        if(response.status !== 400 || response !== 500){
+          this.items = response.data.permissoes
+        }
       },
       async editar(id){
         this.$router.push({

@@ -17,12 +17,6 @@
           <v-form>
             <v-layout row wrap>
 
-              <v-flex xs12 md2 lg2>
-                <v-text-field
-                  label="Buscar pelo Id"
-                  v-model="buscaFuncionario.id"
-                />
-              </v-flex>
                <v-flex xs12 md4 lg4>
                  <v-text-field xs12 md3
                    label="Buscar pelo nome"
@@ -161,19 +155,26 @@
     },
     methods: {
       async getFuncionarios() {
-        if (this.buscaFuncionario.id && !this.buscaFuncionario.pessoa.nome){
-          let response = await FuncionariosService._getById(this.buscaFuncionario)
-          this.items = response.data.funcionarios
-        }
-        else if (!this.buscaFuncionario.id && this.buscaFuncionario.pessoa.nome){
-          // this.items = await FuncionariosService._getByNomePessoa(this.buscaFuncionario.pessoa.nome),
-
+        let response = null
+        if (this.buscaFuncionario.pessoa.nome){
+          try{
+            response = await FuncionariosService._getByNome(this.buscaFuncionario.pessoa.nome)
+          }
+          catch(e){
+            this.alerta('error', true, 'Erro ao pesquisar funcionário por nome!') 
+          }
         }
         else {
-          let response = await FuncionariosService._getAll(this.buscaFuncionario)
+          try{
+            response = await FuncionariosService._getAll(this.buscaFuncionario)
+          }
+          catch(e){
+            this.alerta('error', true, 'Erro pesquisar todos os funcionários!') 
+          }
+        }
+        if(response.status === 200){
           this.items = response.data.funcionarios
         }
-        // console.log(this.items);
       },
       async deletar(item){
         try{

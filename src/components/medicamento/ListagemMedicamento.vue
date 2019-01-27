@@ -17,12 +17,12 @@
           <v-form>
             <v-layout row wrap>
 
-              <v-flex xs12 md2 lg2>
+              <!-- <v-flex xs12 md2 lg2>
                 <v-text-field
                   label="Buscar pelo Id"
                   v-model="buscaMedicamento.id"
                 />
-              </v-flex>
+              </v-flex> -->
               <v-flex xs12 md4 lg4>
                 <v-text-field xs12 md3
                   label="Buscar pelo nome"
@@ -143,8 +143,16 @@
     },
     methods: {
       async getMedicamentos(){
-        let response = await MedicamentosService._getAll(this.buscaMedicamento)
-        this.items = response.data.medicamentos
+        let response = null
+        if(this.buscaMedicamento.nome){
+          response = await MedicamentosService._getByNome(this.buscaMedicamento.nome)
+          console.log(response)
+        }else{
+          response = await MedicamentosService._getAll(this.buscaMedicamento)
+        }
+        if(response.status == 200){
+          this.items = response.data.medicamentos
+        }
       },
       async editar(id){
         this.$router.push({

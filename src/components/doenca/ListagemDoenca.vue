@@ -17,12 +17,12 @@
             <v-form>
               <v-layout row wrap>
 
-                <v-flex xs12 md2 lg2>
+                <!-- <v-flex xs12 md2 lg2>
                   <v-text-field
                     label="Buscar pelo Id"
                     v-model="buscaDoenca.id"
                   />
-                </v-flex>
+                </v-flex> -->
                 <v-flex xs12 md4 lg4>
                   <v-text-field xs12 md3
                                 label="Buscar pelo nome"
@@ -140,23 +140,18 @@
     methods: {
       async getDoencas() {
         let n = this
-        if (this.buscaDoenca.id && !this.buscaDoenca.nome) {
+        let response = null
+         if (this.buscaDoenca.nome) {
           this.$Progress.start()
-          let response = await DoencasService._getById(this.buscaDoenca)
-          await this.$Progress.finish()
-          n.clear()
-          this.items = response.data.doencas
-        } else if (!this.buscaDoenca.id && this.buscaDoenca.nome) {
-          this.$Progress.start()
-          let response = await DoencasService._getByNome(this.buscaDoenca)
-          await this.$Progress.finish()
-          this.items = response.data.doencas
-          n.clear()
+          response = await DoencasService._getByNome(this.buscaDoenca.nome)
         } else {
           this.$Progress.start()
-          let response = await DoencasService._getAll(this.buscaDoenca)
+          response = await DoencasService._getAll(this.buscaDoenca)
           await this.$Progress.finish()
+        }
+        if(response.status !== 400 || response !== 500){
           this.items = response.data.doencas
+           await this.$Progress.finish()
           n.clear()
         }
       },

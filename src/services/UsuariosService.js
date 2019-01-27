@@ -23,7 +23,10 @@ export default {
 		return Service.get(`/usuario${params}`)
 	},
 	_getByIdGrupo: (busca) => {
-		return Service.get(`/usuario?id-grupo=${busca.usuario.id}&pagina=${busca.page}`)
+		return Service.get(`/usuario?grupo_id=${busca.grupo_id}`)
+	},
+	_getByIdFuncionario: (busca) => {
+		return Service.get(`/usuario?funcionario_id=${busca.funcionario_id}`)
 	},
 	_create: (form) => {
 		return Service.post(`/usuario`, form)
