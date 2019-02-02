@@ -203,10 +203,10 @@
 
 		// Execute assim que montar o DOM
 		mounted() {
-			this.hemograma.id = this.$route.params.id
-			if (this.hemograma.id) {
+			if (this.$route.params.id) {
+				this.hemograma.id = this.$route.params.id
 				this.nomeTitulo = 'Editar Exame'
-				this.getHemograma()
+				this.getHemograma(this.hemograma.id)
 			}
 		},
 		methods: {
@@ -259,9 +259,17 @@
 
 				}
 			},
-			async getHemograma() {
-				let response = await HemogramaService._getById(this.hemograma.id)
-				this.hemograma = response.data.hemogramas.data
+			async getHemograma(id) {
+				try{
+					let response = await HemogramaService._getById({id: id})
+					if(response.status === 200){
+						this.hemograma = response.data.hemogramas
+						this.getAnimalById(this.hemograma.animal_id)
+					}
+				}
+				catch(e){
+					this.alerta('error', true, 'Erro ao pesquisar hemograma por id!')
+				}
 			},
 
 			// Pesquisar Animais pelo nome.
@@ -279,6 +287,17 @@
 				catch (exception){
 					this.alerta('error', true, 'Erro ao pesquisar todos animais!')
 					return false
+				}
+			},
+
+			async getAnimalById(id){
+				try{
+					let response = await AnimaisService._getById({id: id})
+					if(response.status === 200){
+						this.selectAnimais.items = response.data.animais
+					}
+				}catch(e){
+					this.alerta('error', true, 'Erro ao pesquisar animal por id!')
 				}
 			},
 

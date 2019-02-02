@@ -19,7 +19,6 @@
               <v-text-field
                 v-model="animal.nome"
                 label="Primeiro nome"
-                mask="Aaaaaaaaaaaaaaaa"
                 autofocus
               ></v-text-field>
             </v-flex>
@@ -28,7 +27,6 @@
               <v-text-field
                 v-model="animal.codigo_brinco"
                 label="Código do Brinco"
-                mask="############"
               ></v-text-field>
             </v-flex>
             <!-- text Codigo_raca             -->
@@ -169,7 +167,6 @@
                   <v-text-field
                     v-model="animal.pesagens.peso"
                     label="Peso em @"
-                    mask="###,#"
                   ></v-text-field>
                 </v-flex>
 
@@ -262,9 +259,9 @@
           </v-layout>
           <v-flex>
             <v-btn v-if="!animal.id" @click="cadastrar">Enviar</v-btn>
-            <v-btn v-if="animal.id" @click="editar">Enviar</v-btn>
+            <v-btn v-if="animal.id" @click="editar">Editar</v-btn>
 
-            <v-btn @click="clearFormAnimal">Limpar Formulário</v-btn>
+            <v-btn @click="clearForm">Limpar Formulário</v-btn>
           </v-flex>
         </v-form>
       </v-card-text>
@@ -312,6 +309,7 @@ export default {
         mae: null,
         pai: null,
         hemogramas: {
+          funcionario_id: null,
           ppt: "",
           hematocrito: "",
           data: ""
@@ -356,7 +354,7 @@ export default {
           { text: "CURADO", value: "CURADO" },
           { text: "DOENTE", value: "DOENTE" }
         ],
-        selected: {}
+        selected: []
       },
       snackbar: {
         color: "success",
@@ -365,21 +363,8 @@ export default {
       },
       switchJaTeveDoenca: false,
       switchJaFoiPesado: false,
-      nomeTitulo: "Cadastro de Animal",
-      
-      focus: {
-        nome: false,
-        codigo_brinco: false,
-        data_nascimento: false,
-        pai: false,
-        mae: false,
-        peso: false,
-        data_pesagem: false,
-        ppt: false,
-        hematocrito: false,
-        data_exame: false
-      }
-    };
+      nomeTitulo: "Cadastro de Animal"
+    }
   },
   watch: {
     "selectFazenda.search"(val) {
@@ -396,8 +381,8 @@ export default {
     }
   },
   mounted() {
-    this.animal.id = this.$route.params.id;
-    if (this.animal.id) {
+    if (this.$route.params.id) {
+      this.animal.id = this.$route.params.id;
       this.nomeTitulo = "Editar Animal";
       this.getAnimalId(this.animal.id);
     }
@@ -424,8 +409,10 @@ export default {
         this.animal.pesagens = response.data.animais.pesagens[0]
         this.animal.hemogramas= response.data.animais.hemogramas[0]
         this.selectFazenda.items = response.data.animais.fazenda
-        
-        console.log(response.data.animais)
+        this.selectFazenda.selected = response.data.animais.fazenda
+        console.log(response.data.animais.fazenda)
+
+        // this.selectFazenda.selected.lote = response.data.animais.fazenda.lote
       }
       catch(e){
         this.alerta("error", true, "Erro ao buscar animal pelo id");
@@ -499,18 +486,16 @@ export default {
     async cadastrar() {
       try{
         if (this.validaFormAnimal()) {
-        this.animal.fazendas_id = this.selectFazenda.selected.id;
-        let response = await AnimaisService._create(this.animal);
-          this.clearFormAnimal();
-          this.alerta("success", true, "Animal cadastrado com sucesso!");
-
-        // console.log(response)
-        // if (response.status !== 400 || response.status !== 500) {
-        //   this.alerta("success", true, "Animal cadastrado com sucesso!");
-        //   this.clearFormAnimal();
-        // }
-      }
-
+          this.animal.fazendas_id = this.selectFazenda.selected.id;
+          if(this.animal.hemogramas.funcionario_id == null){
+            this.animal.hemogramas.funcionario_id = localStorage.getItem('func_id')
+          }
+          let response = await AnimaisService._create(this.animal);
+          if (response.status !== 400 || response.status !== 500) {
+            this.alerta("success", true, "Animal cadastrado com sucesso!");
+            this.clearForm();
+          }
+        }
       }
       catch(e){
           this.alerta('error', true, 'Erro ao cadastrar animal!')
@@ -523,15 +508,15 @@ export default {
     async editar() {
       try{
         if (this.validaFormAnimal()) {
-          let res = await AnimaisService._update(this.animal)
+          let response = await AnimaisService._update(this.animal)
           if (response.status !== 400 || response.status !== 500) {
             this.alerta("success", true, "Animal alterado com sucesso!");
-            this.clearFormAnimal();
+            this.clearForm();
           }
         }
       }
       catch(e){
-        this.alerta("error", true, "Erro ao cadastrar animal!");
+        this.alerta("error", true, "Erro ao alterar animal!");
         return false
       }
     },
@@ -541,13 +526,7 @@ export default {
         this.alerta("warning", true, "Preencha o nome do animal!");
         return false;
       }
-      if (!this.animal.codigo_brinco) {
-        this.alerta("warning", true, "Preencha o código do brinco do animal!");
-        return false;
-      }
-      if (!this.animal.codigo_raca) {
-        this.alerta("warning", true, "Preencha o código do registro da raça");
-      }
+  
       if (!this.animal.data_nascimento) {
         this.alerta(
           "warning",
@@ -603,7 +582,7 @@ export default {
       return true;
     },
 
-    clearFormAnimal() {
+    clearForm() {
       this.animal.nome = ""
       this.animal.sexo = ""
       this.animal.codigo_brinco = ""
@@ -630,7 +609,7 @@ export default {
       this.snackbar.mensagem = mensagem;
     }
   }
-};
+}
 </script>
 
 <style scoped>

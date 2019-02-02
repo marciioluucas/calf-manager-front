@@ -70,7 +70,7 @@
 
               <v-data-table
                 :headers="headers"
-                :items="items"
+                :items="items.data"
                 hide-actions
               >
                 <template slot="items" slot-scope="props">
@@ -204,7 +204,7 @@ export default {
             this.$Progress.start()
             let response = await HemogramasService._getByAnimalId({id: this.buscaHemograma.animal_id})
             await this.$Progress.finish()
-            this.items = response.data.hemogramas.data
+            this.items = response.data.hemogramas
              if(response.status === 200){
                 this.clear()
             }
@@ -213,7 +213,7 @@ export default {
             this.$Progress.start()
             let response = await HemogramasService._getByFuncionarioId({id: this.buscaHemograma.funcionario_id})
             await this.$Progress.finish()
-            this.items = response.data.hemogramas.data
+            this.items = response.data.hemogramas
              if(response.status === 200){
                 this.clear()
             }   
@@ -221,7 +221,7 @@ export default {
             this.$Progress.start()
             let response = await HemogramasService._getAll(this.buscaHemograma)
             await this.$Progress.finish()
-            this.items = response.data.hemogramas.data
+            this.items = response.data.hemogramas
         }
     },
     async getFuncionarios(val){
@@ -257,8 +257,8 @@ export default {
                 let response = await HemogramasService._delete(item.id)
                 if(response.status !== 500){
                 this.alerta('success', true, 'Hemograma excluído com sucesso!')
-                let index = this.items.indexOf(item)
-                this.items.splice(index, 1)
+                let index = this.items.data.indexOf(item)
+                this.items.data.splice(index, 1)
                 }
             }
         }

@@ -57,7 +57,7 @@
               <v-card-text>
                 <v-data-table
                   :headers="headers"
-                  :items="items"
+                  :items="items.data"
                   hide-actions
                 >
                   <template slot="items" slot-scope="props">
@@ -191,7 +191,7 @@
           }
         }
         if(response.status !== 400 || response.status !== 500){
-          this.items = response.data.lotes.data          
+          this.items = response.data.lotes     
         }
         
       },
@@ -217,8 +217,8 @@
               let response = await LotesService._delete(item.id)
               if(response.status !== 500){
                 this.alerta('success', true, 'Lote excluído com sucesso!')
-                let index = this.items.indexOf(item)
-                this.items.splice(index, 1)
+                let index = this.items.data.indexOf(item)
+                this.items.data.splice(index, 1)
               }
           }
         }

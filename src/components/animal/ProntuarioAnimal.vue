@@ -110,9 +110,12 @@
                                 </template>
                             </v-data-table>
                         </v-flex>
-                        <v-flex xs12 sm2 md2 lg2><v-btn small key="adoecer" color="error" @click="dialogDoente = true">Adoecer Animal</v-btn></v-flex>
-                        <v-flex xs12 sm2 md2 lg2><v-btn small key="medicar" color="info" @click="dialogAplicarMedicamento = true">Aplicar Vacina</v-btn></v-flex>
-                        <v-flex xs12 sm2 md2 lg2><v-btn small key="curar" color="primary" @click="dialogCurado = true">Curar Animal</v-btn></v-flex>
+                        <v-layout v-if="this.animal.is_vivo">
+                            <v-flex xs12 sm2 md2 lg2><v-btn small key="adoecer" color="error" @click="dialogDoente = true">Adoecer Animal</v-btn></v-flex>
+                            <v-flex xs12 sm2 md2 lg2><v-btn small key="medicar" color="info" @click="dialogAplicarMedicamento = true">Aplicar Vacina</v-btn></v-flex>
+                            <v-flex xs12 sm2 md2 lg2><v-btn small key="curar" color="primary" @click="dialogCurado = true">Curar Animal</v-btn></v-flex>
+                            <v-flex xs12 sm2 md2 lg2><v-btn small key="obito" color="primary" @click="dialogObito = true">Declarar Morte</v-btn></v-flex>
+                        </v-layout>
                         <v-flex xs12>
                                 <v-divider/>
                             <br/>
@@ -266,6 +269,38 @@
                     </v-card>
                     </v-dialog>
 
+                <!-- Modal declarar óbito -->
+                    <v-dialog
+                        v-model="dialogObito"
+                        width="500"
+                    >
+                    <v-card>
+                        <v-card-title
+                            class="headline grey lighten-2"
+                            primary-title
+                        >
+                            Declarar Óbito
+                        </v-card-title>
+                        <v-card-text>
+                            <v-container grid-list-md>
+                                <v-layout wrap>
+                                    <v-flex xs12> 
+                                        <v-flex xs12>
+                                            Deseja declarar óbito para este animal?
+                                        </v-flex>
+                                    </v-flex>
+                                </v-layout>
+                            </v-container>
+                        </v-card-text>
+                        <v-divider></v-divider>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="primary" flat @click="cadastrarMorte"> Sim </v-btn>
+                            <v-btn flat @click="dialogObito = false"> Não </v-btn>
+                        </v-card-actions> 
+                    </v-card>
+                    </v-dialog>
+
                     <!-- Modal medicar animal -->
                     <v-dialog
                         v-model="dialogAplicarMedicamento"
@@ -359,6 +394,7 @@
 				hasValueToGraphDeGanhoDePeso: false,
 				hasValueToGraphDeArvore: false,
 				animal: {
+                    id: null,
 					nome: null,
 					codigo_raca: null,
 					codigo_brinco: null,
@@ -369,7 +405,7 @@
 						limite: null,
 						quantidade_animais: null
 					},
-					is_vivo: false,
+					is_vivo: true,
                     fase_vida: null,
                     hemogramas: [],
                     doses: [],
@@ -476,6 +512,7 @@
                 },
                 dialogDoente: false,
                 dialogCurado: false,
+                dialogObito: false,
                 dialogAplicarMedicamento: false
 			}
         },
@@ -594,7 +631,6 @@
                 this.doses.funcionario_id = localStorage.getItem('func_id')
                 this.doses.animal_id = this.animal.id
                 if(this.doses.animal_id !== null && this.doses.quantidate_mg !== null && this.doses.medicamento_id !== null){
-                     console.log(this.doses)
                         let response = await DosesService._create(this.doses).catch(ex => {
                             if(ex){
                                 this.alerta('error', true, 'Erro ao aplicar medicamento!')
@@ -616,6 +652,18 @@
                 this.snackbar.color = color
                 this.snackbar.estado = estado
                 this.snackbar.mensagem = mensagem
+            },
+            async cadastrarMorte(){
+                try{
+                    this.animal.is_vivo = false
+                    let response = await AnimaisService._update(this.animal)
+                    console.log(response)
+                    if(response.status !== 400 || response.status !== 500){
+                        this.alerta(response.data.message.type, true, response.data.message.description)
+                    }
+                }catch(e){
+                    this.alerta('error', true, 'Erro ao declarar morte!')
+                }
             }
 		},
 		async mounted() {

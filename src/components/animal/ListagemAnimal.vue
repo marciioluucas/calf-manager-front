@@ -95,7 +95,7 @@
           <v-card-text>
             <v-data-table
               :headers="headers"
-              :items="items"
+              :items="items.data"
               hide-actions
               @input="selecionaAnimal(props.item.id)"
             >
@@ -144,7 +144,6 @@
                 <v-pagination :length="items.last_page" v-model="buscaAnimal.params.pagina" @input="getAnimais"/>
               </v-flex>
             </v-layout>
-
           </v-card-actions>
          <!-- Componente de alerta -->
          <v-snackbar
@@ -242,34 +241,28 @@
       async getAnimais() {
         this.$Progress.start()
         let response = null
-        if (this.buscaAnimal.id) {
-           response = await AnimaisService._getById({id: this.buscaAnimal.id})
-          await this.$Progress.finish()
-          this.items = response.data.animais
-          this.clearFilters()
-        } 
-        else if (this.buscaAnimal.nome) {
+         if (this.buscaAnimal.nome) {
           response = await AnimaisService._getByNome(this.buscaAnimal.nome)
-          this.items = response.data.animais.data
+          this.items = response.data.animais
           await this.$Progress.finish()
           this.clearFilters()
         } else 
         if (this.buscaAnimal.lotes_id) {
            response = await AnimaisService._getByIdLote(this.buscaAnimal)
-          this.items = response.data.animais.data
+          this.items = response.data.animais
           await this.$Progress.finish()
           this.clearFilters()
         } 
         else if(this.buscaAnimal.params.doente){
             response = await AnimaisService._getByAnimalDoente(this.buscaAnimal)
-            this.items = response.data.animais.data
+            this.items = response.data.animais
             this.$Progress.finish()
             this.clearFilters()
         }
         else {
           this.$Progress.start()
           response = await AnimaisService._getAll(this.buscaAnimal)
-          this.items = response.data.animais.data
+          this.items = response.data.animais
           await this.$Progress.finish()
         }
       },
@@ -304,8 +297,8 @@
             })
             if(response.status === 202){
               this.alerta('success', true, 'Animal excluido com sucesso')
-              let index = this.items.indexOf(item)
-              this.items.splice(index, 1)
+              let index = this.items.data.indexOf(item)
+              this.items.data.splice(index, 1)
             }
 
           }

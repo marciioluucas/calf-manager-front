@@ -155,6 +155,13 @@ const ModulosService = {
             }
           },
           {
+            nome: 'Lista de Vacinas',
+            icone: '',
+            link: {
+              name: 'ListagemDose'
+            }
+          },
+          {
             nome: 'Registrar Exame',
             icone: '',
             link: {

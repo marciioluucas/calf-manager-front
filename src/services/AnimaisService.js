@@ -38,6 +38,9 @@ export const AnimaisService = {
   _getContagemDoentes: () => {
     return Service.get(`/animal?contagemDoente=true`)
   },
+  _getContagemMortos: () => {
+    return Service.get(`/animal?contagemMortos=true`)
+  },
  
   _getGraficoGanhoDePeso: (id) => {
     return Service.get(`/graph?module=pesagem&chart=ganho-de-peso&animal=${id}`)

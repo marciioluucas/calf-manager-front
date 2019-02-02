@@ -1,14 +1,11 @@
 <template>
   <v-container grid-list-md>
     <v-layout row wrap >
-      <v-flex xs12 md4 lg4 >
+      <v-flex xs12 md6 lg6 >
         <animais-cadastrados></animais-cadastrados>
       </v-flex>
-      <v-flex xs12 md4 lg4>
+      <v-flex xs12 md6 lg6>
         <lotes-cadastrados></lotes-cadastrados>
-      </v-flex>
-       <v-flex xs12 md4 lg4>
-        <animais-doentes></animais-doentes>
       </v-flex>
     </v-layout>
   </v-container>

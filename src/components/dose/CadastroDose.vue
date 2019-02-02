@@ -181,10 +181,10 @@
       }
     },
     mounted() {
-      this.dose.id = this.$route.params.id
-      if (this.dose.id) {
+      if (this.$route.params.id) {
+        this.dose.id = this.$route.params.id
         this.nomeTitulo = 'Editar Vacina'
-        this.getDose()
+        this.getDoseById(this.dose.id)
       }
     },
     watch: {
@@ -196,15 +196,18 @@
       }
     },
     methods: {
-      async getUsuarioId(){
-        let res = jwtDecode(localStorage.getItem('token'))
-        let response = await UsuariosService._getById({id: res.id})
-        this.dose.funcionario_id = response.data.usuarios.funcionario_id
+     
+      // Pesquisar Dose por id
+      async getDoseById(id) {
+        let response = await DosesService._getById({id: id})
+        if(response.status == 200){
+          this.dose = response.data.doses
+          this.getAnimalById(this.dose.animal_id)
+          this.getMedicamentoById(this.dose.medicamento_id)
+        }
       },
-      async getDose() {
-        let response = await DosesService._getById(this.dose.id)
-        this.dose = response.data.doses
-      },
+
+      // Pesquisar Animais por nome
       async getAnimais(val) {
         let busca = {
           nome: val
@@ -215,6 +218,8 @@
         }
         this.selectAnimal.items = response.data.animais.data
       },
+
+      // Pesquisar medicamentos por nome
       async getMedicamentos(val) {
         let busca = {
           nome: val
@@ -225,6 +230,8 @@
         }
         this.selectMedicamento.items = response.data.medicamentos.data
       },
+
+      // Cadastrar medicamentos
       async cadastrarMedicamento() {
         if (this.validarFormMedicamento()) {
           let response = await MedicamentosService._create(this.dose.medicamento).catch(exception => {
@@ -242,6 +249,33 @@
           this.alerta('warning', true, 'Preencha todos os campos corretamente!')
         }
       },
+
+      // Pesquisar Animal por id
+      async getAnimalById(id){
+        try{
+          let response = await AnimaisService._getById({id: id})
+          if(response.status === 200){
+            this.selectAnimal.items = response.data.animais
+          }
+        }catch(e){
+          this.alerta('error', true, 'Erro ao pesquisar animal por id!')
+
+        }
+      }, 
+
+      async getMedicamentoById(id){
+        try{
+          let response = await MedicamentosService._getById({id: id})
+          if(response.status === 200){
+            this.selectMedicamento.items = response.data.medicamentos
+          }
+        }catch(e){
+          this.alerta('error', true, 'Erro ao pesquisar medicamento por id!')
+
+        }
+      }, 
+
+
       async cadastrar() {
         
         if (this.validarFormDose()) {
@@ -257,19 +291,16 @@
         }
       },
       async editar() {
-        if (this.validarFormDose()) {
-          let response = await DosesService._update(this.dose).catch(exception => {
-            if(exception){
-              this.alerta('error', true, 'Erro ao alterar Vacina!')
+        try{
+          if (this.validarFormDose()) {
+            let response = await DosesService._update(this.dose)
+            if(response.status !== 400 || response.status !== 500){
+              this.alerta(response.data.message.type, true, response.data.message.description)
+              this.clearFormDose()
             }
-          })
-          if(response.status === 201){
-            this.alerta(response.data.message.type, true, response.data.message.description)
           }
-          this.clearFormDose()
-        } else {
-          this.alerta('warning', true, 'Preencha todos os campos corretamente!')
-
+        }catch(e){
+          this.alerta('error', true, 'Erro ao alterar vacina!')
         }
       },
       validarFormDose() {

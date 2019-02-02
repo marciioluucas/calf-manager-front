@@ -45,6 +45,7 @@ import ListagemUsuario from '@/components/usuario/ListagemUsuario'
 
 // Dose
 import CadastroDose from '@/components/dose/CadastroDose'
+import ListagemDose from '@/components/dose/ListagemDose'
 // Hemograma
 import CadastroHemograma from '@/components/hemograma/CadastroHemograma'
 import ListagemHemograma from '@/components/hemograma/ListagemHemograma'
@@ -219,6 +220,11 @@ const router = new Router({
 					name: 'CadastroDose',
 					path: 'dose/novo',
 					component: CadastroDose
+				},
+				{
+					name: 'ListagemDose',
+					path: 'dose/listagem',
+					component: ListagemDose
 				},
 				// Hemograma
 				{

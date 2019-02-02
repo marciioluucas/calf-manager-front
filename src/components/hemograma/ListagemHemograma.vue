@@ -35,12 +35,12 @@
               </v-flex>
               <v-layout v-if="view">
                 <v-flex xs12 sm6 md6 lg6>
-                  <span class="caption">Proteína Plasmática Total (PPT)</span>
+                  <span class="caption">Hematócrito</span>
                   <chart :options='graficoHematocrito' :auto-resize="true"/>
                 </v-flex>
               
                 <v-flex xs12 sm6 md6 lg6>
-                  <span class="caption">Hematócrito</span>
+                  <span class="caption">Proteína Plasmática Total (PPT)</span>
                   <chart :options='graficoPPT' :auto-resize="true"/>
                 </v-flex>
                 
