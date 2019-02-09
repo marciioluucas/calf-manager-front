@@ -64,6 +64,8 @@
                     <tr>
                       <td class="text-xs-center">{{ props.item.id }}</td>
                       <td class="text-xs-center">{{ props.item.codigo }}</td>
+                      <td class="text-xs-center">{{ props.item.fazenda.nome }}</td>
+
                       <td class="justify-center layout px-0">
                         <v-icon
                           small
@@ -139,7 +141,7 @@
         headers: [
           {text: 'ID', value: 'id'},
           {text: 'Código', value: 'codigo'},
-          // {text: 'Fazenda', value: 'fazenda'},
+          {text: 'Fazenda', value: 'fazenda'},
           {text: 'Ações', value: 'acoes'}
         ],
         selectFazenda: {

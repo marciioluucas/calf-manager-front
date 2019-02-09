@@ -90,6 +90,8 @@
 <script>
   import PermissoesService from '../../services/PermissoesService'
   import GruposService from '../../services/GruposService'
+  import jwtDecode from 'jwt-decode'
+
   export default {
     name: "cadastro-permissao",
     data(){
@@ -101,7 +103,8 @@
           read: 1,
           update: 0,
           delete: 0,
-          grupo_id: null
+          grupo_id: null,
+          usuario_cadastro: null
         },
         selectGrupo: {
           item: [],
@@ -122,6 +125,7 @@
         },
     },
     mounted() {
+      this.getIdUsuarioLogado()
       if(this.permissao.id = this.$route.params.id){
         this.nomeTitulo = 'Editar Permissão'
         this.getPermissao()
@@ -191,6 +195,17 @@
             return false
         }
       },
+
+      getIdUsuarioLogado(){
+          try{
+              let res = jwtDecode(localStorage.getItem('token'))
+              this.permissao.usuario_cadastro = res.id
+          }
+          catch(e){
+              this.alerta('error', true, 'Erro ao carregar id de usuario logado')
+          }
+      },
+
       validarForm(){
       if(this.permissao.nome_modulo !== '' && this.permissao.nome_modulo) {
             return true

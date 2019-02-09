@@ -286,6 +286,8 @@ import FazendasService from "../../services/FazendasService";
 import LotesService from "../../services/LotesService";
 import { AnimaisService } from "../../services/AnimaisService";
 import DoencasService from "../../services/DoencasService";
+import jwtDecode from 'jwt-decode'
+
 
 export default {
   name: "cadastro-animal",
@@ -313,7 +315,8 @@ export default {
           ppt: "",
           hematocrito: "",
           data: ""
-        }
+        },
+        usuario_cadastro: null,
       },
       selectSexo: [
         { text: "Macho", value: "m" },
@@ -381,6 +384,7 @@ export default {
     }
   },
   mounted() {
+    this.getIdUsuarioLogado()
     if (this.$route.params.id) {
       this.animal.id = this.$route.params.id;
       this.nomeTitulo = "Editar Animal";
@@ -410,7 +414,6 @@ export default {
         this.animal.hemogramas= response.data.animais.hemogramas[0]
         this.selectFazenda.items = response.data.animais.fazenda
         this.selectFazenda.selected = response.data.animais.fazenda
-        console.log(response.data.animais.fazenda)
 
         // this.selectFazenda.selected.lote = response.data.animais.fazenda.lote
       }
@@ -501,8 +504,6 @@ export default {
           this.alerta('error', true, 'Erro ao cadastrar animal!')
           return false
       }
-
-      
     },
 
     async editar() {
@@ -580,6 +581,17 @@ export default {
       }
 
       return true;
+    },
+
+    getIdUsuarioLogado(){
+      try{
+        let res = jwtDecode(localStorage.getItem('token'))
+        this.animal.usuario_cadastro = res.id
+       
+      }
+      catch(e){
+        this.alerta('error', true, 'Erro ao carregar id de usuario logado')
+      }
     },
 
     clearForm() {

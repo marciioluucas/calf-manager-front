@@ -158,8 +158,10 @@
           medicamento: {
             id: null,
             nome: '',
-            prescricao: ''
-          }
+            prescricao: '',
+            usuario_cadastro: null
+          },
+          usuario_cadastro: null
         },
         selectAnimal: {
           loading: false,
@@ -181,6 +183,7 @@
       }
     },
     mounted() {
+      this.getIdUsuarioLogado()
       if (this.$route.params.id) {
         this.dose.id = this.$route.params.id
         this.nomeTitulo = 'Editar Vacina'
@@ -303,6 +306,19 @@
           this.alerta('error', true, 'Erro ao alterar vacina!')
         }
       },
+
+      getIdUsuarioLogado(){
+        try{
+          let res = jwtDecode(localStorage.getItem('token'))
+          this.dose.usuario_cadastro = res.id
+          this.dose.medicamento.usuario_cadastro = res.id
+
+        }
+        catch(e){
+          this.alerta('error', true, 'Erro ao carregar id de usuario logado')
+        }
+      },
+
       validarFormDose() {
         if (this.dose.animal_id !== null && this.dose.medicamento_id !== null && this.dose.quantidade_mg !== null) {
           return true

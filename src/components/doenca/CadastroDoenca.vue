@@ -63,6 +63,7 @@
 
 <script>
   import DoencasService from '../../services/DoencasService'
+  import jwtDecode from 'jwt-decode'
 
   export default {
     name: 'cadastro-doenca',
@@ -71,7 +72,8 @@
         doenca: {
           id: null,
           nome: '',
-          descricao: ''
+          descricao: '',
+          usuario_cadastro: null
         },
         snackbar: {
           color: 'success',
@@ -82,8 +84,9 @@
       }
     },
     async mounted() {
-      this.doenca.id = this.$route.params.id
-      if (this.doenca.id) {
+      this.getIdUsuarioLogado()
+      if (this.$route.params.id) {
+        this.doenca.id = this.$route.params.id
         this.nomeTitulo = 'Editar Doenca'
         this.getDoenca()
       }
@@ -133,6 +136,15 @@
       async getDoenca() {
         let response = await DoencasService._getById({id: this.doenca.id})
         this.doenca = response.data.doencas[0]
+      },
+      getIdUsuarioLogado(){
+        try{
+          let res = jwtDecode(localStorage.getItem('token'))
+          this.doenca.usuario_cadastro = res.id
+        }
+        catch(e){
+          this.alerta('error', true, 'Erro ao carregar id de usuario logado')
+        }
       },
       validarFormDoenca() {
         if (this.doenca.nome !== '' && this.doenca.nome !== null &&

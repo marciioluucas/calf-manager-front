@@ -417,13 +417,15 @@
                     doente: false,
                     curado: false,
                     animal_id: null,
-                    doenca_id: null
+                    doenca_id: null,
+                    usuario_cadastro: null
                 },
                 doses: {
                     quantidade_mg: null,
                     funcionario_id: null,
                     medicamento_id: null,
-                    animal_id: null
+                    animal_id: null,
+                    usuario_cadastro: null
                 },
 				headers: [
 					{text: 'Nome', value: 'nome'},
@@ -664,9 +666,22 @@
                 }catch(e){
                     this.alerta('error', true, 'Erro ao declarar morte!')
                 }
+            },
+            getIdUsuarioLogado(){
+                try{
+                    let res = jwtDecode(localStorage.getItem('token'))
+                    this.animal.fazenda.usuario_cadastro = res.id
+                    this.doses.usuario_cadastro = res.id
+                    this.doencas.usuario_cadastro = res.id            
+                }
+                catch(e){
+                    this.alerta('error', true, 'Erro ao carregar id de usuario logado')
+                }
             }
-		},
+        },
+        
 		async mounted() {
+            this.getIdUsuarioLogado()
 			this.animal.id = this.$route.params.id;
 			await this.getAnimal()
 			

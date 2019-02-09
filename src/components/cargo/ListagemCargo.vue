@@ -64,7 +64,7 @@
                         <!--Icone de deletar-->
                         <v-icon
                           small
-                          @click="deletar(props.item.id)"
+                          @click="deletar(props.item)"
                         >
                           delete
                         </v-icon>
@@ -125,30 +125,29 @@
         if (this.buscaCargo.id && !this.buscaCargo.nome) {
           let response = await CargosService._getById(this.buscaCargo)
           this.items = response.data.cargos
-
-          // console.log(response.data.cargos)
         }
         else if (!this.buscaCargo.id && this.buscaCargo.nome) {
           let response = await CargosService._getByNome(this.buscaCargo)
           this.items = response.data.cargos
-          // console.log(response.data.cargos.data)
         } else {
           let response = await CargosService._getAll(this.buscaCargo)
           this.items = response.data.cargos
-          // console.log(response.data.cargos)
         }
       },
       async editar(id) {
-        console.log("Editar id:"+id);
         this.$router.push({
           name: 'CadastroCargo',
           params: {id: id}
         })
       },
-      async deletar(id) {
+      async deletar(item) {
         if(confirm('Deseja deletar este item?')){
-          let response = await CargosService._delete(id)
-          this.getCargos()
+          let response = await CargosService._delete(item.id)
+           if(response.status === 200){
+              // this.alerta('success', true, 'Cargo excluido com sucesso')
+              let index = this.items.data.indexOf(item)
+              this.items.data.splice(index, 1)
+            }
         }
       },
       clear() {

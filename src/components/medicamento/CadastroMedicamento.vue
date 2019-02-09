@@ -68,6 +68,8 @@
 
 <script>
   import MedicamentosService from '../../services/MedicamentosService'
+  import jwtDecode from 'jwt-decode'
+
     export default {
       name: 'cadastro-medicamento',
       data () {
@@ -75,7 +77,8 @@
           medicamento: {
             id: null,
             nome: null,
-            prescricao: null
+            prescricao: null,
+            usuario_cadastro: null
           },
           snackbar: {
             color: 'success',
@@ -86,6 +89,7 @@
         }
       },
       mounted() {
+        this.getIdUsuarioLogado()
         this.medicamento.id = this.$route.params.id
         if (this.medicamento.id) {
           this.nomeTitulo = 'Editar Medicamento'
@@ -129,11 +133,21 @@
             this.alerta('warning', true, 'Preencha todos os campos corretamente!')
           }
         },
-          alerta(color, estado, mensagem) {
-            this.snackbar.color = color
-            this.snackbar.estado = estado
-            this.snackbar.mensagem = mensagem
-          },
+
+        getIdUsuarioLogado(){
+            try{
+                let res = jwtDecode(localStorage.getItem('token'))
+                this.medicamento.usuario_cadastro = res.id
+            }
+            catch(e){
+                this.alerta('error', true, 'Erro ao carregar id de usuario logado')
+            }
+        },
+        alerta(color, estado, mensagem) {
+          this.snackbar.color = color
+          this.snackbar.estado = estado
+          this.snackbar.mensagem = mensagem
+        },
         validarForm(){
           if(this.medicamento.nome !== '' && this.medicamento.nome !== null && this.medicamento.prescicao !== '' && this.medicamento.prescicao !== null){
             return true

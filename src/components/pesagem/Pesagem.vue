@@ -80,6 +80,8 @@
 <script>
 import {AnimaisService} from '../../services/AnimaisService'
 import PesagensService from '../../services/PesagensService'
+  import jwtDecode from 'jwt-decode'
+
 
 export default {
   data() {
@@ -88,7 +90,8 @@ export default {
         id: null,
         peso: '',
         data_pesagem: '',
-        animais_id: null
+        animais_id: null,
+        usuario_cadastro: null
       },
       selectAnimal: {
         loading: false,
@@ -103,6 +106,7 @@ export default {
     }
   },
   mounted(){
+    this.getIdUsuarioLogado()
     this.pesagem.id = this.$route.params.id
   },
   watch: {
@@ -153,6 +157,17 @@ export default {
         this.alerta('warning', true, 'Preencha todos os campos corretamente!')
       }
     },
+
+getIdUsuarioLogado(){
+                try{
+                    let res = jwtDecode(localStorage.getItem('token'))
+                    this.pesagem.usuario_cadastro = res.id
+                }
+                catch(e){
+                    this.alerta('error', true, 'Erro ao carregar id de usuario logado')
+                }
+            },
+
     validarForm(){
       if(this.pesagem.animais_id !== null && this.pesagem.animais_id !== '' &&
         this.pesagem.data_pesagem !== null && this.pesagem.data_pesagem !== '' &&

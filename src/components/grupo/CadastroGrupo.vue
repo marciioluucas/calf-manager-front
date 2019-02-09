@@ -65,6 +65,7 @@
 <script>
   import GrupoService from '../../services/GruposService'
   import PermissaoService from '../../services/PermissoesService'
+  import jwtDecode from 'jwt-decode'
   export default {
     name: 'cadastro-grupo',
     data() {
@@ -72,7 +73,8 @@
         grupo: {
           id: null,
           nome: null,
-          descricao: null
+          descricao: null,
+          usuario_cadastro: null
         },       
         snackbar: {
           color: 'success',
@@ -84,8 +86,9 @@
       }
     },
     mounted() {
-      this.grupo.id = this.$route.params.id
-      if (this.grupo.id) {
+      this.getIdUsuarioLogado()
+      if (this.$route.params.id) {
+        this.grupo.id = this.$route.params.id
         this.nomeTitulo = 'Editar Grupo'
         this.getGrupoId(this.grupo.id)
       }
@@ -96,6 +99,16 @@
         let response = await GrupoService._getById({id: id})
         this.grupo = response.data.grupos
       },
+
+      getIdUsuarioLogado(){
+                try{
+                    let res = jwtDecode(localStorage.getItem('token'))
+                    this.grupo.usuario_cadastro = res.id
+                }
+                catch(e){
+                    this.alerta('error', true, 'Erro ao carregar id de usuario logado')
+                }
+            },
       
       async cadastrar() {
         if (this.validarFormGrupo()) {
@@ -127,6 +140,7 @@
           }
         }
       },
+
       alerta(color, estado, mensagem) {
         this.snackbar.color = color
         this.snackbar.estado = estado

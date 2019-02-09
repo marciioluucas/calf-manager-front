@@ -148,6 +148,8 @@
 	import HemogramaService from '../../services/HemogramasService';
 	import DoencasService from '../../services/DoencasService';
 	import UsuariosService from '../../services/GruposService';
+  	import jwtDecode from 'jwt-decode'
+
 
 	export default {
 		name: 'cadastro-hemograma',
@@ -168,7 +170,8 @@
 					animais_id: null,
 					doencas_id: null,
 					doenca_id: null,
-					viewModal: false
+					viewModal: false,
+					usuario_cadastro: null
 				},
 				selectAnimais: {
 					loading: false,
@@ -203,6 +206,7 @@
 
 		// Execute assim que montar o DOM
 		mounted() {
+			this.getIdUsuarioLogado()
 			if (this.$route.params.id) {
 				this.hemograma.id = this.$route.params.id
 				this.nomeTitulo = 'Editar Exame'
@@ -315,6 +319,16 @@
 					this.alerta('error', true, 'Erro ao pesquisar todos animais!')
 				}
 			},
+
+			getIdUsuarioLogado(){
+                try{
+                    let res = jwtDecode(localStorage.getItem('token'))
+                    this.hemograma.usuario_cadastro = res.id
+                }
+                catch(e){
+                    this.alerta('error', true, 'Erro ao carregar id de usuario logado')
+                }
+            },
 			
 			//  Limpar formulário.
 			clearFormHemograma(){

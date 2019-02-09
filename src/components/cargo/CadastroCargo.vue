@@ -64,6 +64,8 @@
 
 <script>
   import CargosService from '../../services/CargosService'
+  import jwtDecode from 'jwt-decode'
+
     export default {
       name: 'cadastro-cargo',
       data() {
@@ -71,7 +73,8 @@
           cargo: {
             id: null,
             nome: '',
-            descricao: ''
+            descricao: '',
+            usuario_cadastro: null
           },
           snackbar: {
             color: 'success',
@@ -82,8 +85,9 @@
         }
       },
       mounted() {
-        this.cargo.id = this.$route.params.id
-        if (this.cargo.id) {
+        this.getIdUsuarioLogado()
+        if (this.$route.params.id) {
+          this.cargo.id = this.$route.params.id
           this.nomeTitulo = 'Editar cargo'
           this.getCargo()
         }
@@ -137,6 +141,15 @@
             return true
           } else {
             return false
+          }
+        },
+        getIdUsuarioLogado(){
+          try{
+            let res = jwtDecode(localStorage.getItem('token'))
+            this.cargo.usuario_cadastro = res.id
+          }
+          catch(e){
+            this.alerta('error', true, 'Erro ao carregar id de usuario logado')
           }
         },
         clearFormCargo() {

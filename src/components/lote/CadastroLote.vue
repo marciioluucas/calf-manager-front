@@ -37,7 +37,7 @@
                 :items="selectFazenda.items"
                 item-text="nome"
                 :search-input.sync="selectFazenda.search"
-                v-model="this.lote.fazenda_id"
+                v-model="lote.fazenda_id"
               />
             </v-flex>
           </v-layout>
@@ -71,6 +71,8 @@
 <script>
   import LotesService from '../../services/LotesService'
   import FazendasService from '../../services/FazendasService'
+  import jwtDecode from 'jwt-decode'
+
   export default {
     name: '',
     data() {
@@ -94,6 +96,7 @@
       }
     },
     async mounted() {
+      this.getIdUsuarioLogado()
       this.lote.id = this.$route.params.id
       if (this.lote.id) {
         this.nomeTitulo = 'Editar Lote'
@@ -163,6 +166,17 @@
         this.lote = response.data.lotes[0]
         this.getFazendaById(this.lote.fazenda_id)
       },
+
+getIdUsuarioLogado(){
+                try{
+                    let res = jwtDecode(localStorage.getItem('token'))
+                    this.lote.usuario_cadastro = res.id
+                }
+                catch(e){
+                    this.alerta('error', true, 'Erro ao carregar id de usuario logado')
+                }
+            },
+
       clearFormLote() {
         this.lote.codigo = null
         this.lote.fazenda_id = null

@@ -98,7 +98,7 @@
     import UsuariosService from '../../services/UsuariosService'
     import FuncionariosService from '../../services/FuncionariosService'
     import GruposService from '../../services/GruposService'
-
+    import jwtDecode from 'jwt-decode'
 
     export default {
         data(){
@@ -109,7 +109,8 @@
                     senha: null,
                     reSenha: null,
                     grupo_id: null,
-                    funcionario_id: null
+                    funcionario_id: null,
+                    usuario_cadastro: null
                 },
                 selectFuncionario: {
                     loading: false,
@@ -130,8 +131,9 @@
             }
         },   
         mounted(){
-            this.usuario.id = this.$route.params.id
-            if(this.usuario.id){
+            this.getIdUsuarioLogado()
+            if(this.$route.params.id){
+                this.usuario.id = this.$route.params.id
                 this.nomeTitulo = 'Editar Usuário'
                 this.getUsuarioId(this.usuario.id)
             }
@@ -228,7 +230,6 @@
                         console.log(response)
                         if(response.status !== 400 || reponse.status !== 500){
                             this.alerta('success', true, 'Usuário alterado com sucesso!')
-
                             this.clearForm()
                         }
                     }
@@ -236,6 +237,16 @@
                 catch(e){
                     this.alerta('error', true, 'Erro ao alterar usuário!')
                     return false
+                }
+            },
+
+            getIdUsuarioLogado(){
+                try{
+                    let res = jwtDecode(localStorage.getItem('token'))
+                    this.usuario.usuario_cadastro = res.id
+                }
+                catch(e){
+                    this.alerta('error', true, 'Erro ao carregar id de usuario logado')
                 }
             },
 

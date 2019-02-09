@@ -28,32 +28,42 @@
         return{
           quantidadeAnimais: null,
           graficoAnimais: {
-              tooltip : {
-                  trigger: 'item',
-                  formatter: "{b} : {c} ({d}%)"
-              },
-              legend: {
-                  orient: 'vertical',
-                  x: 'left',
-                  data:['Animais Sadíos','Animais Mortos','Animais Doentes']
-              },
-              series : [
-                  {
-                      type: 'pie',
-                      radius : '65%',
-                      center: ['58%', '42%'],
-                      selectedMode: 'single',
-                      data:[
-                      ],
-                      itemStyle: {
-                          emphasis: {
-                              shadowBlur: 10,
-                              shadowOffsetX: 0,
-                              shadowColor: 'rgba(0, 0, 0, 0.5)'
-                          }
-                      }
-                  }
-              ]
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                x: 'left',
+                data:[]
+            },
+            series: [
+                {
+                    name:'Animais',
+                    type:'pie',
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        normal: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            show: true,
+                            textStyle: {
+                                fontSize: '30',
+                                fontWeight: 'bold'
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data:[]
+                }
+            ]
           }
 
         }
@@ -74,8 +84,9 @@
         }
         let response = await AnimaisService._getContagemAnimais()
         data.value = response.data.animais
-        data.name = 'Animais Sadíos'
+        data.name = 'Sadíos'
         this.graficoAnimais.series[0].data.push(data)
+        this.graficoAnimais.legend.data.push(data)
       },
       async getQuantidadeAnimaisDoentes(){
         let data = {
@@ -85,8 +96,9 @@
         let response = await AnimaisService._getContagemDoentes()
         this.quantidadeAnimais = response.data.animais
         data.value = response.data.animais
-        data.name = 'Animais Doentes'
+        data.name = 'Doentes'
         this.graficoAnimais.series[0].data.push(data)
+        this.graficoAnimais.legend.data.push(data)
       },
       async getQuantidadeAnimaisMortos(){
         let data = {
@@ -95,8 +107,9 @@
         }
         let response = await AnimaisService._getContagemMortos()
         data.value = response.data.animais
-        data.name = 'Animais Mortos'
+        data.name = 'Mortos'
         this.graficoAnimais.series[0].data.push(data)
+        this.graficoAnimais.legend.data.push(data)
       }
     }
   }

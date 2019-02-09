@@ -61,12 +61,14 @@
 
 <script>
   import FazendasService from '../../services/FazendasService'
+  import jwtDecode from 'jwt-decode'
   export default {
     data() {
       return {
         fazenda: {
           id: null,
-          nome: ''
+          nome: '',
+          usuario_cadastro: null
         },
         snackbar: {
           color: 'success',
@@ -77,8 +79,9 @@
       }
     },
     async mounted() {
-      this.fazenda.id = this.$route.params.id
-      if (this.fazenda.id) {
+      this.getIdUsuarioLogado()
+      if (this.$route.params.id) {
+        this.fazenda.id = this.$route.params.id
         this.nomeTitulo = 'Editar Fazenda'
         this.getFazenda()
       }
@@ -129,6 +132,15 @@
           }
         }
       },
+      getIdUsuarioLogado(){
+        try{
+          let res = jwtDecode(localStorage.getItem('token'))
+          this.fazenda.usuario_cadastro = res.id
+        }
+        catch(e){
+          this.alerta('error', true, 'Erro ao carregar id de usuario logado')
+        }
+    },
     }
   }
 </script>

@@ -203,6 +203,8 @@
     import UsuariosService from '../../services/UsuariosService'
     import FuncionariosService from '../../services/FuncionariosService'
     import FazendasService from '../../services/FazendasService'
+    import jwtDecode from 'jwt-decode'
+
     export default {
         data(){
             return{
@@ -212,7 +214,8 @@
                     pessoa_id: null,
                     fazenda_id: null,
                     cargo_id: null,
-                    salario: ''
+                    salario: '',
+                    usuario_cadastro: null
                 },
                 pessoa: {
                     id: null,
@@ -222,7 +225,8 @@
                     sexo: 'm',
                     numero_telefone: '',
                     data_nascimento: '',
-                    endereco_id: null
+                    endereco_id: null,
+                    usuario_cadastro: null
                 },
                 endereco: {
                     id: null,
@@ -232,23 +236,27 @@
                     cidade: '',
                     estado: '',
                     pais: '',
-                    cep: ''
+                    cep: '',
+                    usuario_cadastro: null
                 },
                 cargo: {
                     id: null,
                     nome: '',
-                    descricao: ''
+                    descricao: '',
+                    usuario_cadastro: null
                 },
                 fazenda: {
                     id: null,
-                    nome: ''
+                    nome: '',
+                    usuario_cadastro: null
                 },
                 usuario: {
                     id: null,
                     login: '',
                     senha: '',
                     re_senha: '',
-                    grupo_id: null
+                    grupo_id: null,
+                    usuario_cadastro: null
                 },
                 grupo: {
                     id: null,
@@ -698,6 +706,19 @@
                 this.snackbar.color = color
                 this.snackbar.estado = estado
                 this.snackbar.mensagem = mensagem
+            },
+            getIdUsuarioLogado(){
+                try{
+                    let res = jwtDecode(localStorage.getItem('token'))
+                    this.funcionario.usuario_cadastro = res.id
+                    this.pessoa.usuario_cadastro = res.id
+                    this.endereco.usuario_cadastro = res.id
+                    this.cargo.usuario_cadastro = res.id
+                    this.usuario.usuario_cadastro = res.id
+                }
+                catch(e){
+                    this.alerta('error', true, 'Erro ao carregar id de usuario logado')
+                }
             }
         }
         
