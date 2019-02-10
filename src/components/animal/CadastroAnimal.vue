@@ -195,7 +195,7 @@
                 <v-flex xs12 sm4>
                   <v-text-field
                     v-model="animal.hemogramas.hematocrito"
-                    label="Hematocrito"
+                    label="Hematócrito"
                   ></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm4>

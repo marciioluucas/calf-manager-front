@@ -48,7 +48,7 @@
 						<v-flex xs12 sm3 md3 lg3>
 							<v-text-field
 								v-model="hemograma.hematocrito"
-								label='Hematocrito'>
+								label='Hematócrito'>
 							</v-text-field>
 						</v-flex>
 

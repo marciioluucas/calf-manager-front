@@ -85,7 +85,7 @@
             estado: false,
             mensagem: ''
           },
-          nomeTitulo: 'Cadastro Medicamento'
+          nomeTitulo: 'Cadastro Medicamento/Vacina'
         }
       },
       mounted() {

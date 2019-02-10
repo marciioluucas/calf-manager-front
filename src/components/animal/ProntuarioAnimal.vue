@@ -111,10 +111,10 @@
                             </v-data-table>
                         </v-flex>
                         <v-layout v-if="this.animal.is_vivo">
-                            <v-flex xs12 sm2 md2 lg2><v-btn small key="adoecer" color="error" @click="dialogDoente = true">Adoecer Animal</v-btn></v-flex>
-                            <v-flex xs12 sm2 md2 lg2><v-btn small key="medicar" color="info" @click="dialogAplicarMedicamento = true">Aplicar Vacina</v-btn></v-flex>
-                            <v-flex xs12 sm2 md2 lg2><v-btn small key="curar" color="primary" @click="dialogCurado = true">Curar Animal</v-btn></v-flex>
-                            <v-flex xs12 sm2 md2 lg2><v-btn small key="obito" color="primary" @click="dialogObito = true">Declarar Morte</v-btn></v-flex>
+                            <v-flex xs12 sm2 md2 lg2><v-btn small key="adoecer" color="warning" @click="dialogDoente = true">Registrar Doença</v-btn></v-flex>
+                            <v-flex xs12 sm2 md2 lg2><v-btn small key="medicar" color="info" @click="dialogAplicarMedicamento = true">Registrar Vacina</v-btn></v-flex>
+                            <v-flex xs12 sm2 md2 lg2><v-btn small key="curar" color="primary" @click="dialogCurado = true">Registrar Cura</v-btn></v-flex>
+                            <v-flex xs12 sm2 md2 lg2><v-btn small key="morte" color="error" @click="dialogObito = true">Registrar Morte</v-btn></v-flex>
                         </v-layout>
                         <v-flex xs12>
                                 <v-divider/>
@@ -127,7 +127,7 @@
                                 {text: 'Medicamento', value: 'nome'}, 
                                 {text: 'Prescrição', value: 'prescricao'}, 
                                 {text: 'Data', value: 'data'}, 
-                                {text: 'Quantidade (Mg)', value: 'quantidade_mg'}
+                                {text: 'Quantidade (Mg/Ml)', value: 'quantidade_mg'}
                                 ]"
                                 :items='animal.doses'
                                 hide-actions

@@ -43,17 +43,17 @@
                   />
             </v-flex>
             <v-flex xs12 sm2 md2>
-                  <v-checkbox label="Create" v-model="permissao.create"></v-checkbox>
+                  <v-checkbox label="Criar" v-model="permissao.create"></v-checkbox>
             </v-flex>
 
             <v-flex xs12 sm2 md2>
-                  <v-checkbox label="Read" v-model="permissao.read"></v-checkbox>
+                  <v-checkbox label="Ler" v-model="permissao.read"></v-checkbox>
             </v-flex>
             <v-flex xs12 sm2 md2>
-                  <v-checkbox label='Update' v-model="permissao.update"></v-checkbox>
+                  <v-checkbox label='Alterar' v-model="permissao.update"></v-checkbox>
             </v-flex>
             <v-flex xs12 sm2 md2>
-                  <v-checkbox label="Delete" v-model="permissao.deletee"></v-checkbox>
+                  <v-checkbox label="Deletar" v-model="permissao.deletee"></v-checkbox>
             </v-flex>
 
           </v-layout>

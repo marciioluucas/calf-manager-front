@@ -47,7 +47,7 @@
                 hide-selected
                 item-text="nome"
                 item-value="id"
-                label="Medicamentos"
+                label="Medicamentos/Vacinas"
                 placeholder="Pesquisar pelo Medicamento"
               />
             </v-flex>
@@ -60,7 +60,7 @@
                   <v-card>
                     <v-card-title>
                       <v-flex xs12>
-                        <span class='title'>Cadastrar Medicamento</span>
+                        <span class='title'>Cadastrar Medicamento/Vacina</span>
                       </v-flex>
                       <v-flex xs12>
                         <span class='caption'>Preencha o formulário para cadastrar novos medicamentos.</span>
@@ -105,7 +105,7 @@
               <v-text-field
                 v-model="dose.quantidade_mg"
                 label='Dose'
-                placeholder="Medida em miligramas"
+                placeholder="Miligramas/mililitros"
               ></v-text-field>
             </v-flex>
           </v-layout>
@@ -178,7 +178,7 @@
           estado: false,
           mensagem: ''
         },
-        nomeTitulo: 'Vacinar Animal',
+        nomeTitulo: 'Sanidade Animal',
         dialog: false,
       }
     },

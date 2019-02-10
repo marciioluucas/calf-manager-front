@@ -148,14 +148,14 @@ const ModulosService = {
         link: '',
         filhos: [
           {
-            nome: 'Vacinar Animal',
+            nome: 'Sanidade Animal',
             icone: '',
             link: {
               name: 'CadastroDose'
             }
           },
           {
-            nome: 'Lista de Vacinas',
+            nome: 'Lista de Medicamentos/Vacinas aplicados',
             icone: '',
             link: {
               name: 'ListagemDose'
@@ -213,14 +213,14 @@ const ModulosService = {
         link: '',
         filhos: [
           {
-            nome: 'Cadastro de Medicamento',
+            nome: 'Cadastro de Medicamento/Vacina',
             icone: '',
             link: {
               name: 'CadastroMedicamento'
             }
           },
           {
-            nome: 'Lista de Medicamentos',
+            nome: 'Lista de Medicamentos/Vacinas',
             icone: '',
             link: {
               name: 'ListagemMedicamento'

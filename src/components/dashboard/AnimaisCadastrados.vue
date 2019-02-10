@@ -84,7 +84,7 @@
         }
         let response = await AnimaisService._getContagemAnimais()
         data.value = response.data.animais
-        data.name = 'Sadíos'
+        data.name = 'Sadios'
         this.graficoAnimais.series[0].data.push(data)
         this.graficoAnimais.legend.data.push(data)
       },

@@ -137,7 +137,7 @@
           {text: 'ID', value: 'id'},
            {text: 'Animal', value: 'animal'},
           {text: 'Medicamento', value: 'medicamento'},
-          {text: 'Quantidade (Mg)', value: 'quantidade_mg'},
+          {text: 'Quantidade (Mg/Ml)', value: 'quantidade_mg'},
           {text: 'Actions', value: 'name', sortable: false}
         ],
         snackbar: {
