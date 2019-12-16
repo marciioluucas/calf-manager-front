@@ -155,6 +155,13 @@ const ModulosService = {
             }
           },
           {
+            nome: 'Entrada de Medicamentos',
+            icone: '',
+            link: {
+              name: 'CadastroEntradaDose'
+            }
+          },
+          {
             nome: 'Lista de Medicamentos/Vacinas aplicados',
             icone: '',
             link: {

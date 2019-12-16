@@ -22,21 +22,6 @@
               <span class='title'>Informações gerais</span>
             </v-flex>
 
-            <!--Adicionar Animal-->
-            <v-flex xs12 sm4 md4 lg4>
-              <v-autocomplete
-                v-model="dose.animal_id"
-                :items="selectAnimal.items"
-                :search-input.sync="selectAnimal.search"
-                hide-no-data
-                hide-selected
-                item-text="nome"
-                item-value="id"
-                label="Animais"
-                placeholder="Pesquisar pelo Animal"
-              />
-            </v-flex>
-
             <!--Adicionar Medicamento-->
             <v-flex xs12 sm3 md3 lg3>
               <v-autocomplete
@@ -152,7 +137,8 @@
         dose: {
           id: null,
           quantidade_mg: '',
-          tipo_movimentacao: 'saida',
+          quantidade_unidade: '',
+          tipo_movimentação: 'entrada',
           animal_id: null,
           medicamento_id: null,
           funcionario_id: null,

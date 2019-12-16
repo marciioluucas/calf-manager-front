@@ -45,6 +45,7 @@ import ListagemUsuario from '@/components/usuario/ListagemUsuario'
 
 // Dose
 import CadastroDose from '@/components/dose/CadastroDose'
+import CadastroEntradaDose from '@/components/dose/CadastroDose'
 import ListagemDose from '@/components/dose/ListagemDose'
 // Hemograma
 import CadastroHemograma from '@/components/hemograma/CadastroHemograma'
