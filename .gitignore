@@ -16,3 +16,5 @@ selenium-debug.log
 *.sln
 
 package-lock\.json
+
+config/api.js

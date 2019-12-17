@@ -37,54 +37,48 @@
 
           <!--Tabela de apresentação de dados-->
 
-          <v-flex xs12>
-            <v-card>
-              <v-card-text>
-                <v-data-table
-                  :headers="headers"
-                  :items="items.data"
-                  hide-actions
-                >
-                  <template slot="items" slot-scope="props">
-                    <tr>
-                      <td class="text-xs-center">{{ props.item.id }}</td>
-                      <td class="text-xs-center">{{ props.item.animal.nome }}</td>
-                      <td class="text-xs-center">{{ props.item.medicamento.nome }}</td>
-                      <td class="text-xs-center">{{ props.item.quantidade_mg }}</td>
+        <v-flex xs12>
+          <v-card>
+            <v-card-text>
+              <v-data-table
+                :headers="headers"
+                :items="items.data"
+                hide-actions
+              >
+                <template slot="items" slot-scope="props">
+                  <tr>
+                    <td class="text-xs-center">{{ props.item.id }}</td>
+                    <!-- <td class="text-xs-center">{{props.item}}</td>
+                    <td class="text-xs-center">{{ props.item.quantidade_ml }}</td> -->
+                    <td class="justify-center layout px-0">
+                      <v-icon
+                        small
+                        class="mr-2"
+                        @click="editar(props.item.id)"
+                      >
+                        edit
+                      </v-icon>
+                      <v-icon
+                        small
+                        @click="deletar(props.item)"
+                      >
+                        delete
+                      </v-icon>
+                    </td>
+                  </tr>
+                </template>
+              </v-data-table>
+            </v-card-text>
+            <v-card-actions v-if="items.length !== 0" class="text-xs-center">
+              <v-layout>
+                <v-flex xs12>
+                  <v-pagination :length="items.last_page" v-model="buscaDose.params.pagina" @input="getDoses"/>
+                </v-flex>
+              </v-layout>
 
-                      <td class="justify-center layout px-0">
-
-                        <!--Icone de editar-->
-                        <v-icon
-                          small
-                          class="mr-2"
-                          @click="editar(props.item.id)"
-                        >
-                          edit
-                        </v-icon>
-
-                        <!--Icone de deletar-->
-                        <v-icon
-                          small
-                          @click="deletar(props.item)"
-                        >
-                          delete
-                        </v-icon>
-                      </td>
-                    </tr>
-                  </template>
-                </v-data-table>
-              </v-card-text>
-              <v-card-actions v-if="items.length !== 0" class="text-xs-center">
-                <v-layout>
-                  <v-flex xs12>
-                    <v-pagination :length="items.last_page" v-model="buscaDose.params.pagina" @input="getDoses"/>
-                  </v-flex>
-                </v-layout>
-
-              </v-card-actions>
-            </v-card>
-          </v-flex>
+            </v-card-actions>
+          </v-card>
+        </v-flex>
 <!--Componente de alerta-->
           <v-snackbar
              v-model="snackbar.estado"
@@ -115,18 +109,18 @@
     name: 'listagem-dose',
     data() {
       return {
-        items: [],
+        items: [],  
         loading: false,
         isLoading: false,
         buscaDose: {
           id: null,
           medicamento: {
             id: null,
-            nome: ''
+            
           },
           animal: {
             id: null,
-            nome: null
+            
           },
           params: {
             pagina: 1
@@ -154,7 +148,9 @@
       async getDoses() {
         let response = await DosesService._getAll(this.buscaDose)
         if(response.status === 200){
-          this.items = response.data.doses
+          this.items = response
+          console.log('DOSES')
+          console.log(this.items)
         }
       },
       clearFilters(){
@@ -167,13 +163,13 @@
             if(response.status !== 500){
               let index = this.items.data.indexOf(item)
               this.items.data.splice(index, 1)
-              this.alerta(response.data.message.type, true, response.data.message.description) 
+              this.notify(response.data.message.type,response.data.message.description) 
 
             }
           }
         }
         catch(e){
-          this.alerta('error', true, 'Erro ao deletar vacina!') 
+          this.notify('error', 'Erro ao deletar vacina!') 
         }
       },
       async editar(id) {
@@ -182,7 +178,7 @@
         params: {id: id}
       })
       },
-      alerta(color, estado, mensagem) {
+      notify(color, mensagem) {
           this.snackbar.color = color
           this.snackbar.estado = estado
           this.snackbar.mensagem = mensagem

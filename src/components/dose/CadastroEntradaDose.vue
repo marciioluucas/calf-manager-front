@@ -37,6 +37,23 @@
               />
             </v-flex>
 
+            <v-flex xs12 sm4 md4 lg4>
+              <v-text-field
+                v-model="dose.quantidade_mg"
+                label='Qtd doses por unidade'
+                placeholder="Miligramas/mililitros"
+              ></v-text-field>
+            </v-flex>
+          
+            <v-flex xs12 sm4 md4 lg4>
+              <v-text-field
+                v-model="dose.quantidade_unidade"
+                label='Qtd unidades'
+                placeholder="UN / PCT"
+              ></v-text-field>
+            </v-flex>
+          
+
             <!--Cadastrar Medicamento-->
             <v-flex xs1>
               <v-layout row justify-center>
@@ -85,15 +102,8 @@
                 </v-dialog>
               </v-layout>
             </v-flex>
-
-            <v-flex xs12 sm4 md4 lg4>
-              <v-text-field
-                v-model="dose.quantidade_mg"
-                label='Dose'
-                placeholder="Miligramas/mililitros"
-              ></v-text-field>
-            </v-flex>
           </v-layout>
+            
           <v-flex>
             <v-btn v-if="!dose.id"  @click="cadastrar">Enviar</v-btn>
             <v-btn v-if="dose.id"  @click="editar">Editar</v-btn>
@@ -165,7 +175,7 @@
           estado: false,
           mensagem: ''
         },
-        nomeTitulo: 'Sanidade Animal',
+        nomeTitulo: 'Entrada de medicamentos/vacinas',
         dialog: false,
       }
     },
@@ -226,17 +236,17 @@
         if (this.validarFormMedicamento()) {
           let response = await MedicamentosService._create(this.dose.medicamento).catch(exception => {
             if(exception){
-              this.alerta('error', true, 'Erro ao cadastrar medicamento!')
+              this.notify('error', 'Erro ao cadastrar medicamento!')
             }
           })
           if(response.status === 201){
-            this.alerta(response.data.message.type, true, response.data.message.description)
+            this.notify(response.data.message.type, response.data.message.description)
             this.dialog = false
             this.clearFormMedicamento()
           }
           
         } else {
-          this.alerta('warning', true, 'Preencha todos os campos corretamente!')
+          
         }
       },
 
@@ -248,7 +258,7 @@
             this.selectAnimal.items = response.data.animais
           }
         }catch(e){
-          this.alerta('error', true, 'Erro ao pesquisar animal por id!')
+          this.notify('error', true, 'Erro ao pesquisar animal por id!')
 
         }
       }, 
@@ -260,7 +270,7 @@
             this.selectMedicamento.items = response.data.medicamentos
           }
         }catch(e){
-          this.alerta('error', true, 'Erro ao pesquisar medicamento por id!')
+          this.notify('error', true, 'Erro ao pesquisar medicamento por id!')
 
         }
       }, 
@@ -270,27 +280,31 @@
         
         if (this.validarFormDose()) {
           this.dose.funcionario_id = localStorage.getItem('func_id')
-          let response = await DosesService._create(this.dose)
-          if(response.status === 201){
-            this.alerta(response.data.message.type, true, response.data.message.description)
-            this.clearFormDose()
-          }
-          
-        } else {
-          this.alerta('warning', true, 'Preencha todos os campos corretamente!')
-        }
+          await DosesService._create(this.dose)
+                            .catch(e=> this.notify("error", "Erro ao registrar entrada"))
+                            .then(response => 
+                            {
+                              if(response == null && response.status === 201)
+                              {
+                                this.notify(response.data.message.type, response.data.message.description)
+                                this.clearFormDose()
+                              }
+                            });
+        } 
       },
       async editar() {
         try{
-          if (this.validarFormDose()) {
+          if (this.validarFormDose()) 
+          {
             let response = await DosesService._update(this.dose)
-            if(response.status !== 400 || response.status !== 500){
-              this.alerta(response.data.message.type, true, response.data.message.description)
+            if(response.status !== 400 || response.status !== 500)
+            {
+              this.notify(response.data.message.type, response.data.message.description)
               this.clearFormDose()
             }
           }
         }catch(e){
-          this.alerta('error', true, 'Erro ao alterar vacina!')
+          this.notify('error', 'Erro ao alterar vacina!')
         }
       },
 
@@ -302,16 +316,31 @@
 
         }
         catch(e){
-          this.alerta('error', true, 'Erro ao carregar id de usuario logado')
+          this.notify('error', 'Erro ao carregar id de usuario logado')
         }
       },
 
-      validarFormDose() {
-        if (this.dose.animal_id !== null && this.dose.medicamento_id !== null && this.dose.quantidade_mg !== null) {
-          return true
-        } else {
+      validarFormDose() 
+      {
+        if (this.dose.medicamento_id == null)
+        {
+          this.notify('warning', 'Informe o medicamento')
+          return false
+        } 
+        if(this.dose.quantidade_mg == null)
+        {
+          this.notify('warning', 'Informe a quantidade de doses por unidade')
           return false
         }
+        if(this.dose.quantidade_unidade == null)
+        {
+          this.notify('warning', 'Informe a quantidades de unidades ou pacotes')
+          return false
+        }
+        else 
+        {
+          return true
+        } 
       },
       validarFormMedicamento() {
         if (this.dose.medicamento.nome !== '' && this.dose.medicamento.nome !== null &&
@@ -332,9 +361,9 @@
         this.dose.medicamento.nome = ''
         this.dose.medicamento.prescricao = ''
       },
-      alerta(color, estado, mensagem) {
+      notify(color, mensagem) {
         this.snackbar.color = color
-        this.snackbar.estado = estado
+        this.snackbar.estado = true
         this.snackbar.mensagem = mensagem
       }
     }

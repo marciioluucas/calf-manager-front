@@ -88,8 +88,8 @@
       
       async buscarUsuarioLogado(){
 
-        let res = jwtDecode(localStorage.getItem('token'))
-        let response = await UsuarioService._getById({id: res.id})
+        let token = jwtDecode(localStorage.getItem('token'))
+        let response = await UsuarioService._getById({id: token.id}) 
         .catch((exception) => {
           if(exception){
             this.logout()
@@ -97,7 +97,13 @@
         })
         if(response.status === 200){
           this.user = response.data.usuarios
-          localStorage.setItem('func_id', JSON.stringify(this.user.funcionario_id))
+          if(this.user != null){
+            localStorage.setItem('func_id', JSON.stringify(this.user.funcionario_id))
+          }
+          else
+          {
+            this.logout();
+          }
         }
         
       },

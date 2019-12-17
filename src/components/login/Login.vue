@@ -113,17 +113,23 @@ export default {
     },
 
     async signin() {
-      try {
-        const res = await UsuariosService._login({login: this.login, senha: this.senha});
-        if (res.status === 200) {
-          localStorage.setItem('token', JSON.stringify(res.data.token))
+      
+      await UsuariosService._login({login: this.login, senha: this.senha})
+      .catch(e => {
+        this.notify('Erro ao realizar a autenticação')
+      }).then( response => {
+        if (response != null && response.status === 200) 
+        {
+          localStorage.setItem('token', JSON.stringify(response.data.token))
           this.$router.push('Dashboard')
-
         }
-      } catch (e) {
-        this.snackbar.visible = true
-        this.snackbar.text = e.response.data.message.description
-      }
+      });
+    },
+
+    notify(message)
+    {
+      this.snackbar.visible = true,
+      this.snackbar.text = message
     }
   }
 }
