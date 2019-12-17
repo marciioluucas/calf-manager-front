@@ -7,6 +7,7 @@ import Modulos from '@/components/layout/Modulos'
 // Animai
 import CadastroAnimal from '@/components/animal/CadastroAnimal'
 import ListagemAnimal from '@/components/animal/ListagemAnimal'
+import ListagemEnfermaria from '@/components/laboratorio/ListagemEnfermaria'
 
 import CicloVida from '@/components/ciclos/CiclosVida'
 // Peso
@@ -47,6 +48,7 @@ import ListagemPermissao from '@/components/permissao/ListagemPermissao'
 // Dose
 import CadastroDose from '@/components/dose/CadastroDose'
 import CadastroEntradaDose from '@/components/dose/CadastroEntradaDose'
+import ListagemMovimentacao from '@/components/dose/ListagemMovimentacao'
 // Hemograma
 import CadastroHemograma from '@/components/hemograma/CadastroHemograma'
 import ListagemHemograma from '@/components/hemograma/ListagemHemograma'
@@ -61,6 +63,7 @@ export default {
   // Animal
   ListagemAnimal,
   CadastroAnimal,
+  ListagemEnfermaria,
   CicloVida,
   // Lote
   CadastroLote,
@@ -96,6 +99,7 @@ export default {
   // Dose
   CadastroDose,
   CadastroEntradaDose,
+  ListagemMovimentacao,
   // Hemograma
   CadastroHemograma,
   ListagemHemograma,

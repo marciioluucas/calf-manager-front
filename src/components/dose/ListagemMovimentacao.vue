@@ -7,7 +7,7 @@
           <!--Cabeçalho do componente-->
           <v-card-title primary-title>
             <div>
-              <h2 class="title mb-0">Pesquisa</h2>
+              <h2 class="title mb-0">Movimentação de medicamentos/vacinas</h2>
               <span class="caption">Faça uma pesquisa utilizando os filtros abaixo para um melhor resultado.</span>
             </div>
           </v-card-title>
@@ -48,9 +48,10 @@
                 <template slot="items" slot-scope="props">
                   <tr>
                     <td class="text-xs-center">{{ props.item.id }}</td>
-                    <td class="text-xs-center">{{ props.item.animal.nome }}</td>
                     <td class="text-xs-center">{{ props.item.medicamento.nome }}</td>
-                    <td class="text-xs-center">{{ props.item.quantidade_mg }}</td> 
+                    <td class="text-xs-center">{{ props.item.quantidade_mg }}</td>
+                    <td class="text-xs-center">{{ props.item.quantidade_unidade }}</td> 
+                    <td class="text-xs-center">{{ props.item.tipo_movimentacao }}</td> 
                     <td class="justify-center layout px-0">
                       <v-icon
                         small
@@ -115,24 +116,20 @@
         isLoading: false,
         buscaDose: {
           params: {
-            id: null,
             medicamento: {
               id: null
             },
-            animal: {
-              id: null
-            },
-            tipo_movimentacao: 'saida',
             pagina: 1
           }
         },
         search: null,
         headers: [
           {text: 'ID', value: 'id'},
-           {text: 'Animal', value: 'animal'},
           {text: 'Medicamento', value: 'medicamento'},
-          {text: 'Quantidade (Mg/Ml)', value: 'quantidade_mg'},
-          {text: 'Actions', value: 'name', sortable: false}
+          {text: 'Quantidade de doses (Mg/Ml)', value: 'quantidade_mg'},
+          {text: 'Quantidade de Unidades (UN/PCT)', value: 'quantidade_unidade'},
+          {text: '', value: ''},
+          
         ],
         snackbar: {
           color: 'success',
@@ -154,25 +151,10 @@
       clearFilters(){
 
       },
-      async deletar(item) {
-        try{
-          if(confirm('Deseja deletar este item?')){
-            let response = await DosesService._delete(item.id)
-            if(response.status !== 500){
-              let index = this.items.data.indexOf(item)
-              this.items.data.splice(index, 1)
-              this.notify(response.data.message.type,response.data.message.description) 
-
-            }
-          }
-        }
-        catch(e){
-          this.notify('error', 'Erro ao deletar vacina!') 
-        }
-      },
+     
       async editar(id) {
         this.$router.push({
-        name: 'CadastroDose',
+        name: 'CadastroEntradaDose',
         params: {id: id}
       })
       },

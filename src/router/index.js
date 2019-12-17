@@ -7,6 +7,8 @@ import Login from '@/components/login/Login'
 import CadastroAnimal from '@/components/animal/CadastroAnimal'
 import ListagemAnimal from '@/components/animal/ListagemAnimal'
 import ProntuarioAnimal from '@/components/animal/ProntuarioAnimal'
+import ListagemEnfermaria from '@/components/laboratorio/ListagemEnfermaria'
+
 
 import CicloVida from '@/components/ciclos/CiclosVida'
 // Peso
@@ -47,6 +49,7 @@ import ListagemUsuario from '@/components/usuario/ListagemUsuario'
 import CadastroDose from '@/components/dose/CadastroDose'
 import CadastroEntradaDose from '@/components/dose/CadastroEntradaDose'
 import ListagemDose from '@/components/dose/ListagemDose'
+import ListagemMovimentacao from '@/components/dose/ListagemMovimentacao'
 // Hemograma
 import CadastroHemograma from '@/components/hemograma/CadastroHemograma'
 import ListagemHemograma from '@/components/hemograma/ListagemHemograma'
@@ -83,6 +86,11 @@ const router = new Router({
 					name: 'ListagemAnimal',
 					path: 'animal/listar',
 					component: ListagemAnimal
+				},
+				{
+					name: 'ListagemEnfermaria',
+					path: 'enfermaria/listar',
+					component: ListagemEnfermaria
 				},
 				{
 					name: 'CadastroAnimal',
@@ -224,13 +232,18 @@ const router = new Router({
 				},
 				{
 					name: 'CadastroEntradaDose',
-					path: 'dose-entrada/novo',
+					path: 'dose/entrada',
 					component: CadastroEntradaDose
 				},
 				{
 					name: 'ListagemDose',
 					path: 'dose/listagem',
 					component: ListagemDose
+				},
+				{
+					name: 'ListagemMovimentacao',
+					path: 'dose/movimentacao',
+					component: ListagemMovimentacao
 				},
 				// Hemograma
 				{

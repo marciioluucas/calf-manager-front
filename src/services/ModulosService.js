@@ -143,6 +143,21 @@ const ModulosService = {
       },
       {
         icone: 'bubble_chart',
+        nome: 'Enfermaria',
+        breve_descricao: 'Enfermaria',
+        link: '',
+        filhos: [
+          {
+            nome: 'Animais',
+            icone: '',
+            link: {
+              name: 'ListagemEnfermaria'
+            }
+          }
+        ]
+      },
+      {
+        icone: 'bubble_chart',
         nome: 'Laboratorio',
         breve_descricao: 'Laboratório clínico',
         link: '',
@@ -166,6 +181,13 @@ const ModulosService = {
             icone: '',
             link: {
               name: 'ListagemDose'
+            }
+          },
+          {
+            nome: 'Movimentação de Medicamentos/Vacinas',
+            icone: '',
+            link: {
+              name: 'ListagemMovimentacao'
             }
           },
           {

@@ -40,7 +40,7 @@
             <v-flex xs12 sm4 md4 lg4>
               <v-text-field
                 v-model="dose.quantidade_mg"
-                label='Qtd doses por unidade'
+                label='Quantidade doses por unidade'
                 placeholder="Miligramas/mililitros"
               ></v-text-field>
             </v-flex>
@@ -48,7 +48,7 @@
             <v-flex xs12 sm4 md4 lg4>
               <v-text-field
                 v-model="dose.quantidade_unidade"
-                label='Qtd unidades'
+                label='Quantidade unidades'
                 placeholder="UN / PCT"
               ></v-text-field>
             </v-flex>
@@ -277,27 +277,32 @@
 
 
       async cadastrar() {
-        
-        if (this.validarFormDose()) {
-          this.dose.funcionario_id = localStorage.getItem('func_id')
-          await DosesService._create(this.dose)
-                            .catch(e=> this.notify("error", "Erro ao registrar entrada"))
-                            .then(response => 
-                            {
-                              if(response == null && response.status === 201)
-                              {
-                                this.notify(response.data.message.type, response.data.message.description)
-                                this.clearFormDose()
-                              }
-                            });
-        } 
+        try{
+          if (this.validarFormDose()) {
+            this.dose.funcionario_id = localStorage.getItem('func_id')
+            console.log(this.dose)
+            let response = await DosesService._create(this.dose)
+
+            if(response != null && response.status == 201)
+            {
+              this.notify(response.data.message.type, response.data.message.description)
+              this.clearFormDose()
+            }
+            
+            
+          } 
+        }
+        catch(e){
+          this.notify("error", "Erro ao registrar entrada")
+                              
+        }
       },
       async editar() {
         try{
           if (this.validarFormDose()) 
           {
             let response = await DosesService._update(this.dose)
-            if(response.status !== 400 || response.status !== 500)
+            if(response != null && response.status == 200)
             {
               this.notify(response.data.message.type, response.data.message.description)
               this.clearFormDose()
@@ -353,6 +358,7 @@
         this.dose.animal_id = null
         this.dose.medicamento_id = null
         this.dose.quantidade_mg = null
+        this.dose.quantidade_unidade = null
         this.clearFormMedicamento()
 
       },

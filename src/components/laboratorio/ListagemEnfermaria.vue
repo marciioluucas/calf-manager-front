@@ -100,27 +100,17 @@
               @input="selecionaAnimal(props.item.id)"
             >
               <template slot="items" slot-scope="props">
-                  <td class="text-xs-center">{{ props.item.id }}</td>
-                  <td class="text-xs-center">{{ props.item.nome }}</td>
-                  <td class="text-xs-center">{{ props.item.fase_vida }}</td>
-                  <td class="text-xs-center">{{ props.item.lote.codigo }}</td>
-                  <td class="text-xs-center">{{ props.item.codigo_brinco }}</td>
+                 
+                  <tr @click.stop="selecionaAnimal(props.item.id)">
+                    <td class="text-xs-center">{{ props.item.id }}</td>
+                    <td class="text-xs-center">{{ props.item.nome }}</td>
+                    <td class="text-xs-center">{{ props.item.fase_vida }}</td>
+                    <td class="text-xs-center">{{ props.item.lote.codigo }}</td>
+                    <td class="text-xs-center">{{ props.item.codigo_brinco }}</td>
                     <td class="text-xs-center">{{ props.item.codigo_raca }}</td>
-                  <td class="justify-center layout px-0">
-                    <v-icon
-                      small
-                      class="mr-2"
-                      @click="editarAnimal(props.item.id)"
-                    >
-                      edit
-                    </v-icon>
-                    <v-icon
-                      small
-                      @click="deletarAnimal(props.item)"
-                    >
-                      delete
-                    </v-icon>
-                  </td>
+                  </tr>
+                 
+              
                   <v-menu
                     v-model="showMenu"
                     absolute
@@ -186,7 +176,7 @@
           params: {
             sexo: null,
             vivo: true,
-            doente: false,
+            doente: true,
             pagina: 1,
           }
 
@@ -208,8 +198,7 @@
           {text: 'Fase de vida', value: 'fase_vida'},
           {text: 'Lote', value: 'lote'},
           {text: 'Código do brinco', value: 'codigo_brinco'},
-          {text: 'Código da Raça', value: 'codigo_raca'},
-          { text: 'Actions', value: 'name', sortable: false }
+          {text: 'Código da Raça', value: 'codigo_raca'}
         ],
         dialog:{
           janela: false,
