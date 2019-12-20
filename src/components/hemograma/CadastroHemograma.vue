@@ -54,12 +54,25 @@
 
 						<!-- Data do Exame -->
 						<v-flex xs12 sm3 md3 lg3>
-							<v-text-field
-								v-model="hemograma.data"
-								label='Data do exame'
-								mask="##/##/####"
-								:return-masked-value="true">
-							</v-text-field>
+							<v-menu ref="menu_data_exame"
+									v-model="menu_data_exame"
+									:close-on-content-click="false"
+									transition="scale-transition"
+									offset-y
+									full-width
+							>
+								<template v-slot:activator="{ on }">
+								<v-text-field v-model="hemograma.data"
+												label="Data do Exame"
+												persistent-hint
+												prepend-icon="event"
+												v-on="on"
+								></v-text-field>
+								</template>
+								<v-date-picker v-model="data_exame" 
+											no-title @input="menu_data_exame = false"
+								></v-date-picker>
+							</v-menu>
 						</v-flex>
 					</v-layout>
 
@@ -106,9 +119,9 @@
 						<v-card-actions>
 							<v-spacer></v-spacer>
 							<v-btn v-if="!hemograma.doente" color="primary" flat @click="hemograma.doente = true"> Sim </v-btn>
-							<v-btn v-if="!hemograma.doente" color="primary" flat @click="hemograma.doente = false"> Não </v-btn>
+							<v-btn v-if="!hemograma.doente" color="primary" flat @click="cadastrar()"> Não </v-btn>
 							<v-btn v-if="hemograma.doente" color="primary" flat @click="cadastrar"> Salvar </v-btn>
-							<v-btn v-if="hemograma.doente" color="primary" flat @click="hemograma.viewModal = false"> Cancelar </v-btn>
+							<v-btn v-if="hemograma.doente" color="primary" flat @click="hemograma.viewModal = false, hemograma.doente = false"> Cancelar </v-btn>
 						</v-card-actions>
 						</v-card>
 					</v-dialog>        
@@ -158,6 +171,8 @@
 		data() {
 			return {
 				items: [],
+				menu_data_exame: null,
+				data_exame: null,
 				hemograma: {
 					id: null,
 					ppt: null,
@@ -201,7 +216,10 @@
 			},
 			'selectDoencas.search'(val){
 				val && this.getDoencas(val)
-			}
+			},
+			data_exame (val) {
+				this.hemograma.data = this.formatDate(val)
+			},
 		},
 
 		// Execute assim que montar o DOM
@@ -359,9 +377,7 @@
 			// verificar a saude do animal
 			validarSaude(){
 				if(this.hemograma.ppt <= 4){
-						console.log('aqui dentro')
-						this.hemograma.viewModal = true
-					
+					this.hemograma.viewModal = true
 				}else{
 					this.hemograma.doente = false
 					if(this.hemograma.id){
@@ -377,6 +393,18 @@
 				this.snackbar.color = color
 				this.snackbar.estado = estado
 				this.snackbar.mensagem = mensagem
+			},
+			formatDate (date) {
+				if (!date) return null
+
+				const [year, month, day] = date.split('-')
+				return `${day}/${month}/${year}`
+			},
+			parseDate (date) {
+			if (!date) return null
+
+			const [day,month, year] = date.split('/')
+			return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
 			},
 		}
 	}

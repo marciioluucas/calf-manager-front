@@ -38,12 +38,25 @@
                   />
                 </v-flex>
                 <v-flex xs6 md3 lg3>
-                  <v-text-field
-                    label="Data de pesagem"
-                    v-model="pesagem.data_pesagem"
-                    :return-masked-value="true"
-                    mask="##/##/####"
-                  />
+                  <v-menu ref="menu_data_pesagem"
+                          v-model="menu_data_pesagem"
+                          :close-on-content-click="false"
+                          transition="scale-transition"
+                          offset-y
+                          full-width
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field v-model="pesagem.data_pesagem"
+                                    label="Data de Pesagem"
+                                    persistent-hint
+                                    prepend-icon="event"
+                                    v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="data_pesagem" 
+                                   no-title @input="menu_data_pesagem = false"
+                    ></v-date-picker>
+                  </v-menu>
                 </v-flex>
               </v-layout>
               <v-btn color="success" v-if="!pesagem.id" @click="cadastrar">Enviar</v-btn>
@@ -86,6 +99,8 @@ import PesagensService from '../../services/PesagensService'
 export default {
   data() {
     return {
+      menu_data_pesagem: null,
+      data_pesagem: null,
       pesagem: {
         id: null,
         peso: '',
@@ -112,6 +127,9 @@ export default {
   watch: {
     'selectAnimal.search'(val) {
       val && this.getAnimais(val)
+    },
+    data_pesagem (val) {
+      this.pesagem.data_pesagem = this.formatDate(val)
     }
   },
   methods: {
@@ -186,7 +204,19 @@ getIdUsuarioLogado(){
       this.snackbar.color = color
       this.snackbar.estado = estado
       this.snackbar.mensagem = mensagem
-    }
+    },
+    formatDate (date) {
+        if (!date) return null
+
+        const [year, month, day] = date.split('-')
+        return `${day}/${month}/${year}`
+    },
+    parseDate (date) {
+      if (!date) return null
+
+      const [day,month, year] = date.split('/')
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+    },
   }
 }
 </script>
