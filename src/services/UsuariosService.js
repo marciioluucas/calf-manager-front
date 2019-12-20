@@ -13,6 +13,7 @@ export default {
 		return Service.get(`/usuario${params}`)
 	},
 	_getById: (busca) => {
+		Service.defaults.headers.common['Authorization'] = localStorage.getItem('token')
 		return Service.get(`/usuario/${parseInt(busca.id)}`)
 	},
 	_getByLogin: async (busca) => {

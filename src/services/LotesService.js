@@ -21,6 +21,7 @@ export default {
     return Service.get(`/lote?fazenda_id=${busca}`)
   },
   _getQuantidadeLotes: async () => {
+    Service.defaults.headers.common['Authorization'] = localStorage.getItem('token')
     return Service.get(`/lote?contagem=true`)
   },
   _create: (form) => {

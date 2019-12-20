@@ -113,17 +113,17 @@ export default {
     },
 
     async signin() {
-      
       await UsuariosService._login({login: this.login, senha: this.senha})
-      .catch(e => {
-        this.notify('Erro ao realizar a autenticação')
-      }).then( response => {
-        if (response != null && response.status === 200) 
-        {
-          localStorage.setItem('token', JSON.stringify(response.data.token))
-          this.$router.push('Dashboard')
-        }
-      });
+        .catch(e => {
+          this.notify(e.response.data.message.description)
+        }).then( response => {
+          if (response != null && response.status === 200) 
+          {
+            localStorage.setItem('token', JSON.stringify(response.data.token))
+            this.$router.push('Dashboard')
+          }
+        });
+      
     },
 
     notify(message)

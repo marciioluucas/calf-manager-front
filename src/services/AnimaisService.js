@@ -33,9 +33,11 @@ export const AnimaisService = {
   },
 
   _getContagemAnimais: () =>{
+    Service.defaults.headers.common['Authorization'] = localStorage.getItem('token')
     return Service.get(`/animal?contagem=true`)
   },
   _getContagemDoentes: () => {
+    Service.defaults.headers.common['Authorization'] = localStorage.getItem('token')
     return Service.get(`/animal?contagemDoente=true`)
   },
   _getContagemMortos: () => {
