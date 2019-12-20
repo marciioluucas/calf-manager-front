@@ -33,15 +33,31 @@
             <v-flex xs12 sm3 md3 lg3>
               <v-text-field v-model="animal.codigo_raca" label="Código da raça" mask="NNNNNNNNNNNN"></v-text-field>
             </v-flex>
-            <!-- text Data_nascimento -->
+
+            <!-- text Data_nascimento animal.data_nascimento -->
+            
             <v-flex xs12 sm3 md3 lg3>
-              <v-text-field
-                v-model="animal.data_nascimento"
-                mask="##/##/####"
-                label="Nascimento"
-                :return-masked-value="true"
-              ></v-text-field>
-            </v-flex>
+                  <v-menu ref="menu_data_nascimento"
+                          v-model="menu_data_nascimento"
+                          :close-on-content-click="false"
+                          transition="scale-transition"
+                          offset-y
+                          full-width
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field v-model="animal.data_nascimento"
+                                    label="Data de Nascimento"
+                                    persistent-hint
+                                    prepend-icon="event"
+                                    v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="data_nascimento" 
+                                   no-title @input="menu_data_nascimento = false"
+                    ></v-date-picker>
+                  </v-menu>
+                </v-flex>
+    
             <!-- Select Sexo -->
             <v-flex xs12 sm6 md6>
               <v-select
@@ -130,7 +146,14 @@
             </v-flex>
             <!-- Select Lote -->
             <v-flex xs12 sm4 md4 lg4>
+               <v-text-field
+                v-if="animal.id"
+                :value="animal.codigo_lote"
+                disabled
+                label="Lote"
+              ></v-text-field>  
               <v-select
+                v-if="!animal.id"
                 :items="selectFazenda.selected.lote"
                 v-model="animal.lotes_id"
                 item-text="codigo"
@@ -170,13 +193,26 @@
                   ></v-text-field>
                 </v-flex>
 
-                <v-flex xs12 sm6>
-                  <v-text-field
-                    mask="##/##/####"
-                    v-model="animal.pesagens.data_pesagem"
-                    label="Data da pesagem"
-                    :return-masked-value="true"
-                  ></v-text-field>
+                 <v-flex xs12 sm4>
+                  <v-menu ref="menu_data_pesagem"
+                          v-model="menu_data_pesagem"
+                          :close-on-content-click="false"
+                          transition="scale-transition"
+                          offset-y
+                          full-width
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field v-model="animal.pesagens.data_pesagem"
+                                    label="Data da Pesagem"
+                                    persistent-hint
+                                    prepend-icon="event"
+                                    v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="data_pesagem" 
+                                   no-title @input="menu_data_pesagem = false"
+                    ></v-date-picker>
+                  </v-menu>
                 </v-flex>
               </v-layout>
             </v-flex>
@@ -199,12 +235,25 @@
                   ></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm4>
-                  <v-text-field
-                    mask="##/##/####"
-                    v-model="animal.hemogramas.data"
-                    label="Data do exame"
-                    :return-masked-value="true"
-                  ></v-text-field>
+                  <v-menu ref="menu_data_exame"
+                          v-model="menu_data_exame"
+                          :close-on-content-click="false"
+                          transition="scale-transition"
+                          offset-y
+                          full-width
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field v-model="animal.hemogramas.data"
+                                    label="Data do Exame"
+                                    persistent-hint
+                                    prepend-icon="event"
+                                    v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="data_exame" 
+                                   no-title @input="menu_data_exame = false"
+                    ></v-date-picker>
+                  </v-menu>
                 </v-flex>
               </v-layout>
             </v-flex>
@@ -293,6 +342,12 @@ export default {
   name: "cadastro-animal",
   data() {
     return {
+      data_exame: null,
+      data_pesagem: null,
+      data_nascimento: null, 
+      menu_data_nascimento: false,
+      menu_data_exame: false,
+      menu_data_pesagem: false,
       animal: {
         id: null,
         nome: null,
@@ -303,6 +358,8 @@ export default {
         quantidade_animais: 0,
         fazendas_id: null,
         lotes_id: null,
+        data_nascimento: null,
+        codigo_lote: null,
         doencas: [],
         pesagens: {
           peso: null,
@@ -329,7 +386,9 @@ export default {
         selected: {}
       },
       selectLote: {
-        items: []
+        items: [],
+        search: null,
+        selected: {}
       },
       selectFazenda: {
         loading: false,
@@ -369,6 +428,7 @@ export default {
       nomeTitulo: "Cadastro de Animal"
     }
   },
+ 
   watch: {
     "selectFazenda.search"(val) {
       val && this.getFazendas(val);
@@ -381,7 +441,22 @@ export default {
     },
     "selectPai.search"(val) {
       val && this.getPais(val);
-    }
+    },
+    "selectLote.search"(val) {
+      val && this.getLotes(val);
+    },
+    data_exame (val) {
+      this.animal.hemogramas.data = this.formatDate(val)
+    },
+    data_pesagem (val) {
+      this.animal.pesagens.data_pesagem = this.formatDate(val)
+    },
+    data_nascimento (val) {
+      this.animal.data_nascimento = this.formatDate(val)
+    },
+    "selectFazenda.selected" (val){
+      this.selectLote.items = val.lote
+    },
   },
   mounted() {
     this.getIdUsuarioLogado()
@@ -391,6 +466,13 @@ export default {
       this.getAnimalId(this.animal.id);
     }
   },
+
+  computed: {
+    computedDateFormatted () {
+      return this.formatDate(this.date)
+    },
+  },
+
   methods: {
     removeDoenca(index) {
       this.animal.doencas.splice(index, 1);
@@ -414,11 +496,21 @@ export default {
         this.animal.hemogramas= response.data.animais.hemogramas[0]
         this.selectFazenda.items = response.data.animais.fazenda
         this.selectFazenda.selected = response.data.animais.fazenda
-
-        // this.selectFazenda.selected.lote = response.data.animais.fazenda.lote
+        let lote = await this.getLoteById(this.animal.lotes_id);
+        this.animal.codigo_lote = lote.codigo
       }
       catch(e){
-        this.alerta("error", true, "Erro ao buscar animal pelo id");
+        this.notify("error", "Erro ao buscar animal pelo id");
+      }
+    },
+
+    async getLoteById(id){
+      try{
+        let response = await LotesService._getById({id: id});
+        return response.data.lotes[0]
+      }
+      catch(e){
+        this.notify("error", "Erro ao consultar lote")
       }
     },
 
@@ -433,10 +525,11 @@ export default {
         this.selectDoenca.loading = false;
       }
       catch(e){
-         this.alerta('error', true, 'Erro ao cadastrar animal!')
+         this.notify('error', 'Erro ao consultar doença!')
           return false
       }
     },
+    
     async getFazendas(val) {
       try{
         let busca = {
@@ -448,7 +541,7 @@ export default {
         this.selectFazenda.loading = false;
       }
       catch(e){
-         this.alerta('error', true, 'Erro ao pesquisar fazenda!')
+         this.notify('error', 'Erro ao pesquisar fazenda!')
           return false
       }
     },
@@ -465,7 +558,7 @@ export default {
         this.selectMae.loading = false;
       }
       catch(e){
-         this.alerta('error', true, 'Erro ao pesquisar animal mãe!')
+         this.notify('error', 'Erro ao pesquisar animal mãe!')
           return false
       }
     },
@@ -481,7 +574,7 @@ export default {
         this.selectPai.loading = false;
       }
       catch(e){
-          this.alerta('error', true, 'Erro ao pesquisar animal pai!')
+          this.notify('error', 'Erro ao pesquisar animal pai!')
           return false
       }
     },
@@ -493,15 +586,17 @@ export default {
           if(this.animal.hemogramas.funcionario_id == null){
             this.animal.hemogramas.funcionario_id = localStorage.getItem('func_id')
           }
+         
+          
           let response = await AnimaisService._create(this.animal);
           if (response.status !== 400 || response.status !== 500) {
-            this.alerta("success", true, "Animal cadastrado com sucesso!");
+            this.notify(response.data.message.type, response.data.message.description);
             this.clearForm();
           }
         }
       }
       catch(e){
-          this.alerta('error', true, 'Erro ao cadastrar animal!')
+          this.notify(e.response.data.message.type, e.response.data.message.description);
           return false
       }
     },
@@ -511,72 +606,68 @@ export default {
         if (this.validaFormAnimal()) {
           let response = await AnimaisService._update(this.animal)
           if (response.status !== 400 || response.status !== 500) {
-            this.alerta("success", true, "Animal alterado com sucesso!");
+            this.notify(response.data.message.type, response.data.message.description);
             this.clearForm();
           }
         }
       }
       catch(e){
-        this.alerta("error", true, "Erro ao alterar animal!");
+        this.notify(e.response.data.message.type, e.response.data.message.description);
         return false
       }
     },
 
     validaFormAnimal() {
       if (!this.animal.nome) {
-        this.alerta("warning", true, "Preencha o nome do animal!");
+        this.notify("warning", "Preencha o nome do animal!");
         return false;
       }
   
       if (!this.animal.data_nascimento) {
-        this.alerta(
-          "warning",
-          true,
-          "Preencha a data de nascimento do animal!"
-        );
+        this.notify("warning", "Preencha a data de nascimento do animal!");
         return false;
       }
       if (!this.animal.sexo) {
-        this.alerta("warning", true, "Selecione o sexo do animal!");
+        this.notify("warning", "Selecione o sexo do animal!");
         return false;
       }
       if (!this.animal.fase_vida) {
-        this.alerta("warning", true, "Selecione a fase de vida do animal!");
+        this.notify("warning", "Selecione a fase de vida do animal!");
         return false;
       }
       if (this.animal.is_primogenito == false) {
         if (!this.animal.mae) {
-          this.alerta("warning", true, "Selecione o animal mãe!");
+          this.notify("warning", "Selecione o animal mãe!");
           return false;
         }
         if (!this.animal.pai) {
-          this.alerta("warning", true, "Selecione o animal pai!");
+          this.notify("warning", "Selecione o animal pai!");
           return false;
         }
       }
 
       if (!this.animal.lotes_id) {
-        this.alerta("warning",true,"Selecione a fazenda e o lote de alocação do animal!" );
+        this.notify("warning", "Selecione a fazenda e o lote de alocação do animal!" );
         return false;
       }
       if (!this.animal.pesagens.peso) {
-        this.alerta("warning", true, "Preencha o peso do animal!");
+        this.notify("warning", "Preencha o peso do animal!");
         return false;
       }
       if (!this.animal.pesagens.data_pesagem) {
-        this.alerta("warning", true, "Preencha data da pesagem do animal!");
+        this.notify("warning", "Preencha data da pesagem do animal!");
         return false;
       }
       if (!this.animal.hemogramas.ppt) {
-        this.alerta("warning", true, "Preencha o PPT do animal!");
+        this.notify("warning", "Preencha o PPT do animal!");
         return false;
       }
       if (!this.animal.hemogramas.hematocrito) {
-        this.alerta("warning", true, "Preencha o Hematócrico do animal!");
+        this.notify("warning", "Preencha o Hematócrico do animal!");
         return false;
       }
       if (!this.animal.hemogramas.data) {
-        this.alerta("warning", true, "Preencha a data do exame!");
+        this.notify("warning", true, "Preencha a data do exame!");
         return false;
       }
 
@@ -587,10 +678,9 @@ export default {
       try{
         let res = jwtDecode(localStorage.getItem('token'))
         this.animal.usuario_cadastro = res.id
-       
       }
       catch(e){
-        this.alerta('error', true, 'Erro ao carregar id de usuario logado')
+        this.notify('error', 'Erro ao carregar id de usuario logado')
       }
     },
 
@@ -615,11 +705,24 @@ export default {
       this.selectedFazenda = ""
     },
 
-    alerta(color, estado, mensagem) {
+    notify(color, mensagem) {
       this.snackbar.color = color;
-      this.snackbar.estado = estado;
+      this.snackbar.estado = true;
       this.snackbar.mensagem = mensagem;
-    }
+    },
+
+    formatDate (date) {
+        if (!date) return null
+
+        const [year, month, day] = date.split('-')
+        return `${day}/${month}/${year}`
+    },
+    parseDate (date) {
+      if (!date) return null
+
+      const [day,month, year] = date.split('/')
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+    },
   }
 }
 </script>
