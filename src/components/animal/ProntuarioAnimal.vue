@@ -114,7 +114,14 @@
                             <v-flex xs12 sm2 md2 lg2><v-btn small key="adoecer" color="warning" @click="dialogDoente = true">Registrar Doença</v-btn></v-flex>
                             <v-flex xs12 sm2 md2 lg2><v-btn small key="medicar" color="info" @click="dialogAplicarMedicamento = true">Registrar Vacina</v-btn></v-flex>
                             <v-flex xs12 sm2 md2 lg2><v-btn small key="curar" color="primary" @click="dialogCurado = true">Registrar Cura</v-btn></v-flex>
-                            <v-flex xs12 sm2 md2 lg2><v-btn small key="morte" color="error" @click="dialogObito = true">Registrar Morte</v-btn></v-flex>
+                            <v-flex xs12 sm2 md2 lg2>
+                                <v-btn small 
+                                       key="morte" 
+                                       color="error" 
+                                       @click="dialogObito = true"
+                                >
+                                    Registrar Morte
+                                </v-btn></v-flex>
                         </v-layout>
                         <v-flex xs12>
                                 <v-divider/>
@@ -407,6 +414,7 @@
 					},
 					is_vivo: true,
                     fase_vida: null,
+                    data_morte: null,
                     hemogramas: [],
                     doses: [],
                     pesagens: [],
@@ -527,10 +535,24 @@
 			}
 		},
 		methods: {
-
 			calcularIdade() {
-				this.animal.idade = moment().diff(new Date(this.animal.data_nascimento), 'months', false) + ' meses'
-			},
+                let data = ""
+                let data_nascimento = moment(this.formatDate(this.animal.data_nascimento))
+                if(this.animal.data_morte != null){
+                    data = moment(this.animal.data_morte);
+                } else {
+                    data = moment(new Date())
+                }
+                
+                let diff = moment.duration(data.diff(data_nascimento))
+				this.animal.idade = diff.days() + ' dias, ' + diff.months() + ' meses'
+            },
+            formatDate(date) {
+                if (!date) return null
+
+                const [ day, month, year ] = date.split('/')
+                return `${year}-${month}-${day}`
+            },
 			async getGraficoPesagem() {
 				let response = await AnimaisService._getGraficoGanhoDePeso(this.animal.id)
 				let pesos = []
@@ -563,7 +585,7 @@
                     this.getGraficoPesagem()
                     this.getGraficoHereditariedade()
                 }catch(e){
-                    this.alerta('error', true, 'Erro ao curar animal!')
+                    this.notify('error', 'Erro ao curar animal!')
                 }
             },
             async getDoencas(val){
@@ -583,7 +605,7 @@
                 this.doencas.animal_id = this.animal.id
                 let response = await DoencasService._create(this.doencas).catch(ex => {
                     if(ex){
-                        this.alerta('error', true, 'Erro ao curar animal!')
+                        this.notify('error', 'Erro ao curar animal!')
                     }
                 })
                 // console.log(this.doencas)
@@ -605,7 +627,7 @@
                     this.selectMedicamento.loading = false
                 }
                 catch(e){
-                    this.alerta('error', true, 'Erro ao pesquisar medicamento!')
+                    this.notify('error', 'Erro ao pesquisar medicamento!')
                     this.selectMedicamento.loading = false
                 }
                 
@@ -617,11 +639,11 @@
                 if(this.doencas.animal_id !== null && this.doencas.doenca_id){
                     let response = await DoencasService._create(this.doencas).catch(ex => {
                         if(ex){
-                            this.alerta('error', true, 'Erro ao adoecer animal!')
+                            this.notify('error', 'Erro ao adoecer animal!')
                         }
                     })
                     if(response.status === 202){
-                        this.alerta(response.data.message.type, true, response.data.message.description)
+                        this.notify(response.data.message.type, response.data.message.description)
                         this.dialogDoente = false
                         this.getAnimal()
                     }
@@ -635,11 +657,11 @@
                 if(this.doses.animal_id !== null && this.doses.quantidate_mg !== null && this.doses.medicamento_id !== null){
                         let response = await DosesService._create(this.doses).catch(ex => {
                             if(ex){
-                                this.alerta('error', true, 'Erro ao aplicar medicamento!')
+                                this.notify('error', 'Erro ao aplicar medicamento!')
                             }
                         })
                         if(response.status === 201){
-                            this.alerta(response.data.message.type, true, response.data.message.description)
+                            this.notify(response.data.message.type, response.data.message.description)
                             this.getAnimal()
                             this.dialogAplicarMedicamento = false
                         }
@@ -647,24 +669,24 @@
                     }
                 }
                 catch(e){
-                    this.alerta('error', true, 'Erro ao aplicar medicamento!')
+                    this.notify('error', 'Erro ao aplicar medicamento!')
                 }
             },
-            alerta(color, estado, mensagem){
+            notify(color, mensagem){
                 this.snackbar.color = color
-                this.snackbar.estado = estado
+                this.snackbar.estado = true
                 this.snackbar.mensagem = mensagem
             },
             async cadastrarMorte(){
                 try{
                     this.animal.is_vivo = false
                     let response = await AnimaisService._update(this.animal)
-                    console.log(response)
+                    this.dialogObito = false;
                     if(response.status !== 400 || response.status !== 500){
-                        this.alerta(response.data.message.type, true, response.data.message.description)
+                        this.notify(response.data.message.type, response.data.message.description)
                     }
                 }catch(e){
-                    this.alerta('error', true, 'Erro ao declarar morte!')
+                    this.notify('error', 'Erro ao declarar morte!')
                 }
             },
             getIdUsuarioLogado(){
@@ -675,7 +697,7 @@
                     this.doencas.usuario_cadastro = res.id            
                 }
                 catch(e){
-                    this.alerta('error', true, 'Erro ao carregar id de usuario logado')
+                    this.notify('error', 'Erro ao carregar id de usuario logado')
                 }
             }
         },
@@ -684,8 +706,8 @@
             this.getIdUsuarioLogado()
 			this.animal.id = this.$route.params.id;
 			await this.getAnimal()
-			
-			this.isLoading = false
+            this.isLoading = false
+            this.calcularIdade()
 		}
 	}
 </script>

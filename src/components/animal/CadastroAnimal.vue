@@ -353,6 +353,7 @@ export default {
         nome: null,
         fase_vida: null,
         is_vivo: true,
+        nascido_morto: false,
         is_primogenito: false,
         sexo: null,
         quantidade_animais: 0,
@@ -587,8 +588,13 @@ export default {
             this.animal.hemogramas.funcionario_id = localStorage.getItem('func_id')
           }
          
+          if(!this.animal.id && this.animal.is_vivo == false){
+            console.log(this.animal)
+            this.animal.nascido_morto = true
+          }
           
           let response = await AnimaisService._create(this.animal);
+          console.log(response)
           if (response.status !== 400 || response.status !== 500) {
             this.notify(response.data.message.type, response.data.message.description);
             this.clearForm();
@@ -596,6 +602,7 @@ export default {
         }
       }
       catch(e){
+          console.log(e.resposnse)
           this.notify(e.response.data.message.type, e.response.data.message.description);
           return false
       }
@@ -604,6 +611,7 @@ export default {
     async editar() {
       try{
         if (this.validaFormAnimal()) {
+          console.log(this.animal)
           let response = await AnimaisService._update(this.animal)
           if (response.status !== 400 || response.status !== 500) {
             this.notify(response.data.message.type, response.data.message.description);
@@ -650,25 +658,27 @@ export default {
         this.notify("warning", "Selecione a fazenda e o lote de alocação do animal!" );
         return false;
       }
-      if (!this.animal.pesagens.peso) {
-        this.notify("warning", "Preencha o peso do animal!");
-        return false;
-      }
-      if (!this.animal.pesagens.data_pesagem) {
-        this.notify("warning", "Preencha data da pesagem do animal!");
-        return false;
-      }
-      if (!this.animal.hemogramas.ppt) {
-        this.notify("warning", "Preencha o PPT do animal!");
-        return false;
-      }
-      if (!this.animal.hemogramas.hematocrito) {
-        this.notify("warning", "Preencha o Hematócrico do animal!");
-        return false;
-      }
-      if (!this.animal.hemogramas.data) {
-        this.notify("warning", true, "Preencha a data do exame!");
-        return false;
+      if(this.animal.is_vivo){
+        if (!this.animal.pesagens.peso) {
+          this.notify("warning", "Preencha o peso do animal!");
+          return false;
+        }
+        if (!this.animal.pesagens.data_pesagem) {
+          this.notify("warning", "Preencha data da pesagem do animal!");
+          return false;
+        }
+        if (!this.animal.hemogramas.ppt) {
+          this.notify("warning", "Preencha o PPT do animal!");
+          return false;
+        }
+        if (!this.animal.hemogramas.hematocrito) {
+          this.notify("warning", "Preencha o Hematócrico do animal!");
+          return false;
+        }
+        if (!this.animal.hemogramas.data) {
+          this.notify("warning", "Preencha a data do exame!");
+          return false;
+        }
       }
 
       return true;
