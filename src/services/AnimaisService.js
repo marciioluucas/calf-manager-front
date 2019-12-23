@@ -52,6 +52,11 @@ export const AnimaisService = {
     return Service.get(`graph?module=familia&chart=arvore-genealogica&id-filho=${id}`)
   },
 
+  _getFamilia: (busca) => {
+    const params = Params.map(busca.params)
+    return Service.get(`/familia${params}`)
+  },
+
   _create: (form) => {
     return Service.post(`/animal`, form)
   },

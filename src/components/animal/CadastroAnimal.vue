@@ -37,80 +37,26 @@
             <!-- text Data_nascimento animal.data_nascimento -->
             
             <v-flex xs12 sm3 md3 lg3>
-
-              <v-row>
-      <v-col cols="12" lg="6">
-        <v-menu
-          ref="menu1"
-          v-model="menu1"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          offset-y
-          full-width
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model="dateFormatted"
-              label="Date"
-              hint="MM/DD/YYYY format"
-              persistent-hint
-              prepend-icon="event"
-              @blur="date = parseDate(dateFormatted)"
-              v-on="on"
-            ></v-text-field>
-          </template>
-          <v-date-picker v-model="date" no-title @input="menu1 = false"></v-date-picker>
-        </v-menu>
-       
-      </v-col>
-
-      <v-col cols="12" lg="6">
-        <v-menu
-          v-model="menu2"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          offset-y
-          full-width
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model="computedDateFormatted"
-              label="Date (read only text field)"
-              hint="MM/DD/YYYY format"
-              persistent-hint
-              prepend-icon="event"
-              readonly
-              v-on="on"
-            ></v-text-field>
-          </template>
-          <v-date-picker v-model="date" no-title @input="menu2 = false"></v-date-picker>
-        </v-menu>
-      </v-col>
-    </v-row>
-                  <!-- <v-menu ref="menu_data_nascimento"
-                          v-model="menu_data_nascimento"
-                          :close-on-content-click="false"
-                          transition="scale-transition"
-                          offset-y
-                          full-width
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field v-model="animal.data_nascimento"
-                                    label="Data de Nascimento"
-                                    persistent-hint
-                                    prepend-icon="event"
-                                    v-on="on"
-                      ></v-text-field>
-                    </template>
-                    <v-date-picker v-model="data_nascimento" 
-                                   no-title @input="menu_data_nascimento = false"
-                    ></v-date-picker> -->
-                  </v-menu>
-                </v-flex>
+              <v-menu ref="menu_data_nascimento"
+                      v-model="menu_data_nascimento"
+                      :close-on-content-click="false"
+                      transition="scale-transition"
+                      offset-y
+                      full-width
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field v-model="animal.data_nascimento"
+                                label="Data de Nascimento"
+                                persistent-hint
+                                prepend-icon="event"
+                                v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker v-model="data_nascimento" 
+                                no-title @input="menu_data_nascimento = false"
+                ></v-date-picker> 
+              </v-menu>
+            </v-flex>
     
             <!-- Select Sexo -->
             <v-flex xs12 sm6 md6>
@@ -144,8 +90,9 @@
               </v-tooltip>
             </v-flex>
             <!-- autocomplete Mae -->
-            <v-flex xs12 sm4 md4 lg4 v-if="!animal.is_primogenito">
+            <v-flex xs12 sm4 md4 lg4 >
               <v-autocomplete
+                v-if="!animal.is_primogenito && !animal.id"
                 label="Pesquise a mãe"
                 :loading="selectMae.loading"
                 :items="selectMae.items"
@@ -158,10 +105,17 @@
                 :search-input.sync="selectMae.search"
                 v-model="animal.mae"
               />
+               <v-text-field
+                v-if="animal.id"
+                :value="pais.pai.nome"
+                disabled
+                label="Pai"
+              ></v-text-field>  
             </v-flex>
             <!-- autocomplete Pai -->
-            <v-flex xs12 sm4 md4 lg4 v-if="!animal.is_primogenito">
-              <v-autocomplete
+            <v-flex xs12 sm4 md4 lg4>
+              <v-autocomplete 
+                v-if="!animal.is_primogenito && !animal.id"
                 label="Selecione o pai"
                 :loading="selectPai.loading"
                 required
@@ -174,6 +128,12 @@
                 :search-input.sync="selectPai.search"
                 v-model="animal.pai"
               />
+              <v-text-field
+                v-if="animal.id"
+                :value="pais.mae.nome"
+                disabled
+                label="Mãe"
+              ></v-text-field>  
             </v-flex>
             <v-flex xs12>
               <br>
@@ -435,6 +395,10 @@ export default {
         },
         usuario_cadastro: null,
       },
+      pais: {
+        pai: null, 
+        mae: null
+      },
       selectSexo: [
         { text: "Macho", value: "m" },
         { text: "Fêmea", value: "f" }
@@ -551,13 +515,40 @@ export default {
     async getAnimalId(id) {
       try{
         let response = await AnimaisService._getById({id: id})
+        
         this.animal = response.data.animais
-        this.animal.pesagens = response.data.animais.pesagens[0]
-        this.animal.hemogramas= response.data.animais.hemogramas[0]
-        this.selectFazenda.items = response.data.animais.fazenda
-        this.selectFazenda.selected = response.data.animais.fazenda
+        this.animal.fase_vida = this.animal.fase_vida.toUpperCase()
+        
+        if(response.data.animais.primogenito == 0){
+          this.animal.is_primogenito = false;
+
+          let busca = {
+            params: {
+              'id-filho': this.animal.id
+            }
+          }
+          let familia = await AnimaisService._getFamilia(busca);
+          
+          this.pais.pai = familia.data.familias.pai
+          this.pais.mae = familia.data.familias.mae
+          
+        }
+        else{
+          this.animal.is_primogenito = true;
+        }
+        if(response.data.animais.pesagens[0] != null){
+          this.animal.pesagens = response.data.animais.pesagens[0]
+        }
+        if(response.data.animais.hemogramas[0] != null){
+          this.animal.hemogramas= response.data.animais.hemogramas[0]
+        }
+        if(response.data.animais.fazenda != null){
+          this.selectFazenda.items = response.data.animais.fazenda
+          this.selectFazenda.selected = response.data.animais.fazenda
+        }
         let lote = await this.getLoteById(this.animal.lotes_id);
         this.animal.codigo_lote = lote.codigo
+        
       }
       catch(e){
         this.notify("error", "Erro ao buscar animal pelo id");
@@ -648,11 +639,12 @@ export default {
           }
          
           if(!this.animal.id && this.animal.is_vivo == false){
-            console.log(this.animal)
             this.animal.nascido_morto = true
           }
-          
+          console.log('Objeto antes de salvar')
+          console.log(this.animal)
           let response = await AnimaisService._create(this.animal);
+          console.log('Objeto depois de salvar')
           console.log(response)
           if (response.status !== 400 || response.status !== 500) {
             this.notify(response.data.message.type, response.data.message.description);

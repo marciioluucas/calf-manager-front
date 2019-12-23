@@ -101,11 +101,20 @@
               </v-layout>
             </v-flex>
 
-            <v-flex xs12 sm4 md4 lg4>
+            <v-flex xs12 sm2 md2 lg2>
               <v-text-field
                 v-model="dose.quantidade_mg"
                 label='Dose'
                 placeholder="Miligramas/mililitros"
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm2 md2 lg2>
+              <v-text-field
+                v-if="saldoMedicamento"
+                v-model="saldoMedicamento"
+                label='Dose'
+                placeholder="saldo"
+                disabled
               ></v-text-field>
             </v-flex>
           </v-layout>
@@ -162,7 +171,8 @@
             prescricao: '',
             usuario_cadastro: null
           },
-          usuario_cadastro: null
+          usuario_cadastro: null,
+          saldoMedicamento: null
         },
         selectAnimal: {
           loading: false,
@@ -197,6 +207,9 @@
       },
       'selectMedicamento.search'(val){
         val && this.getMedicamentos(val)
+      },
+      'dose.medicamento_id' (medicamento_id){
+        this.getSaldoDoseMedicamento(medicamento_id)
       }
     },
     methods: {
@@ -235,22 +248,34 @@
         this.selectMedicamento.items = response.data.medicamentos.data
       },
 
+      async getSaldoDoseMedicamento(medicamento_id){
+        let busca = {
+          params: {
+            saldo_medicamento_id: medicamento_id
+          }
+        }
+        let response = await DosesService._getAll(busca)
+        console.log(response)
+        this.saldoMedicamento = response.data.dose.saldo
+
+      },
+
       // Cadastrar medicamentos
       async cadastrarMedicamento() {
         if (this.validarFormMedicamento()) {
           let response = await MedicamentosService._create(this.dose.medicamento).catch(exception => {
             if(exception){
-              this.alerta('error', true, 'Erro ao cadastrar medicamento!')
+              this.notify('error', 'Erro ao cadastrar medicamento!')
             }
           })
           if(response.status === 201){
-            this.alerta(response.data.message.type, true, response.data.message.description)
+            this.notify(response.data.message.type, response.data.message.description)
             this.dialog = false
             this.clearFormMedicamento()
           }
           
         } else {
-          this.alerta('warning', true, 'Preencha todos os campos corretamente!')
+          this.notify('warning', 'Preencha todos os campos corretamente!')
         }
       },
 
@@ -262,7 +287,7 @@
             this.selectAnimal.items = response.data.animais
           }
         }catch(e){
-          this.alerta('error', true, 'Erro ao pesquisar animal por id!')
+          this.notify('error', 'Erro ao pesquisar animal por id!')
 
         }
       }, 
@@ -274,24 +299,28 @@
             this.selectMedicamento.items = response.data.medicamentos
           }
         }catch(e){
-          this.alerta('error', true, 'Erro ao pesquisar medicamento por id!')
+          this.notify('error', 'Erro ao pesquisar medicamento por id!')
 
         }
       }, 
 
 
       async cadastrar() {
-        
-        if (this.validarFormDose()) {
-          this.dose.funcionario_id = localStorage.getItem('func_id')
-          let response = await DosesService._create(this.dose)
-          if(response.status === 201){
-            this.alerta(response.data.message.type, true, response.data.message.description)
-            this.clearFormDose()
+        try{
+          if (this.validarFormDose()) {
+            this.dose.funcionario_id = localStorage.getItem('func_id')
+            let response = await DosesService._create(this.dose)
+            if(response.status === 201){
+              this.notify(response.data.message.type, response.data.message.description)
+              this.clearFormDose()
+            }
           }
-          
-        } else {
-          this.alerta('warning', true, 'Preencha todos os campos corretamente!')
+          else {
+            this.notify('warning', 'Preencha todos os campos corretamente!')
+          }
+        }
+        catch(e){
+          this.notify(e.response.data.message.type, e.response.data.message.description)
         }
       },
       async editar() {
@@ -299,12 +328,12 @@
           if (this.validarFormDose()) {
             let response = await DosesService._update(this.dose)
             if(response.status !== 400 || response.status !== 500){
-              this.alerta(response.data.message.type, true, response.data.message.description)
+              this.notify(response.data.message.type, response.data.message.description)
               this.clearFormDose()
             }
           }
         }catch(e){
-          this.alerta('error', true, 'Erro ao alterar vacina!')
+          this.notify('error', 'Erro ao alterar vacina!')
         }
       },
 
@@ -316,7 +345,7 @@
 
         }
         catch(e){
-          this.alerta('error', true, 'Erro ao carregar id de usuario logado')
+          this.notify('error', 'Erro ao carregar id de usuario logado')
         }
       },
 
@@ -346,9 +375,9 @@
         this.dose.medicamento.nome = ''
         this.dose.medicamento.prescricao = ''
       },
-      alerta(color, estado, mensagem) {
+      notify(color, mensagem) {
         this.snackbar.color = color
-        this.snackbar.estado = estado
+        this.snackbar.estado = true
         this.snackbar.mensagem = mensagem
       }
     }
