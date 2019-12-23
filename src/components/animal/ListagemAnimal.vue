@@ -75,6 +75,12 @@
                                 v-model="buscaAnimal.params.doente"
                               />
                             </v-flex>
+                            <v-flex xs6>
+                              <v-switch
+                                :label="`Buscar pelos mortos ao nascer`"
+                                v-model="buscaAnimal.params.mortosAoNascer"
+                              />
+                            </v-flex>
                           </v-layout>
                         </v-flex>
                      
@@ -184,6 +190,7 @@
           nome: undefined,
           lotes_id: null,
           params: {
+            mortosAoNascer: false,
             sexo: null,
             vivo: true,
             doente: false,
@@ -227,6 +234,13 @@
     watch: {
       'selectLote.search'(codigo){
         codigo && this.getLotesByCodigo(codigo)
+      },
+      'buscaAnimal.params.mortosAoNascer'(val){
+        if(val == true){
+          this.buscaAnimal.params.vivo = false;
+        }else{
+          this.buscaAnimal.params.vivo = true;
+        }
       }
     },
     async mounted() {

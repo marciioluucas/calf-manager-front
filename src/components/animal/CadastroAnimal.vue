@@ -37,7 +37,61 @@
             <!-- text Data_nascimento animal.data_nascimento -->
             
             <v-flex xs12 sm3 md3 lg3>
-                  <v-menu ref="menu_data_nascimento"
+
+              <v-row>
+      <v-col cols="12" lg="6">
+        <v-menu
+          ref="menu1"
+          v-model="menu1"
+          :close-on-content-click="false"
+          transition="scale-transition"
+          offset-y
+          full-width
+          max-width="290px"
+          min-width="290px"
+        >
+          <template v-slot:activator="{ on }">
+            <v-text-field
+              v-model="dateFormatted"
+              label="Date"
+              hint="MM/DD/YYYY format"
+              persistent-hint
+              prepend-icon="event"
+              @blur="date = parseDate(dateFormatted)"
+              v-on="on"
+            ></v-text-field>
+          </template>
+          <v-date-picker v-model="date" no-title @input="menu1 = false"></v-date-picker>
+        </v-menu>
+       
+      </v-col>
+
+      <v-col cols="12" lg="6">
+        <v-menu
+          v-model="menu2"
+          :close-on-content-click="false"
+          transition="scale-transition"
+          offset-y
+          full-width
+          max-width="290px"
+          min-width="290px"
+        >
+          <template v-slot:activator="{ on }">
+            <v-text-field
+              v-model="computedDateFormatted"
+              label="Date (read only text field)"
+              hint="MM/DD/YYYY format"
+              persistent-hint
+              prepend-icon="event"
+              readonly
+              v-on="on"
+            ></v-text-field>
+          </template>
+          <v-date-picker v-model="date" no-title @input="menu2 = false"></v-date-picker>
+        </v-menu>
+      </v-col>
+    </v-row>
+                  <!-- <v-menu ref="menu_data_nascimento"
                           v-model="menu_data_nascimento"
                           :close-on-content-click="false"
                           transition="scale-transition"
@@ -54,7 +108,7 @@
                     </template>
                     <v-date-picker v-model="data_nascimento" 
                                    no-title @input="menu_data_nascimento = false"
-                    ></v-date-picker>
+                    ></v-date-picker> -->
                   </v-menu>
                 </v-flex>
     
@@ -342,6 +396,11 @@ export default {
   name: "cadastro-animal",
   data() {
     return {
+      date: null,
+      dateFormatted: null,
+      menu1: false,
+      menu2: false,
+      on: null,
       data_exame: null,
       data_pesagem: null,
       data_nascimento: null, 

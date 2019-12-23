@@ -218,20 +218,20 @@
           if(confirm('Deseja realmente deletar este lote?')){
               let response = await LotesService._delete(item.id)
               if(response.status !== 500){
-                this.alerta('success', true, 'Lote excluído com sucesso!')
+                this.notify('success', 'Lote excluído com sucesso!')
                 let index = this.items.data.indexOf(item)
                 this.items.data.splice(index, 1)
               }
           }
         }
         catch(e){
-          this.alerta('error', true, 'Erro ao deletar lote!')
+          this.notify(e.response.data.message.type, e.response.data.message.description)
         }
       },
       
-      alerta(color, estado, mensagem) {
+      notify(color, mensagem) {
         this.snackbar.color = color
-        this.snackbar.estado = estado
+        this.snackbar.estado = true
         this.snackbar.mensagem = mensagem
       }
     }

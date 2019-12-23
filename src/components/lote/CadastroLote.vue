@@ -163,8 +163,10 @@
       },
       async getLote() {
         let response = await LotesService._getById(this.lote)
-        this.lote = response.data.lotes[0]
-        this.getFazendaById(this.lote.fazenda_id)
+        console.log(response.data)
+        // this.lote = response.data.lotes[0]
+        // this.getFazendaById(this.lote.fazenda_id)
+                  
       },
 
 getIdUsuarioLogado(){

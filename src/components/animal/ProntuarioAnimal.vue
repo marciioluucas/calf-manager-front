@@ -545,7 +545,7 @@
                 }
                 
                 let diff = moment.duration(data.diff(data_nascimento))
-				this.animal.idade = diff.days() + ' dias, ' + diff.months() + ' meses'
+				this.animal.idade = diff.months() + ' meses, ' + diff.days() + ' dias' 
             },
             formatDate(date) {
                 if (!date) return null
