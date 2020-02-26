@@ -78,7 +78,7 @@
 </template>
 
 <script>
-
+import jwtDecode from 'jwt-decode'
 import UsuariosService from '../../services/UsuariosService';
 
 export default {
@@ -113,17 +113,19 @@ export default {
     },
 
     async signin() {
-      await UsuariosService._login({login: this.login, senha: this.senha})
-        .catch(e => {
-          this.notify(e.response.data.message.description)
-        }).then( response => {
-          if (response != null && response.status === 200) 
+      try{
+        let response = await UsuariosService._login({login: this.login, senha: this.senha})
+         if (response.status === 200) 
           {
+            let token = jwtDecode(response.data.token)
+            localStorage.setItem('user_id', JSON.stringify(token.id))
             localStorage.setItem('token', JSON.stringify(response.data.token))
             this.$router.push('Dashboard')
           }
-        });
-      
+      }
+      catch(e){
+        this.notify(e.response.data.message.description)
+      }
     },
 
     notify(message)

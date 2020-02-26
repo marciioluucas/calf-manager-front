@@ -109,9 +109,7 @@
               this.clearFormMedicamento()
             }
           }
-          else{
-            this.alerta('warning', true, 'Preencha todos os campos corretamente!')
-          }
+          
         },
         async getMedicamento() {
           let response = await MedicamentosService._getById(this.medicamento)
@@ -129,9 +127,7 @@
               this.clearFormMedicamento()
             }
           }
-          else{
-            this.alerta('warning', true, 'Preencha todos os campos corretamente!')
-          }
+          
         },
 
         getIdUsuarioLogado(){
@@ -149,16 +145,20 @@
           this.snackbar.mensagem = mensagem
         },
         validarForm(){
-          if(this.medicamento.nome !== '' && this.medicamento.nome !== null && this.medicamento.prescicao !== '' && this.medicamento.prescicao !== null){
-            return true
-          }
-          else {
+          if(!this.medicamento.nome){
+            this.alerta("warning", true, "Informe o nome do medicamento")
             return false
           }
+          if(!this.medicamento.prescricao){
+            this.alerta("warning", true, "Informe a prescrição do medicamento")
+            return false
+          }
+          return true
         },
         clearFormMedicamento() {
-          this.medicamento.nome = ''
-          this.medicamento.prescricao = ''
+          this.medicamento.id = ""
+          this.medicamento.nome = ""
+          this.medicamento.prescricao = ""
         }
 
       }

@@ -83,14 +83,14 @@
         </v-flex>
 <!--Componente de alerta-->
           <v-snackbar
-             v-model="snackbar.estado"
+             v-model="snackbar.show"
              :right="true"
              :timeout="4000"
              :multi-line="true"
 
              :top="true"
              :color="snackbar.color">
-             {{ snackbar.mensagem }}
+             {{ snackbar.message }}
              <v-btn
                color="black"
                flat
@@ -133,8 +133,8 @@
         ],
         snackbar: {
           color: 'success',
-          estado: false,
-          mensagem: ''
+          show: false,
+          message: ''
         }
       }
     },
@@ -152,16 +152,27 @@
 
       },
      
+     async deletar(item){
+         if(confirm('Deseja estornar este item?')){
+            let response = await DosesService._delete(item.id)
+            if(response.status !== 500){
+              let index = this.items.data.indexOf(item)
+              this.items.data.splice(index, 1)
+              this.notify("success","Movimentação estornada com sucesso") 
+            }
+          }
+      },
+
       async editar(id) {
         this.$router.push({
         name: 'CadastroEntradaDose',
         params: {id: id}
       })
       },
-      notify(color, mensagem) {
+      notify(color, message) {
           this.snackbar.color = color
-          this.snackbar.estado = estado
-          this.snackbar.mensagem = mensagem
+          this.snackbar.show = true
+          this.snackbar.message = message
         }
     }
   }

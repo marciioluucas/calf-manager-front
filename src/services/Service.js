@@ -8,4 +8,11 @@ const client = axios.create({
         : {},
     timeout: 35000
 })
+client.interceptors.request.use(async config =>{
+    const token = localStorage.getItem('token')
+    if(token) {
+        config.headers.Authorization = `${token}`
+    }
+    return config
+})
 export default client

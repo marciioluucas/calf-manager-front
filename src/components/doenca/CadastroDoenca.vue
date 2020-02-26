@@ -125,8 +125,10 @@
         }
       },
       clearForm() {
-        this.doenca.nome = ''
-        this.doenca.descricao = ''
+        this.doenca.id = ""
+        this.doenca.nome = ""
+        this.doenca.descricao = ""
+        this.nomeTitulo = "Cadastro de Doenca"
       },
       alerta(color, estado, mensagem) {
         this.snackbar.color = color

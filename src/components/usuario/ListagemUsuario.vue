@@ -177,7 +177,8 @@ export default {
       let response = null;
         if(this.buscaUsuario.login){
            try{
-            response = await UsuariosService._getByLogin(this.buscaUsuario.login)
+             response = await UsuariosService._getByLogin(this.buscaUsuario.login)
+            
             if(response.status !== 400 || response.status !== 500){
               this.items = response.data.usuarios
             } 

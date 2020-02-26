@@ -176,7 +176,11 @@ export default {
           }
         }
         catch(e){
-          this.alerta('error', true, 'Erro ao deletar fazenda!') 
+          if(e.response.status  == 400){
+            this.alerta('error', true, e.response.data.message.description)
+          }else {
+            this.alerta('error', true, 'Erro ao deletar fazenda!') 
+          }
         }
       },
     editarFazenda(id) {

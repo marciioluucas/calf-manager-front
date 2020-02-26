@@ -54,12 +54,25 @@
                             ></v-text-field>
                         </v-flex>
                         <v-flex xs12 sm4 md4 lg4>
-                            <v-text-field
-                                v-model="pessoa.data_nascimento"
-                                label='Data de nascimento'
-                                mask="##/##/####"
-                                :return-masked-value="true"
-                            ></v-text-field>
+                           <v-menu ref="menu_data_nascimento"
+                                    v-model="menu_data_nascimento"
+                                    :close-on-content-click="false"
+                                    transition="scale-transition"
+                                    offset-y
+                                    full-width
+                            >
+                                <template v-slot:activator="{ on }">
+                                <v-text-field v-model="pessoa.data_nascimento"
+                                                label="Data de Nascimento"
+                                                persistent-hint
+                                                prepend-icon="event"
+                                                v-on="on"
+                                ></v-text-field>
+                                </template>
+                                <v-date-picker v-model="data_nascimento" 
+                                                no-title @input="menu_data_nascimento = false"
+                                ></v-date-picker> 
+                            </v-menu>
                         </v-flex>
 
                         <v-flex xs12>
@@ -209,6 +222,8 @@
         data(){
             return{
                 nomeTitulo: 'Cadastrar Funcionário',
+                menu_data_nascimento: null,
+                data_nascimento: null,
                 funcionario: {
                     id: null,
                     pessoa_id: null,
@@ -265,7 +280,7 @@
                 },
                 
                 selectFazenda: {
-                    item: [],
+                    items: [],
                     search: null,
                     loading: false
 
@@ -332,6 +347,9 @@
             },
             'selectCargo.search'(val) {
                 val && this.getCargos(val)
+            },
+            data_nascimento (val) {
+                this.pessoa.data_nascimento = this.formatDate(val)
             }
         },
         mounted(){
@@ -348,7 +366,7 @@
                 if (this.validarFormPessoa()) {
                     try{
                         this.pessoa.endereco_id = id
-                        let response = await PessoasService._create(this.pessoa)
+                        let response = await PessoasService._create(this.prepareCreateOrUpdate(this.pessoa))
                         this.funcionario.pessoa_id = response.data.message.id
                         if (response.status !== 400 || response.status !== 500){
                             this.alerta(response.data.message.type, true, response.data.message.description)
@@ -364,6 +382,11 @@
                         return false
                     }
                 }
+            },
+
+            prepareCreateOrUpdate(obj){
+                 obj.data_nascimento = this.parseDate(obj.data_nascimento)
+                 return obj
             },
 
             // cadastrar funcionario
@@ -442,13 +465,11 @@
             async editarPessoa(){
                 if(this.validarFormPessoa()){
                     try{
-                        let response = await PessoasService._update(this.pessoa)
-                        if(response.status == 400 || response.status == 500){
-                            this.alerta('error', true, 'Erro ao alterar funcionário!')
-                            return false
+                        let response = await PessoasService._update(this.prepareCreateOrUpdate(this.pessoa))
+                        if(response.status == 200 || response.status == 201){
+                            this.alerta(response.data.message.type, true, response.data.message.description)
+                            this.clearformFuncionario()
                         }
-                        this.alerta(response.data.message.type, true, response.data.message.description)
-                        this.clearFormPessoa()
                     }
                     catch(e){
                         this.alerta('error', true, 'Erro ao alterar funcionário!')
@@ -461,12 +482,11 @@
                 if(this.validarFormEndereco()){
                     try{
                         let response = await EnderecosService._update(this.endereco)
-                        if(response.status === 400 || response.status === 500){
-                            this.alerta('error', true, 'Erro ao alterar endereço!')
-                            return false
+                        if(response.status == 200 || response.status == 201){
+                            this.alerta(response.data.message.type, true, response.data.message.description)
+                            this.clearformFuncionario()
                         }
-                        this.alerta(response.data.message.type, true, response.data.message.description)
-                        this.clearFormEndereco()
+                        
                     }
                     catch(e){
                         this.alerta('error', true, 'Erro ao alterar endereço!')
@@ -485,8 +505,8 @@
                         }
                         this.funcionario = response.data.funcionarios
                         this.pessoa = response.data.funcionarios.pessoa
-                        this.selectFazenda.item = response.data.funcionarios.fazenda
-                        this.selectCargo.item = response.data.funcionarios.cargo
+                        this.selectFazenda.items.push(response.data.funcionarios.fazenda)
+                        this.selectCargo.items.push(response.data.funcionarios.cargo)
                         if(this.pessoa.endereco_id !== null){
                             this.getEnderecoId(this.pessoa.endereco_id)
                         }
@@ -525,7 +545,7 @@
                     if(val !== null){
                         let response = await CargosService._getByNome(val)
                         if(response.status !== 400 || response.status !== 500){
-                            this.selectCargo.items = response.data.cargos.data
+                            this.selectCargo.items.push(response.data.cargos.data)
                             this.selectCargo.loading = false
                             return true
                         }
@@ -541,7 +561,7 @@
             async getCargoId(id){
                 try{
                     let response = await CargosService._getById({id: id})
-                    this.selectCargo.items = response.data.cargos
+                    this.selectCargo.items.push(response.data.cargos)
                 }catch(e){
                     this.alerta('error', true, 'Erro ao pesquisar o cargo por id!')
                 }
@@ -550,7 +570,7 @@
             async getFazendaId(id){
                 try{
                     let response = await FazendasService._getById({id: id})
-                    this.selectFazenda.items = response.data.fazendas
+                    this.selectFazenda.items.push(response.data.fazendas)
                 }catch(e){
                     this.alerta('error', true, 'Erro ao pesquisar todos a fazenda por id!')
                 }
@@ -668,37 +688,45 @@
                 }
             },
             clearFormPessoa(){
-                this.pessoa.nome = ''
-                this.pessoa.rg = ''
-                this.pessoa.cpf = ''
-                this.pessoa.sexo = ''
-                this.pessoa.telefone = ''
-                this.pessoa.numero_telefone = ''
-                this.pessoa.data_nascimento = ''
-                this.pessoa.endereco_id = ''
+                this.pessoa.id = ""
+                this.pessoa.nome = ""
+                this.pessoa.rg = ""
+                this.pessoa.cpf = ""
+                this.pessoa.sexo = ""
+                this.pessoa.telefone = ""
+                this.pessoa.numero_telefone = ""
+                this.pessoa.data_nascimento = ""
+                this.pessoa.endereco_id = ""
             },
             clearFormEndereco(){
-                this.endereco.logradouro = ''
-                this.endereco.bairro = ''
-                this.endereco.numero = ''
-                this.endereco.cidade = ''
-                this.endereco.estado = ''
-                this.endereco.pais = ''
-                this.endereco.cep = ''
+                this.endereco.id = ""
+                this.endereco.logradouro = ""
+                this.endereco.bairro = ""
+                this.endereco.numero = ""
+                this.endereco.cidade = ""
+                this.endereco.estado = ""
+                this.endereco.pais = ""
+                this.endereco.cep = ""
             },
 
             clearFormUsuario(){
-                this.usuario.login = ''
-                this.usuario.senha = ''
-                this.usuario.re_senha = ''
+                this.usuario.id = ""
+                this.usuario.login = ""
+                this.usuario.senha = ""
+                this.usuario.re_senha = ""
             },
 
             clearformFuncionario(){
-                this.funcionario.pessoa_id = null
-                this.funcionario.cargo_id = null
-                this.funcionario.fazenda_id = null
-                this.funcionario.usuario_id = null
-                this.funcionario.salario = ''
+                this.funcionario.id = ""
+                this.funcionario.pessoa_id = ""
+                this.funcionario.cargo_id = ""
+                this.funcionario.fazenda_id = ""
+                this.funcionario.usuario_id = ""
+                this.funcionario.salario = ""
+                this.nomeTitulo = "Cadastrar Funcionário"
+                this.clearFormPessoa()
+                this.clearFormEndereco()
+                this.clearFormUsuario()
             },
 
             // Alerta
@@ -719,7 +747,19 @@
                 catch(e){
                     this.alerta('error', true, 'Erro ao carregar id de usuario logado')
                 }
-            }
+            },
+            formatDate (date) {
+                if (!date) return null
+
+                const [year, month, day] = date.split('-')
+                return `${day}/${month}/${year}`
+            },
+            parseDate (date) {
+                if (!date) return null
+
+                const [day,month, year] = date.split('/')
+                return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+            },
         }
         
     }

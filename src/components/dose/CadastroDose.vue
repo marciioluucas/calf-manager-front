@@ -110,9 +110,9 @@
             </v-flex>
             <v-flex xs12 sm2 md2 lg2>
               <v-text-field
-                v-if="saldoMedicamento"
+                v-if="showSaldo"
                 v-model="saldoMedicamento"
-                label='Dose'
+                label='QTD Doses'
                 placeholder="saldo"
                 disabled
               ></v-text-field>
@@ -171,9 +171,10 @@
             prescricao: '',
             usuario_cadastro: null
           },
-          usuario_cadastro: null,
-          saldoMedicamento: null
+          usuario_cadastro: null
         },
+        showSaldo: false,
+        saldoMedicamento: null,
         selectAnimal: {
           loading: false,
           items: [],
@@ -209,7 +210,7 @@
         val && this.getMedicamentos(val)
       },
       'dose.medicamento_id' (medicamento_id){
-        this.getSaldoDoseMedicamento(medicamento_id)
+        medicamento_id && this.getSaldoDoseMedicamento(medicamento_id)
       }
     },
     methods: {
@@ -249,15 +250,19 @@
       },
 
       async getSaldoDoseMedicamento(medicamento_id){
-        let busca = {
-          params: {
-            saldo_medicamento_id: medicamento_id
+        try{
+          let busca = {
+            params: {
+              saldo_medicamento_id: medicamento_id
+            }
           }
+          let response = await DosesService._getAll(busca)
+          this.saldoMedicamento = response.data.dose.saldo
+          this.showSaldo = true
         }
-        let response = await DosesService._getAll(busca)
-        console.log(response)
-        this.saldoMedicamento = response.data.dose.saldo
-
+        catch(e){
+          console.log(e.response)
+        }
       },
 
       // Cadastrar medicamentos
@@ -364,9 +369,11 @@
         return false
       },
       clearFormDose() {
-        this.dose.animal_id = null
-        this.dose.medicamento_id = null
-        this.dose.quantidade_mg = null
+        this.dose.animal_id = ""
+        this.dose.medicamento_id = ""
+        this.dose.quantidade_mg = ""
+        this.saldoMedicamento = ""
+        this.showSaldo = false
         this.clearFormMedicamento()
 
       },

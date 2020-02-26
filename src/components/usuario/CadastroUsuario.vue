@@ -73,7 +73,7 @@
                         <v-btn @click="clearForm">Limpar formulário</v-btn>
                 </v-form>
             </v-card-text>
-             <!--Componente de alerta-->
+            
           <v-snackbar
              v-model="snackbar.estado"
              :right="true"
@@ -158,7 +158,7 @@
                         
                     }
                 }catch(e){
-                    this.alerta('error', true, 'Erro ao pesquisar funcionários!')
+                    this.notify('error', 'Erro ao pesquisar funcionários!')
                     return false
                 }
             },
@@ -174,7 +174,7 @@
                     }
                 }
                 catch(e){
-                    this.alerta('error', true, 'Erro ao pesquisar grupos!')
+                    this.notify('error', 'Erro ao pesquisar grupos!')
                     return false
                 }
             },
@@ -182,10 +182,10 @@
                 try{
                     let response = await GruposService._getById({id: id})
                     if(response.status !== 400 && response.status!== 500){
-                        this.selectGrupo.items = response.data.grupos
+                        this.selectGrupo.items.push(response.data.grupos)
                     }
                 }catch(e){
-                    this.alerta('error', true, 'Erro ao pesquisar grupo por id!')                    
+                    this.notify('error', 'Erro ao pesquisar grupo por id!')                    
                 }
             },
 
@@ -194,14 +194,15 @@
                 try{
                     if(id !== null){
                         let response = await UsuariosService._getById({id: id})
-                        if(response.status !== 400 || response.status !== 500){
+                        if(response.status == 200 || response.status == 201){
                             this.usuario = response.data.usuarios
-                            this.usuario.reSenha = this.usuario.senha
+                            this.usuario.senha = ""
+                            this.usuario.reSenha = ""
                             this.getGrupoId(this.usuario.grupo_id)                        
                         }
                     }
                 }catch(e){
-                    this.alerta('error', true, 'Erro ao pesquisar usuário por id!')
+                    this.notify('error', 'Erro ao pesquisar usuário por id!')
                     return false
                 }
             },
@@ -211,14 +212,16 @@
                 try{
                     if(this.validarForm()){
                         let response = await UsuariosService._create(this.usuario)
-                        if(response.status !== 400 || reponse.status !== 500){
+                        if(response.status ==200 || response.status == 201){
+                             this.notify('success', 'Usuário cadastrado com sucesso!')
                             this.clearForm()
                         }
                     }
                 }
                 catch(e){
-                        this.alerta('error', true, 'Erro ao cadastrar usuário!')
-                        return false
+                    console.log(e)
+                    this.notify('error', 'Erro ao cadastrar usuário!')
+                    return false
                 }
             },
 
@@ -227,58 +230,51 @@
                 try{
                     if(this.validarForm()){
                         let response = await UsuariosService._update(this.usuario)
-                        console.log(response)
-                        if(response.status !== 400 || reponse.status !== 500){
-                            this.alerta('success', true, 'Usuário alterado com sucesso!')
+                        if(response.status ==200 || response.status == 201){
+                            this.notify('success', 'Usuário alterado com sucesso!')
                             this.clearForm()
                         }
                     }
                 }
                 catch(e){
-                    this.alerta('error', true, 'Erro ao alterar usuário!')
+                    this.notify('error', 'Erro ao alterar usuário!')
                     return false
                 }
             },
 
             getIdUsuarioLogado(){
-                try{
-                    let res = jwtDecode(localStorage.getItem('token'))
-                    this.usuario.usuario_cadastro = res.id
-                }
-                catch(e){
-                    this.alerta('error', true, 'Erro ao carregar id de usuario logado')
-                }
+                this.usuario.usuario_cadastro = localStorage.getItem("user_id")
             },
 
             // validar formulário
             validarForm(){
                 if(this.usuario.funcionario_id == null){
-                    this.alerta('warning', true, 'Selecione o funcionário!')
+                    this.notify('warning', 'Selecione o funcionário!')
                     return false                    
                 }
                 if(this.usuario.login === null ){
-                    this.alerta('warning', true, 'Preencha o login corretamente!')
+                    this.notify('warning', 'Preencha o login corretamente!')
                     return false
                 }
                 if( this.usuario.senha === null){
-                    this.alerta('warning', true, 'Preencha a senha corretamente!')
+                    this.notify('warning', 'Preencha a senha corretamente!')
                     return false
                 }
                 if(this.usuario.grupo_id === null){
-                    this.alerta('warning', true, 'Selecione o grupo!')
+                    this.notify('warning', 'Selecione o grupo!')
                     return false
                 }
                 if( this.usuario.reSenha === null){
-                    this.alerta('warning', true, 'Confirme a senha!')
+                    this.notify('warning', 'Confirme a senha!')
                     return false
                 }
                 if(this.usuario.senha !== this.usuario.reSenha){
-                    this.alerta('warning', true, 'Senhas divergentes!')
+                    this.notify('warning', 'Senhas divergentes!')
                     this.clearSenhas()
                     return false
                 }
                 if(this.usuario.senha.length < 8){
-                    this.alerta('warning', true, 'A senha deve conter o tamanho mínimo de 8 caracteres!')                    
+                    this.notify('warning', 'A senha deve conter o tamanho mínimo de 8 caracteres!')                    
                     return false
                 }
                 return true
@@ -286,24 +282,22 @@
 
             // Limpar formulário
             clearForm(){
-                this.usuario.id = null,
-                this.usuario.login = null,
-                this.usuario.senha = null,
-                this.usuario.reSenha = null,
-                this.usuario.funcionario_id = null,
-                this.usuario.grupo_id = null
+                this.usuario.id = "",
+                this.usuario.login = "",
+                this.usuario.funcionario_id = "",
+                this.usuario.grupo_id = "",
+                this.nomeTitulo= 'Cadastrar Usuário'
+                this.clearSenhas()
             },
 
-            // limpar Senhas
             clearSenhas(){
-                this.usuario.senha = null,
-                this.usuario.reSenha = null
+                this.usuario.senha = "",
+                this.usuario.reSenha = ""
             },
 
-            // Alerta
-            alerta(color, estado, mensagem) {
+            notify(color, mensagem) {
                 this.snackbar.color = color
-                this.snackbar.estado = estado
+                this.snackbar.estado = true
                 this.snackbar.mensagem = mensagem
             }
 

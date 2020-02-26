@@ -19,7 +19,6 @@
               <v-text-field
                 v-model="animal.nome"
                 label="Primeiro nome"
-                autofocus
               ></v-text-field>
             </v-flex>
             <!-- text Codigo_brinco             -->
@@ -83,16 +82,17 @@
             <!-- Switch is_primogenito -->
             <v-flex xs12 sm3 md3 lg3>
               <v-tooltip bottom>
-                <v-switch label="É primogênito?" slot="activator" v-model="animal.is_primogenito"/>
+                <v-switch label="É primogênito?"
+                          slot="activator" 
+                          v-model="animal.is_primogenito"/>
                 <span>Marque como verdadeiro se o animal
                   <br>não possui registros de pai e mãe
                 </span>
               </v-tooltip>
             </v-flex>
             <!-- autocomplete Mae -->
-            <v-flex xs12 sm4 md4 lg4 >
+            <v-flex xs12 sm4 md4 lg4  v-if="!animal.is_primogenito">
               <v-autocomplete
-                v-if="!animal.is_primogenito && !animal.id"
                 label="Pesquise a mãe"
                 :loading="selectMae.loading"
                 :items="selectMae.items"
@@ -103,19 +103,14 @@
                 cache-items
                 item-value="id"
                 :search-input.sync="selectMae.search"
-                v-model="animal.mae"
+                return-object
+                v-model="selectMae.selected"
               />
-               <v-text-field
-                v-if="animal.id"
-                :value="pais.pai.nome"
-                disabled
-                label="Pai"
-              ></v-text-field>  
+             
             </v-flex>
             <!-- autocomplete Pai -->
-            <v-flex xs12 sm4 md4 lg4>
+            <v-flex xs12 sm4 md4 lg4 v-if="!animal.is_primogenito">
               <v-autocomplete 
-                v-if="!animal.is_primogenito && !animal.id"
                 label="Selecione o pai"
                 :loading="selectPai.loading"
                 required
@@ -126,14 +121,10 @@
                 :items="selectPai.items"
                 item-text="nome"
                 :search-input.sync="selectPai.search"
-                v-model="animal.pai"
+                v-model="selectPai.selected"
+                return-object
               />
-              <v-text-field
-                v-if="animal.id"
-                :value="pais.mae.nome"
-                disabled
-                label="Mãe"
-              ></v-text-field>  
+              
             </v-flex>
             <v-flex xs12>
               <br>
@@ -396,8 +387,8 @@ export default {
         usuario_cadastro: null,
       },
       pais: {
-        pai: null, 
-        mae: null
+        pai: {}, 
+        mae: {}
       },
       selectSexo: [
         { text: "Macho", value: "m" },
@@ -429,11 +420,13 @@ export default {
       selectPai: {
         loading: false,
         items: [],
-        search: null
+        search: null,
+        selected: {}
       },
       selectMae: {
         loading: false,
-        items: []
+        items: [],
+        selected: {}
       },
       selectDoencaStatus: {
         items: [
@@ -469,6 +462,12 @@ export default {
     "selectLote.search"(val) {
       val && this.getLotes(val);
     },
+    "selectPai.selected" (pai){
+      this.animal.pai = pai.id
+    },
+    "selectMae.selected" (mae){
+      this.animal.mae = mae.id
+    },
     data_exame (val) {
       this.animal.hemogramas.data = this.formatDate(val)
     },
@@ -477,16 +476,13 @@ export default {
     },
     data_nascimento (val) {
       this.animal.data_nascimento = this.formatDate(val)
-    },
-    "selectFazenda.selected" (val){
-      this.selectLote.items = val.lote
-    },
+    }
   },
   mounted() {
     this.getIdUsuarioLogado()
-    if (this.$route.params.id) {
+    if (this.$route.params.id != null) {
       this.animal.id = this.$route.params.id;
-      this.nomeTitulo = "Editar Animal";
+      
       this.getAnimalId(this.animal.id);
     }
   },
@@ -514,6 +510,7 @@ export default {
 
     async getAnimalId(id) {
       try{
+        this.nomeTitulo = "Editar Animal";
         let response = await AnimaisService._getById({id: id})
         
         this.animal = response.data.animais
@@ -528,10 +525,11 @@ export default {
             }
           }
           let familia = await AnimaisService._getFamilia(busca);
-          
-          this.pais.pai = familia.data.familias.pai
-          this.pais.mae = familia.data.familias.mae
-          
+
+          this.selectPai.items.push(familia.data.familias.pai)
+          this.selectPai.selected = familia.data.familias.pai
+          this.selectMae.items.push(familia.data.familias.mae)
+          this.selectMae.selected = familia.data.familias.mae
         }
         else{
           this.animal.is_primogenito = true;
@@ -543,7 +541,7 @@ export default {
           this.animal.hemogramas= response.data.animais.hemogramas[0]
         }
         if(response.data.animais.fazenda != null){
-          this.selectFazenda.items = response.data.animais.fazenda
+          this.selectFazenda.items.push(response.data.animais.fazenda)
           this.selectFazenda.selected = response.data.animais.fazenda
         }
         let lote = await this.getLoteById(this.animal.lotes_id);
@@ -641,19 +639,16 @@ export default {
           if(!this.animal.id && this.animal.is_vivo == false){
             this.animal.nascido_morto = true
           }
-          console.log('Objeto antes de salvar')
-          console.log(this.animal)
+        
           let response = await AnimaisService._create(this.animal);
-          console.log('Objeto depois de salvar')
-          console.log(response)
-          if (response.status !== 400 || response.status !== 500) {
+          
+          if (response.status == 200 || response.status == 201) {
             this.notify(response.data.message.type, response.data.message.description);
             this.clearForm();
           }
         }
       }
       catch(e){
-          console.log(e.resposnse)
           this.notify(e.response.data.message.type, e.response.data.message.description);
           return false
       }
@@ -662,16 +657,17 @@ export default {
     async editar() {
       try{
         if (this.validaFormAnimal()) {
-          console.log(this.animal)
           let response = await AnimaisService._update(this.animal)
-          if (response.status !== 400 || response.status !== 500) {
-            this.notify(response.data.message.type, response.data.message.description);
+          
+          if (response.status == 200 || response.status == 201) {
+            
+            this.notify("success", "Cadastro editado com sucesso");
             this.clearForm();
           }
         }
       }
       catch(e){
-        this.notify(e.response.data.message.type, e.response.data.message.description);
+        this.notify("error", "Erro ao editar animal");
         return false
       }
     },
@@ -764,6 +760,8 @@ export default {
       this.animal.pai = ""
       this.animal.mae = ""
       this.selectedFazenda = ""
+      this.animal.id = "",
+      this.nomeTitulo = "Cadastrar Animal"
     },
 
     notify(color, mensagem) {

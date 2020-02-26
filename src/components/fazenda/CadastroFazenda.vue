@@ -75,7 +75,7 @@
           estado: false,
           mensagem: ''
         },
-        nomeTitulo: 'Cadastro de Fazenda'
+        nomeTitulo: "Cadastro de Fazenda"
       }
     },
     async mounted() {
@@ -102,7 +102,9 @@
         }
       },
       clearFormFazenda(){
-        this.fazenda.nome = ''
+        this.fazenda.nome = ""
+        this.nomeTitulo = "Cadastro de Fazenda",
+        this.fazenda.id = ""
       },
       alerta(color, estado, mensagem) {
         this.snackbar.color = color

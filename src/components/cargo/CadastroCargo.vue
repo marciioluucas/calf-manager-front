@@ -101,7 +101,7 @@
           if (this.validarForm()) {
             let response = await CargosService._create(this.cargo).catch(exception => {
               if(exception){
-                this.alerta('error', true, 'Erro ao cadastrar Fazenda!')
+                this.alerta('error', true, 'Erro ao cadastrar cargo!')
               }
             })
             if(response.status !== 400 || response.status || 500){
@@ -110,9 +110,7 @@
 
             }
           }
-          else {
-            this.alerta('warning', true, 'Preencha os campos corretamente!')
-          }
+          
         },
         async editar() {
           if (this.validarForm()) {
@@ -126,8 +124,6 @@
               this.clearFormCargo()
             }
             
-          } else {
-            this.alerta('warning', true, 'Preencha os campos corretamente!')
           }
         },
         alerta(color, estado, mensagem) {
@@ -136,12 +132,11 @@
           this.snackbar.mensagem = mensagem
         },
         validarForm() {
-          if (this.cargo.nome !== '' && this.cargo.nome !== null &&
-              this.cargo.descricao !== '' && this.cargo.descricao !== null) {
-            return true
-          } else {
-            return false
+          if (!this.cargo.nome) {
+           this.alerta("warning", true, "Informe o nome do cargo")
+           return false
           }
+          return true
         },
         getIdUsuarioLogado(){
           try{
@@ -153,8 +148,10 @@
           }
         },
         clearFormCargo() {
-          this.cargo.nome = ''
-          this.cargo.descricao = ''
+          this.nomeTitulo = "Cadastrar Cargo"
+          this.cargo.id = ""
+          this.cargo.nome = ""
+          this.cargo.descricao = ""
         }
       }
     }

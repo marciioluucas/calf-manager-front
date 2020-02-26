@@ -326,7 +326,7 @@
                                         <v-flex xs12>
                                             <v-flex xs12>
                                                 <v-autocomplete
-                                                    v-model="doses.medicamento_id"
+                                                    v-model="dose.medicamento_id"
                                                     :items="selectMedicamento.items"
                                                     :search-input.sync="selectMedicamento.search"
                                                     hide-no-data
@@ -340,10 +340,19 @@
                                             </v-flex>
                                             <v-flex xs12>
                                                 <v-text-field
-                                                    v-model="doses.quantidade_mg"
+                                                    v-model="dose.quantidade_mg"
                                                     label='Dose'
                                                     placeholder="Medida em miligramas"
                                                     required
+                                                ></v-text-field>
+
+                                            </v-flex>
+                                            <v-flex xs12>
+                                                <v-text-field
+                                                    v-if="dose.showSaldo"
+                                                    v-model="dose.saldo"
+                                                    label='saldo em estoque'
+                                                    disabled
                                                 ></v-text-field>
 
                                             </v-flex>
@@ -355,7 +364,7 @@
                             <v-card-actions>
                                 <v-spacer></v-spacer>
                                 <v-btn color="primary" flat @click="aplicarMedicamento"> Salvar </v-btn>
-                                <v-btn flat @click="dialogDoente = false"> Cancelar </v-btn>
+                                <v-btn flat @click="closeDialogAplicar"> Cancelar </v-btn>
                             </v-card-actions> 
                         </v-card>
                     </v-dialog>
@@ -428,12 +437,14 @@
                     doenca_id: null,
                     usuario_cadastro: null
                 },
-                doses: {
-                    quantidade_mg: null,
-                    funcionario_id: null,
-                    medicamento_id: null,
-                    animal_id: null,
-                    usuario_cadastro: null
+                dose: {
+                    quantidade_mg: "",
+                    tipo_movimentacao: "saida",
+                    animal_id: "",
+                    medicamento_id: "",
+                    funcionario_id: "",
+                    saldo: "",
+                    showSaldo: false
                 },
 				headers: [
 					{text: 'Nome', value: 'nome'},
@@ -532,9 +543,28 @@
             },
             'selectMedicamento.search'(val){
 				val && this.getMedicamentos(val)
-			}
+            },
+            'dose.medicamento_id' (medicamento_id){
+                medicamento_id && this.getSaldoDoseMedicamento(medicamento_id)
+            }
 		},
 		methods: {
+             async getSaldoDoseMedicamento(medicamento_id){
+                try{
+                    let busca = {
+                        params: {
+                        saldo_medicamento_id: medicamento_id
+                        }
+                    }
+                    let response = await DosesService._getAll(busca)
+                    this.dose.saldo = response.data.dose.saldo
+                    this.dose.showSaldo = true
+                    
+                }
+                catch(e){
+                console.log(e.response)
+                }
+            },
 			calcularIdade() {
                 let data = ""
                 let data_nascimento = moment(this.formatDate(this.animal.data_nascimento))
@@ -651,27 +681,40 @@
             }, 
             async aplicarMedicamento(){
                 try{
-                   
-                this.doses.funcionario_id = localStorage.getItem('func_id')
-                this.doses.animal_id = this.animal.id
-                if(this.doses.animal_id !== null && this.doses.quantidate_mg !== null && this.doses.medicamento_id !== null){
-                        let response = await DosesService._create(this.doses).catch(ex => {
-                            if(ex){
-                                this.notify('error', 'Erro ao aplicar medicamento!')
-                            }
-                        })
-                        if(response.status === 201){
+                    this.dose.funcionario_id = localStorage.getItem('func_id')
+                    this.dose.animal_id = this.animal.id
+                    if(this.validarAplicarDose()){
+                        let response = await DosesService._create(this.dose)
+                            
+                        if(response.status == 201 || response.status == 200){
                             this.notify(response.data.message.type, response.data.message.description)
                             this.getAnimal()
-                            this.dialogAplicarMedicamento = false
+                            this.closeDialogAplicar()
                         }
-                    
+                        
                     }
                 }
-                catch(e){
-                    this.notify('error', 'Erro ao aplicar medicamento!')
+                catch(exception){
+                    if(exception.response.status == 400){
+                        this.notify("error", exception.response.data.message.description)
+                    }else{
+                        this.notify('error', 'Erro ao aplicar medicamento!')
+                    }
                 }
             },
+
+            validarAplicarDose(){
+                if(!this.dose.quantidade_mg){
+                    this.notify("warning", "informe a quantidade de mg/ml")
+                    return false
+                }
+                if(!this.dose.medicamento_id) {
+                    this.notify("warning", "informe o medicamento/vacina")
+                    return false
+                }
+                return true
+            },
+
             notify(color, mensagem){
                 this.snackbar.color = color
                 this.snackbar.estado = true
@@ -693,13 +736,28 @@
                 try{
                     let res = jwtDecode(localStorage.getItem('token'))
                     this.animal.fazenda.usuario_cadastro = res.id
-                    this.doses.usuario_cadastro = res.id
+                    this.dose.usuario_cadastro = res.id
                     this.doencas.usuario_cadastro = res.id            
                 }
                 catch(e){
                     this.notify('error', 'Erro ao carregar id de usuario logado')
                 }
+            },
+            closeDialogAplicar(){
+                this.dialogAplicarMedicamento = false;
+                this. quantidade_mg = ""
+                this.funcionario_id = ""
+                this.medicamento_id = ""
+                this.animal_id = "",
+                this.usuario_cadastro = ""
+                
+            },
+            cleardialogAplicar(){
+                this.dose.saldo = ""
+                this.dose.showSaldo = false
+                this.dose.medicamento_id = ""
             }
+
         },
         
 		async mounted() {

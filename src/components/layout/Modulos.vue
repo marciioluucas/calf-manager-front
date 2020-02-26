@@ -29,14 +29,42 @@
 
 <script>
   import ModulosService from '../../services/ModulosService'
+  import UsuariosService from '../../services/UsuariosService'
+  import GruposService from '../../services/GruposService'
 
   export default {
     name: 'modulos',
     data() {
       return {
         miniVariant: true,
-        items: ModulosService.getModulos()
+        items: []
       }
+    },
+    mounted(){
+      this.listModules()
+    },
+    methods: {
+
+      async listModules(){
+        let userPermissions=  await this.getUserPermissions()
+        let allModules =  ModulosService.getModulos()
+        let allowedModules = []
+        allModules.forEach(moduleMenu => {
+          userPermissions.forEach(permission => {
+            if(moduleMenu.nome.toLowerCase() == permission.nome_modulo.toLowerCase()){
+              allowedModules.push(moduleMenu)
+            }
+          });
+        });     
+        this.items = allowedModules
+      },
+      async getUserPermissions(){
+        let user = await UsuariosService._getById({id: localStorage.getItem("user_id")})
+        let group = await GruposService._getById({id: user.data.usuarios.grupo_id})
+        return  group.data.grupos.permissao
+       
+      }
+      
     }
   }
 </script>

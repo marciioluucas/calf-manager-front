@@ -53,7 +53,7 @@
                   <v-checkbox label='Alterar' v-model="permissao.update"></v-checkbox>
             </v-flex>
             <v-flex xs12 sm2 md2>
-                  <v-checkbox label="Deletar" v-model="permissao.deletee"></v-checkbox>
+                  <v-checkbox label="Deletar" v-model="permissao.delete"></v-checkbox>
             </v-flex>
 
           </v-layout>
@@ -98,16 +98,16 @@
       return {
         permissao: {
           id: null,
-          nome_modulo: '',
-          create: 1,
-          read: 1,
+          nome_modulo: "",
+          create: 0,
+          read: 0,
           update: 0,
           delete: 0,
-          grupo_id: null,
-          usuario_cadastro: null
+          grupo_id: "",
+          usuario_cadastro: ""
         },
         selectGrupo: {
-          item: [],
+          items: [],
           search: null,
           loading: false
         },
@@ -132,14 +132,12 @@
       }
     },
     methods: {
-      // Pesquisar fazenda por nome
       async getGrupos(val) {
           try{
               this.selectGrupo.loading = true
               if (val !== null){
                   let response = await GruposService._getByNome(val)
                   if(response.status !== 400 || response.status !== 500){
-                    console.log(response)
                       this.selectGrupo.items = response.data.grupos.data
                   }
                   this.selectGrupo.loading = false
@@ -149,13 +147,24 @@
             this.alerta('error', true, 'Erro ao pesquisar grupo!')
           }
       },
+      async getGrupoPorId(){
+        try{
+          let response = await GruposService._getById({id: this.permissao.grupo_id})
+          if(response.status == 200 || response.status == 201){
+              this.selectGrupo.items = response.data.grupos
+          }
+        }
+        catch(exception){
+          this.alerta('error', true, 'Erro ao pesquisar grupo!')
+        }
+      },
       async getPermissao(){
         try{
         let response = await PermissoesService._getById(this.permissao)
         this.permissao = response.data.permissoes
-        console.log(this.permissao);
+        this.getGrupoPorId()
         }
-        catch(e){
+        catch(exception){
           this.alerta('error', true, 'Erro ao pesquisar permissao por id!')
           return false
         }
@@ -168,11 +177,6 @@
               this.alerta(response.data.message.type, true, response.data.message.description)
               this.clearFormPermissao()
             }
-
-            else {
-              console.log(response);
-            }
-            
           }
         }
         catch(e){
@@ -207,11 +211,15 @@
       },
 
       validarForm(){
-      if(this.permissao.nome_modulo !== '' && this.permissao.nome_modulo) {
-            return true
-          } else {
+        if(!this.permissao.nome_modulo) {
+            this.alerta('warning', true, "Informe o nome do permissão")
             return false
-          }
+        }
+        if(!this.permissao.grupo_id){
+            this.alerta('warning', true, "Informe o grupo desta permissão")
+            return false
+        }
+        return true
       },
       alerta(color, estado, mensagem){
         this.snackbar.color = color
@@ -219,13 +227,15 @@
         this.snackbar.mensagem = mensagem
       },
       clearFormPermissao(){
-        this.permissao.nome_modulo = ''
+        this.permissao.id = ""
+        this.permissao.nome_modulo = ""
         this.permissao.create = 0
         this.permissao.read = 0
         this.permissao.update = 0
         this.permissao.delete = 0
-        this.selectGrupo.items = null
-        this.permissao.grupo_id = null
+        this.selectGrupo.items = [] 
+        this.permissao.grupo_id = ""
+        this.nomeTitulo = "Cadastro de Permissão"
       }
     }
   }

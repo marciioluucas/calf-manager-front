@@ -101,14 +101,14 @@
       },
 
       getIdUsuarioLogado(){
-                try{
-                    let res = jwtDecode(localStorage.getItem('token'))
-                    this.grupo.usuario_cadastro = res.id
-                }
-                catch(e){
-                    this.alerta('error', true, 'Erro ao carregar id de usuario logado')
-                }
-            },
+          try{
+              let res = jwtDecode(localStorage.getItem('token'))
+              this.grupo.usuario_cadastro = res.id
+          }
+          catch(e){
+              this.alerta('error', true, 'Erro ao carregar id de usuario logado')
+          }
+      },
       
       async cadastrar() {
         if (this.validarFormGrupo()) {
@@ -147,20 +147,19 @@
         this.snackbar.mensagem = mensagem
       },
       validarFormGrupo() {
-          if(this.grupo.nome === null){
+          if(!this.grupo.nome){
             this.alerta('warning', true, 'Preencha o nome do grupo!')
             return false
           }
-          if(this.grupo.descricao === null){
-            this.alerta('warning', true, 'Preencha a descrição do grupo!')
-            return false
-          }
+          
           return true
       },
       clearFormGrupo() {
-        this.grupo.nome = ''
-        this.grupo.descricao = ''
-        this.grupo.permissao_id = null
+        this.grupo.id = ""
+        this.grupo.nome = ""
+        this.grupo.descricao = ""
+        this.grupo.permissao_id = ""
+        this.nomeTitulo = "Cadastrar Grupos"
       }
     }
   }

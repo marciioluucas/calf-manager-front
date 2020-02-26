@@ -118,11 +118,12 @@
         this.selectFazenda.items = response.data.fazendas.data
         this.selectFazenda.loading = false
 
+
       },
       async getFazendaById(id){
         try{
           let response = await FazendasService._getById({id: id})
-          this.selectFazenda.items = response.data.fazendas
+          this.selectFazenda.items.push(response.data.fazendas)
         }catch(e){
             this.alerta('error', true, 'Erro ao listar todas fazendas')
 
@@ -163,21 +164,21 @@
       },
       async getLote() {
         let response = await LotesService._getById(this.lote)
-        console.log(response.data)
-        // this.lote = response.data.lotes[0]
-        // this.getFazendaById(this.lote.fazenda_id)
+        
+        this.lote = response.data.lotes[0]
+        this.getFazendaById(this.lote.fazenda_id)
                   
       },
 
-getIdUsuarioLogado(){
-                try{
-                    let res = jwtDecode(localStorage.getItem('token'))
-                    this.lote.usuario_cadastro = res.id
-                }
-                catch(e){
-                    this.alerta('error', true, 'Erro ao carregar id de usuario logado')
-                }
-            },
+      getIdUsuarioLogado(){
+        try{
+            let res = jwtDecode(localStorage.getItem('token'))
+            this.lote.usuario_cadastro = res.id
+        }
+        catch(e){
+            this.alerta('error', true, 'Erro ao carregar id de usuario logado')
+        }
+      },
 
       clearFormLote() {
         this.lote.codigo = null
