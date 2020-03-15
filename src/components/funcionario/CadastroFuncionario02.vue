@@ -545,7 +545,7 @@
                     if(val !== null){
                         let response = await CargosService._getByNome(val)
                         if(response.status !== 400 || response.status !== 500){
-                            this.selectCargo.items.push(response.data.cargos.data)
+                            this.selectCargo.items = response.data.cargos.data
                             this.selectCargo.loading = false
                             return true
                         }

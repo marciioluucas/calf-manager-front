@@ -363,6 +363,7 @@ export default {
         nome: null,
         fase_vida: null,
         is_vivo: true,
+        ehDesmamado: null,
         nascido_morto: false,
         is_primogenito: false,
         sexo: null,
@@ -549,6 +550,7 @@ export default {
         
       }
       catch(e){
+        console.log(e)
         this.notify("error", "Erro ao buscar animal pelo id");
       }
     },
@@ -631,6 +633,7 @@ export default {
     async cadastrar() {
       try{
         if (this.validaFormAnimal()) {
+          this.animal.ehDesmamado = false;
           this.animal.fazendas_id = this.selectFazenda.selected.id;
           if(this.animal.hemogramas.funcionario_id == null){
             this.animal.hemogramas.funcionario_id = localStorage.getItem('func_id')
@@ -658,7 +661,6 @@ export default {
       try{
         if (this.validaFormAnimal()) {
           let response = await AnimaisService._update(this.animal)
-          
           if (response.status == 200 || response.status == 201) {
             
             this.notify("success", "Cadastro editado com sucesso");

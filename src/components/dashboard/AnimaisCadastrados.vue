@@ -83,6 +83,7 @@
           name: null
         }
         let response = await AnimaisService._getContagemAnimais()
+        
         data.value = response.data.animais
         data.name = 'Sadios'
         this.graficoAnimais.series[0].data.push(data)

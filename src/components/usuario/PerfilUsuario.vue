@@ -67,7 +67,7 @@
               </v-flex>
               </v-flex>
             </v-layout>
-          <v-btn @click="">Salvar</v-btn>
+          
         </v-form>
 
         

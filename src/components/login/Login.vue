@@ -124,6 +124,7 @@ export default {
           }
       }
       catch(e){
+        console.log(e)
         this.notify(e.response.data.message.description)
       }
     },

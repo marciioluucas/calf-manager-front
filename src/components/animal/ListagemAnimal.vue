@@ -107,12 +107,27 @@
             >
               <template slot="items" slot-scope="props">
                   <td class="text-xs-center">{{ props.item.id }}</td>
+                  <td class="text-xs-center"> 
+                     
+                        <v-chip color="black" dark > {{getStatusAmamentacao(props.item)}} </v-chip>
+                     
+                  </td>
+
                   <td class="text-xs-center">{{ props.item.nome }}</td>
                   <td class="text-xs-center">{{ props.item.fase_vida }}</td>
                   <td class="text-xs-center">{{ props.item.lote.codigo }}</td>
                   <td class="text-xs-center">{{ props.item.codigo_brinco }}</td>
                     <td class="text-xs-center">{{ props.item.codigo_raca }}</td>
                   <td class="justify-center layout px-0">
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on }">
+                        <v-icon small class="mr-2" v-on="on" v-if="!props.item.ehDesmamado"
+                                @click="desmamar(props.item)">
+                            cancel
+                        </v-icon>
+                     </template>
+                       <span>Desmamar Animal</span>
+                    </v-tooltip>
                     <v-icon
                       small
                       class="mr-2"
@@ -315,6 +330,22 @@
 
           }
       },
+
+      async desmamar(animal){
+        if(confirm('Deseja realmente desmamar este animal?') && animal){
+            animal.ehDesmamado = true
+            let response = await AnimaisService._update(animal).catch(exception => {
+              this.alerta('error', true, 'Erro ao desmamar animal!')
+              console.log(exception.response)
+            })
+            
+            if(response.status == 200 || response.status == 201){
+              this.alerta('success', true, 'Animal desmamado com sucesso')
+              this.getAnimais();
+            }
+          }
+      },
+
       clearFilters(){
         this.buscaAnimal.id = null
         this.buscaAnimal.nome= null
@@ -326,6 +357,14 @@
         this.snackbar.color = color
         this.snackbar.estado = estado
         this.snackbar.mensagem = mensagem
+      },
+      getStatusAmamentacao(animal){
+        console.log()
+        if(animal.ehDesmamado){
+          return "Desmamado"
+        }else{
+          return "Mamando"
+        }
       }
     }
   }
